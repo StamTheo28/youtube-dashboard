@@ -1,0 +1,17 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'commentsDash/templates/css/style.css' %}">
+
+<body>    
+    <h2>HTML Forms</h2>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <label for="lname">Last name:</label><br>
+        <input type="text"  name="video_link" ><br><br>
+        <input type="submit" value="Submit">
+    </form> 
+    <h2>Here is the result of the page</h2>
+
+    <p>{{ data }}</p>
+</body>
