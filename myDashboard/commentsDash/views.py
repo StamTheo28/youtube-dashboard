@@ -1,13 +1,15 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from .utils import video_parser
 
 
 def index(request):
 
     if request.method == "POST":
-        video_link = request.POST['video_link']
-        # Make video link validation
-        data = getNegativeComments(video_link)
+        url = request.POST['video_link']
+        # ADD Make video link validation
+        
+        data = video_parser(url)
     else:
         data = ['Nothing is here bro']
 
