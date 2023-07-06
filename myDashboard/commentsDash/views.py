@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from .utils import video_parser
+from .utils.utils import video_parser
+from .utils.youCom import commentsAnalysis
 
 
 def index(request):
@@ -9,7 +10,10 @@ def index(request):
         url = request.POST['video_link']
         # ADD Make video link validation
         
-        data = video_parser(url)
+        video_id = video_parser(url)
+        video_comments = commentsAnalysis(video_id=video_id)
+        data = video_comments['text']
+
     else:
         data = ['Nothing is here bro']
 
