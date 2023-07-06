@@ -54,13 +54,12 @@ def get_most_famous_comments( video_id, max_comments=2):
             comments_list.append(comment)
         except Exception as e:
             print(f"An error occurred while retrieving comment {comment_id}: {e}")
-
-    comments_df = pd.DataFrame(comments)
+    comments_df = pd.DataFrame(comments_list)
     return comments_df
 
 def get_model_results(data):
     pine = SentimentTopicModel(data,
-                           sentiment_model_path='comment',
+                           sentiment_model_path='D:\youtube-dashboard\youtube-dashboard\model\comment',
                            topic_model_path='j-hartmann/emotion-english-distilroberta-base',
                            num_labels=3)
 
@@ -70,8 +69,10 @@ def get_model_results(data):
 # Perform Comments classification 
 def commentsAnalysis(video_id):
         # Retrieve the most famous comments of the video
-        comments = get_most_famous_comments(video_id)['comment']
+        comments = get_most_famous_comments(video_id)
         results = get_model_results(comments)
-        print(results[0])
-        print(results[1])
-        return results
+        results_df= pd.DataFrame(results[1])
+        df = pd.concat([comments, results_df], axis=1).T.drop_duplicates().T
+
+        print(df.head(2))
+        return df

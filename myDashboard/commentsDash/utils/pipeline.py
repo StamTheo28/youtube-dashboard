@@ -46,23 +46,6 @@ class SentimentTopicModel:
         text = [token for token in text if token.isalnum()]
         return ' '.join(text)
     
-    def predict_sentiment(self, video_id):
-        df_test = self.data[self.data[self.video_id_col_name]==video_id]
-        results = []
-        for text in df_test[self.comment_col_name].tolist():
-            result = {
-                'comment': text,
-                'prediction': {}
-            }
-            processed_text = self.preprocess_text([text])
-            input_ids = self.sentiment_tokenizer([processed_text], padding=True, truncation=True, max_length=128)
-
-            logits = self.sentiment_model(input_ids)['logits']
-            pred_prob = tf.nn.softmax(logits).numpy()[0]
-            for i, pred in enumerate(pred_prob):
-                result['prediction'][self.label_map[i]]=pred
-            results.append(result)
-        return results
     
     def predict_sentiments(self, data):
         comments_sentiment_resul_percentage = {
@@ -95,23 +78,6 @@ class SentimentTopicModel:
                 pred_class = list(self.label_map.values())[pred]
                 comments_sentiment_result[pred_class]+=1
         return comments_sentiment_result, comments_sentiment_resul_percentage
-    
-    def predict_topic(self, video_id):
-        df_test = self.data[self.data[self.video_id_col_name]==video_id]
-        results = []
-        for text in df_test[self.comment_col_name].tolist():
-            result = {
-                'comment': text,
-                'prediction': {}
-            }
-            
-            processed_text = self.preprocess_text([text])
-            
-            label = self.topic_model(processed_text)
-            for v in label:
-                result['prediction'][v['label']]=v['score']
-            results.append(result)
-        return results
     
     def predict_topics(self, data):
         comments_topic_result_percentage = {

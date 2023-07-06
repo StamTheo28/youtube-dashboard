@@ -11,8 +11,8 @@ def index(request):
         # ADD Make video link validation
         
         video_id = video_parser(url)
-        video_comments = commentsAnalysis(video_id=video_id)
-        data = video_comments['text']
+        data = commentsAnalysis(video_id=video_id)
+        
 
     else:
         data = ['Nothing is here bro']
@@ -20,7 +20,3 @@ def index(request):
 
     return render(request, 'html/index.html', {'data': data})
 
-
-def getNegativeComments(video_link):
-    # Use trained model
-    return ['This is a list with negative commetns']
