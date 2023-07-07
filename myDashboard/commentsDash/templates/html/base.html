@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Comment Analysis</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style1.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style2.css' %}">
+</head>
+
+
+<body>
+	<!-- for header part -->
+	<header>
+		<div class="logosec">
+			<div class="logo">Comment Analysis</div>
+		</div>
+
+        <div class="search-container">
+            <form action="" method="post" class="search-bar">
+                {% csrf_token %}
+                <input type="text" name="video_link" placeholder="Youtube URL" required>
+                <button class="search-button"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+	</header>
+
+    
+
+    <div class="main">
+        <div class="box-container">
+
+            <div class="box box1">
+                <div class="text">
+                    <h2 class="topic-heading">60.5k</h2>
+                    <h2 class="topic">Article Views</h2>
+                </div>
+
+                <img src=
+"https://media.geeksforgeeks.org/wp-content/uploads/20221210184645/Untitled-design-(31).png"
+                    alt="Views">
+            </div>
+
+            <div class="box box2">
+                <div class="text">
+                    <h2 class="topic-heading">150</h2>
+                    <h2 class="topic">Likes</h2>
+                </div>
+
+                <img src=
+"https://media.geeksforgeeks.org/wp-content/uploads/20221210185030/14.png"
+                    alt="likes">
+            </div>
+
+            <div class="box box3">
+                <div class="text">
+                    <h2 class="topic-heading">320</h2>
+                    <h2 class="topic">Comments</h2>
+                </div>
+
+                <img src=
+"https://media.geeksforgeeks.org/wp-content/uploads/20221210184645/Untitled-design-(32).png"
+                    alt="comments">
+            </div>
+
+            <div class="box box4">
+                <div class="text">
+                    <h2 class="topic-heading">70</h2>
+                    <h2 class="topic">Published</h2>
+                </div>
+
+                <img src=
+"https://media.geeksforgeeks.org/wp-content/uploads/20221210185029/13.png" alt="published">
+            </div>
+        </div>
+
+        <div class="report-container">
+            <div class="report-header">
+                <h1 class="recent-Articles">Recent Articles</h1>
+                <button class="view">View All</button>
+            </div>
+
+            <div class="report-body">
+                <div class="report-topic-heading">
+                    <h3 class="t-op">Article</h3>
+                    <h3 class="t-op">Views</h3>
+                    <h3 class="t-op">Comments</h3>
+                    <h3 class="t-op">Status</h3>
+                </div>
+
+                <div class="items">
+                    <div class="item1">
+                        <h3 class="t-op-nextlvl">Article 73</h3>
+                        <h3 class="t-op-nextlvl">2.9k</h3>
+                        <h3 class="t-op-nextlvl">210</h3>
+                        <h3 class="t-op-nextlvl label-tag">Published</h3>
+                    </div>
+
+                    <div class="item1">
+                        <h3 class="t-op-nextlvl">Article 72</h3>
+                        <h3 class="t-op-nextlvl">1.5k</h3>
+                        <h3 class="t-op-nextlvl">360</h3>
+                        <h3 class="t-op-nextlvl label-tag">Published</h3>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script href="{% static 'html/test.js' %}"></script>
+</body>
+
+</html>
