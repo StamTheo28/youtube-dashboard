@@ -238,6 +238,49 @@ background-color: #9e9e9eb2;
 	cursor: pointer;
 }
 
+.table-container {
+	overflow-x: auto;
+  }
+  
+  .responsive-table {
+	width: 100%;
+	border-collapse: collapse;
+  } 
+  
+  .responsive-table th,
+  .responsive-table td {
+	padding: 8px;
+	text-align: left;
+  }
+  
+  .responsive-table th {
+	background-color: #f2f2f2;
+  }
+  
+  @media (max-width: 600px) {
+	.responsive-table th,
+	.responsive-table td {
+	  display: block;
+	  width: 100%;
+	}
+  
+	.responsive-table tbody tr {
+	  margin-bottom: 10px;
+	  border-bottom: 1px solid #ddd;
+	}
+  
+	.responsive-table tbody td::before {
+	  content: attr(data-label);
+	  font-weight: bold;
+	  display: block;
+	  margin-bottom: 5px;
+	}
+  }
+  
+
+
+
+
 .report-body {
 	max-width: 1160px;
 	overflow-x: auto;
@@ -269,10 +312,26 @@ background-color: #9e9e9eb2;
 	font-weight: 600;
 }
 
-.label-tag {
+.label-tag-pos {
 	width: 100px;
 	text-align: center;
 	background-color: rgb(0, 177, 0);
+	color: white;
+	border-radius: 4px;
+}
+
+.label-tag-neg {
+	width: 100px;
+	text-align: center;
+	background-color: rgb(231, 41, 41);
+	color: white;
+	border-radius: 4px;
+}
+
+.label-tag-neu {
+	width: 100px;
+	text-align: center;
+	background-color: rgb(247, 196, 56);
 	color: white;
 	border-radius: 4px;
 }

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Comment Analysis</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style1.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style2.css' %}">
 </head>
 
@@ -35,8 +35,8 @@
 
             <div class="box box1">
                 <div class="text">
-                    <h2 class="topic-heading">60.5k</h2>
-                    <h2 class="topic">Article Views</h2>
+                    <h2 class="topic-heading">{{ meta.viewCount }}</h2>
+                    <h2 class="topic">Views</h2>
                 </div>
 
                 <img src=
@@ -46,7 +46,7 @@
 
             <div class="box box2">
                 <div class="text">
-                    <h2 class="topic-heading">150</h2>
+                    <h2 class="topic-heading">{{ meta.likeCount }}</h2>
                     <h2 class="topic">Likes</h2>
                 </div>
 
@@ -57,8 +57,8 @@
 
             <div class="box box3">
                 <div class="text">
-                    <h2 class="topic-heading">320</h2>
-                    <h2 class="topic">Comments</h2>
+                    <h2 class="topic-heading">{{ meta.commentCount }}</h2>
+                    <h2 class="topic">Number of Comments</h2>
                 </div>
 
                 <img src=
@@ -68,8 +68,8 @@
 
             <div class="box box4">
                 <div class="text">
-                    <h2 class="topic-heading">70</h2>
-                    <h2 class="topic">Published</h2>
+                    <h2 class="topic-heading">{{  meta.favoriteCount }}</h2>
+                    <h2 class="topic">Favorite Count</h2>
                 </div>
 
                 <img src=
@@ -85,27 +85,30 @@
 
             <div class="report-body">
                 <div class="report-topic-heading">
-                    <h3 class="t-op">Article</h3>
-                    <h3 class="t-op">Views</h3>
-                    <h3 class="t-op">Comments</h3>
-                    <h3 class="t-op">Status</h3>
+                    {% for col in columns %}
+                        <h3 class="t-op-nextlvl">{{ col }}</h3>
+                    {% endfor %}
+
                 </div>
 
                 <div class="items">
-                    <div class="item1">
-                        <h3 class="t-op-nextlvl">Article 73</h3>
-                        <h3 class="t-op-nextlvl">2.9k</h3>
-                        <h3 class="t-op-nextlvl">210</h3>
-                        <h3 class="t-op-nextlvl label-tag">Published</h3>
-                    </div>
-
-                    <div class="item1">
-                        <h3 class="t-op-nextlvl">Article 72</h3>
-                        <h3 class="t-op-nextlvl">1.5k</h3>
-                        <h3 class="t-op-nextlvl">360</h3>
-                        <h3 class="t-op-nextlvl label-tag">Published</h3>
-                    </div>
-
+                    
+                        {% for row in comments %}
+                            <div class="item1">
+                                <h3 class="t-op-nextlvl">{{ row.comment_id }}</h3>
+                                <h3 class="t-op-nextlvl">{{ row.comment }}</h3>
+                                <h3 class="t-op-nextlvl">{{ row.like_count }}</h3>
+                                <h3 class="t-op-nextlvl">{{ row.reply_count }}</h3>
+                                
+                                {% if row.type == "positive" %}
+                                    <h3 class="t-op-nextlvl label-tag-pos">{{ row.type }}</h3>
+                                {% elif row.type == "negative" %}
+                                    <h3 class="t-op-nextlvl label-tag-neg">{{ row.type }}</h3>
+                                {% else %}
+                                    <h3 class="t-op-nextlvl label-tag-neu">{{ row.type }}</h3>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
                 </div>
             </div>
         </div>

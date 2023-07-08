@@ -11,12 +11,16 @@ def index(request):
         # ADD Make video link validation
         
         video_id = video_parser(url)
-        data = commentsAnalysis(video_id=video_id)
-        
+        results, meta = commentsAnalysis(video_id=video_id)
+        table_res = results[['comment_id', 'comment', 'like_count','reply_count','type']]
+        columns = ['Comment Id', 'Comment', 'Like Count', 'Reply Count','Type']
+        context = { "columns": columns,'comments': table_res.to_dict('records'), "meta":meta}
+        print(table_res.iloc[0]['type'])
+        print(type(table_res.iloc[0]['type']))
 
     else:
-        data = ['Nothing is here bro']
+        context = {}
 
 
-    return render(request, 'html/index.html', {'data': data})
+    return render(request, 'html/index.html', context)
 

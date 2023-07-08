@@ -7,3 +7,4 @@ torch
 google-api-python-client
 nltk
 python-decouple
+xformers
