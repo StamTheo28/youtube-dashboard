@@ -186,7 +186,7 @@ background-color: #9e9e9eb2;
 }
 
 .searchBox:hover > .searchInput {
-    width: 320px;
+    width: 520px;
     padding: 0 6px;
 }
 
@@ -198,8 +198,8 @@ background-color: #9e9e9eb2;
 .searchButton {
     color: white;
     float: right;
-    width: 70px;
-    height: 70px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: #2f3640;
     display: flex;
@@ -219,10 +219,11 @@ background-color: #9e9e9eb2;
     transition: 0.4s;
     line-height: 40px;
     width: 0px;
-
 }
 
 
+
+/* Video meta data box */
 .box-container {
 	display: flex;
 	justify-content: space-evenly;
