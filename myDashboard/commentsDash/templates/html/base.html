@@ -5,6 +5,7 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Comment Analysis</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
@@ -20,100 +21,26 @@
 		</div>
 
         <div class="search-container">
-            <form action="" method="post" class="search-bar">
+            <form action="" method="post" class="search-bar" autocomplete="off">
                 {% csrf_token %}
-                <input type="text" name="video_link" placeholder="Youtube URL" required>
+                <input autocomplete="false" type="text" name="video_link" placeholder="Youtube URL" required>
                 <button class="search-button"><i class="fa fa-search"></i></button>
             </form>
         </div>
+
+        <div class="github-icon">
+            <a href="https://github.com/StamTheo28/youtube-dashboard">
+              <i class="fa fa-github"></i>
+            </a>
+        </div>
+
 	</header>
 
-    
-
     <div class="main">
-        <div class="box-container">
+        {% block searchBar %}
 
-            <div class="box box1">
-                <div class="text">
-                    <h2 class="topic-heading">{{ meta.viewCount }}</h2>
-                    <h2 class="topic">Views</h2>
-                </div>
-
-                <img src=
-"https://media.geeksforgeeks.org/wp-content/uploads/20221210184645/Untitled-design-(31).png"
-                    alt="Views">
-            </div>
-
-            <div class="box box2">
-                <div class="text">
-                    <h2 class="topic-heading">{{ meta.likeCount }}</h2>
-                    <h2 class="topic">Likes</h2>
-                </div>
-
-                <img src=
-"https://media.geeksforgeeks.org/wp-content/uploads/20221210185030/14.png"
-                    alt="likes">
-            </div>
-
-            <div class="box box3">
-                <div class="text">
-                    <h2 class="topic-heading">{{ meta.commentCount }}</h2>
-                    <h2 class="topic">Number of Comments</h2>
-                </div>
-
-                <img src=
-"https://media.geeksforgeeks.org/wp-content/uploads/20221210184645/Untitled-design-(32).png"
-                    alt="comments">
-            </div>
-
-            <div class="box box4">
-                <div class="text">
-                    <h2 class="topic-heading">{{  meta.favoriteCount }}</h2>
-                    <h2 class="topic">Favorite Count</h2>
-                </div>
-
-                <img src=
-"https://media.geeksforgeeks.org/wp-content/uploads/20221210185029/13.png" alt="published">
-            </div>
-        </div>
-
-        <div class="report-container">
-            <div class="report-header">
-                <h1 class="recent-Articles">Recent Articles</h1>
-                <button class="view">View All</button>
-            </div>
-
-            <div class="report-body">
-                <div class="report-topic-heading">
-                    {% for col in columns %}
-                        <h3 class="t-op-nextlvl">{{ col }}</h3>
-                    {% endfor %}
-
-                </div>
-
-                <div class="items">
-                    
-                        {% for row in comments %}
-                            <div class="item1">
-                                <h3 class="t-op-nextlvl">{{ row.comment_id }}</h3>
-                                <h3 class="t-op-nextlvl">{{ row.comment }}</h3>
-                                <h3 class="t-op-nextlvl">{{ row.like_count }}</h3>
-                                <h3 class="t-op-nextlvl">{{ row.reply_count }}</h3>
-                                
-                                {% if row.type == "positive" %}
-                                    <h3 class="t-op-nextlvl label-tag-pos">{{ row.type }}</h3>
-                                {% elif row.type == "negative" %}
-                                    <h3 class="t-op-nextlvl label-tag-neg">{{ row.type }}</h3>
-                                {% else %}
-                                    <h3 class="t-op-nextlvl label-tag-neu">{{ row.type }}</h3>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                </div>
-            </div>
-        </div>
+        {% endblock searchBar %}
     </div>
-</div>
 
 <script href="{% static 'html/test.js' %}"></script>
 </body>

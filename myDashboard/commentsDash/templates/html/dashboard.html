@@ -1,0 +1,121 @@
+{% extends "html/base.html" %}
+
+{% load static %}
+
+{% block %}
+    
+    <div class="box-container">
+
+        <div class="box box1">
+            <div class="text">
+                <h2 class="topic-heading">{{ meta.viewCount }}</h2>
+                <h2 class="topic">Views</h2>
+            </div>
+
+            <img src=
+"https://media.geeksforgeeks.org/wp-content/uploads/20221210184645/Untitled-design-(31).png"
+                alt="Views">
+        </div>
+
+        <div class="box box2">
+            <div class="text">
+                <h2 class="topic-heading">{{ meta.likeCount }}</h2>
+                <h2 class="topic">Likes</h2>
+            </div>
+
+            <img src=
+"https://media.geeksforgeeks.org/wp-content/uploads/20221210185030/14.png"
+                alt="likes">
+        </div>
+
+        <div class="box box3">
+            <div class="text">
+                <h2 class="topic-heading">{{ meta.commentCount }}</h2>
+                <h2 class="topic">Number of Comments</h2>
+            </div>
+
+            <img src=
+"https://media.geeksforgeeks.org/wp-content/uploads/20221210184645/Untitled-design-(32).png"
+                alt="comments">
+        </div>
+
+        <div class="box box4">
+            <div class="text">
+                <h2 class="topic-heading">{{  meta.favoriteCount }}</h2>
+                <h2 class="topic">Favorite Count</h2>
+            </div>
+
+            <img src=
+"https://media.geeksforgeeks.org/wp-content/uploads/20221210185029/13.png" alt="published">
+        </div>
+    </div>
+
+    <div class="report-container">
+        <div class="report-header">
+            <h1 class="recent-Articles">Youtube Comments</h1>
+            <button class="view">View All</button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        {% for col in columns %}
+                            <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in comments %}
+                        <tr>
+                            <td>{{ row.comment_id }}</td>
+                            <td>{{ row.comment }}</td>
+                            <td>{{ row.like_count }}</td>
+                            <td>{{ row.reply_count }}</td>
+                            <td>
+                                {% if row.type == "positive" %}
+                                    <span class="label-tag-pos">{{ row.type }}</span>
+                                {% elif row.type == "negative" %}
+                                    <span class="label-tag-neg">{{ row.type }}</span>
+                                {% else %}
+                                    <span class="label-tag-neu">{{ row.type }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        
+        <div class="report-body">
+            <div class="report-topic-heading">
+                {% for col in columns %}
+                    <h3 class="t-op-nextlvl">{{ col }}</h3>
+                {% endfor %}
+
+            </div>
+
+            <div class="items">
+                
+                    {% for row in comments %}
+                        <div class="item1">
+                            <h3 class="t-op-nextlvl">{{ row.comment_id }}</h3>
+                            <h3 class="t-op-nextlvl">{{ row.comment }}</h3>
+                            <h3 class="t-op-nextlvl">{{ row.like_count }}</h3>
+                            <h3 class="t-op-nextlvl">{{ row.reply_count }}</h3>
+                            
+                            {% if row.type == "positive" %}
+                                <h3 class="t-op-nextlvl label-tag-pos">{{ row.type }}</h3>
+                            {% elif row.type == "negative" %}
+                                <h3 class="t-op-nextlvl label-tag-neg">{{ row.type }}</h3>
+                            {% else %}
+                                <h3 class="t-op-nextlvl label-tag-neu">{{ row.type }}</h3>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

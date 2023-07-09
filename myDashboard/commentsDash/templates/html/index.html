@@ -1,1 +1,21 @@
 {% extends "html/base.html" %}
+
+{% load static %}
+
+{% block searchBar%}
+
+
+<form autocomplete="off" action="" method="post">
+    {% csrf_token %}
+    <div class="searchBox">
+      <input autocomplete="false" class="searchInput" type="text" name="video_link" placeholder="Youtube URL" required>
+      <button class="searchButton" type="submit">
+        <i class="material-icons">
+          search
+        </i>
+      </button>
+    </div>
+  </form>
+    
+
+{% endblock searchBar %}
