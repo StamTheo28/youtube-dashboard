@@ -37,6 +37,10 @@
 	</header>
 
     <div class="main">
+        {% block loading %}
+
+        {% endblock loading %}
+
         {% block searchBar %}
 
         {% endblock searchBar %}
@@ -48,7 +52,7 @@
 
     </div>
 
-<script href="{% static 'html/test.js' %}"></script>
+<script href="{% static 'js/index.js' %}"></script>
 </body>
 
 </html>

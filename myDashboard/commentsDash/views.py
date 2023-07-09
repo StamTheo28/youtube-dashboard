@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .utils.utils import video_parser
 from .utils.youCom import commentsAnalysis
@@ -25,3 +25,6 @@ def analysis(request, video_id):
     context = { "columns": columns,'comments': table_res.to_dict('records'), "meta":meta}
 
     return render(request, 'html/dashboard.html', context)
+
+
+    

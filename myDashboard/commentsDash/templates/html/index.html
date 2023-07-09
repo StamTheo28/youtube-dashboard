@@ -8,13 +8,21 @@
 <form autocomplete="off" action="" method="post">
     {% csrf_token %}
     <div class="searchBox">
-      <input autocomplete="false" class="searchInput" type="text" name="video_link" placeholder="Youtube URL" required>
+      <input autocomplete="false" class="searchInput" type="text" name="video_link" placeholder="https://www.youtube.com/watch?v=wbAhmGFwZ-g" required>
       <button class="searchButton" type="submit">
         <i class="material-icons">
           search
         </i>
       </button>
     </div>
-  </form>    
+  </form> 
+  
+  <div class="instructions-container">
+    <ol>
+        <li>Move your cursor over the search bar.</li>
+        <li>Enter the URL of your YouTube video.</li>
+        <li>Press enter to initiate analysis and view the results!</li>
+    </ol>
+  </div>
 
 {% endblock searchBar %}
