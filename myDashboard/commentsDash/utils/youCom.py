@@ -5,9 +5,11 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from bs4 import BeautifulSoup
 from .pipeline import SentimentTopicModel
+from .utils import clean_date
 import pandas as pd
 import numpy as np
 import re
+import time
 
 # Remove tags and hashhtags from comments
 def clean(text):
@@ -22,7 +24,8 @@ def clean(text):
 
     return text
 
-def get_most_famous_comments( video_id, max_comments=2):
+# Retrieves the top k most famous comments of a youtube video
+def get_most_famous_comments( video_id, max_comments=20):
     youtube = build('youtube', 'v3', developerKey=API_KEY)
 
     # Retrieve the comment threads for the video
@@ -55,9 +58,10 @@ def get_most_famous_comments( video_id, max_comments=2):
 
     # Extract the video metadata
     meta = {}
+    meta['video_id'] = video_id
     meta['title'] = video['items'][0]['snippet']['title']
     meta['description'] = video['items'][0]['snippet']['description']
-    meta['publishedAt'] = video['items'][0]['snippet']['publishedAt'][::9]
+    meta['publishedAt'] = clean_date(video['items'][0]['snippet']['publishedAt'])
     meta['thumbnail'] = video['items'][0]['snippet']['thumbnails']['medium']['url']
     meta['channelTitle'] = video['items'][0]['snippet']['channelTitle']
     meta['viewCount'] = video['items'][0]['statistics']['viewCount']
@@ -100,9 +104,17 @@ def get_model_results(data):
 # Perform Comments classification 
 def commentsAnalysis(video_id):
         # Retrieve the most famous comments of the video
+        start = time.time()
         comments, meta = get_most_famous_comments(video_id)
+        end = time.time()
+
+        print("Retrieving the top 10 most famous comments took: ", end-start)
+
+        start = time.time()
         results = get_model_results(comments)
-        
+        end = time.time()
+
+        print("Predictions fort he top 10 most famous comments took: ", end-start)
         results_df= pd.DataFrame(results[1])
 
 

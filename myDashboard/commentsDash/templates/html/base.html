@@ -10,6 +10,7 @@
 	<title>Comment Analysis</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style2.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 
@@ -17,7 +18,7 @@
 	<!-- for header part -->
 	<header>
 		<div class="logosec">
-			<div class="logo">Comment Analysis</div>
+			<div><a  class="logo" href="{% url 'index' %}">YouDash</a></div>
 		</div>
 
         <div class="search-container">

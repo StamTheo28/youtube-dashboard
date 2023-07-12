@@ -7,6 +7,7 @@ def video_parser(url):
     return match.group(7) if match and len(match.group(7)) == 11 else "Invalid URL"
 
 
-
+def clean_date(date):
+    return date[:10]
 
 

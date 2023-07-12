@@ -4,7 +4,44 @@
 
 
 {% block dashboard %}
-    
+
+
+<div class="meta-container">
+    <div class="left-div">
+            <img class="profile-picture" src="{{ meta.thumbnail }}" alt="Thumbnail">
+    </div>
+    <div class="right-div">
+        <table>
+            <tr>
+                <th>Video Title:</th>
+                <td>{{ meta.title }}</td>
+            </tr>
+            <tr>
+                <th>Video ID:</th>
+                <td>{{ meta.video_id }}</td>
+            </tr>
+            <tr>
+                <th>Channel Name:</th>
+                <td>{{ meta.channelTitle }}</td>
+            </tr>
+            <tr>
+                <th>Publish Date:</th>
+                <td>{{ meta.publishedAt }}</td>
+            </tr>
+            <tr>
+                <th>Description:</th>
+                <td>
+                <div class="description">
+                    {{ meta.description }}
+                </div>
+                <span class="read-more">Read More</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
     <div class="box-container">
 
         <div class="box box1">
@@ -58,7 +95,7 @@
         </div>
 
         <div class="table-container">
-            <table>
+            <table class="responsive-table">
                 <thead>
                     <tr>
                         {% for col in columns %}
@@ -67,10 +104,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for row in comments %}
+                    {% for row in page_obj  %}
                         <tr>
                             <td>{{ row.comment_id }}</td>
-                            <td>{{ row.comment }}</td>
+                            <td>
+                                <div id="description2" class="description">
+                                     {{ row.comment }} 
+                                </div>
+                                <span class="read-more" >Read More</span>
+                            </td>
                             <td>{{ row.like_count }}</td>
                             <td>{{ row.reply_count }}</td>
                             <td>
@@ -85,39 +127,87 @@
                         </tr>
                     {% endfor %}
                 </tbody>
+
+                <div class="pagination">
+                    <button id="previous-button" disabled>Previous</button>
+                    <span class="current-page">{{ page.number }}</span>
+                    <button id="next-button" {% if not page.has_next %}disabled{% endif %}>Next</button>
+                </div>
             </table>
-        </div>
-        
-        
-        <div class="report-body">
-            <div class="report-topic-heading">
-                {% for col in columns %}
-                    <h3 class="t-op-nextlvl">{{ col }}</h3>
-                {% endfor %}
-
-            </div>
-
-            <div class="items">
-                
-                    {% for row in comments %}
-                        <div class="item1">
-                            <h3 class="t-op-nextlvl">{{ row.comment_id }}</h3>
-                            <h3 class="t-op-nextlvl">{{ row.comment }}</h3>
-                            <h3 class="t-op-nextlvl">{{ row.like_count }}</h3>
-                            <h3 class="t-op-nextlvl">{{ row.reply_count }}</h3>
-                            
-                            {% if row.type == "positive" %}
-                                <h3 class="t-op-nextlvl label-tag-pos">{{ row.type }}</h3>
-                            {% elif row.type == "negative" %}
-                                <h3 class="t-op-nextlvl label-tag-neg">{{ row.type }}</h3>
-                            {% else %}
-                                <h3 class="t-op-nextlvl label-tag-neu">{{ row.type }}</h3>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-            </div>
         </div>
     </div>
 
-    <script src="js/loading.js"></script>
+    <script>
+    var readMoreButtons = document.querySelectorAll('.read-more');
+
+    readMoreButtons.forEach(function(button) {
+    button.style.display = 'inline';
+    button.addEventListener('click', function() {
+        var description = this.previousElementSibling;
+        description.classList.toggle('expanded');
+        this.textContent = description.classList.contains('expanded') ? 'Read Less' : 'Read More';
+    });
+    });
+
+
+    // Pagination method
+    $(document).ready(function() {
+    var currentPage = 1;
+
+    function loadPage(pageNumber) {
+        var url = window.location.href;
+        var queryParams = '?page=' + pageNumber;
+        var fullUrl = url + queryParams;
+
+        $.ajax({
+        url: fullUrl,
+        success: function(data) {
+            $('#result-container').html($(data).find('#result-container').html());
+            currentPage = pageNumber;
+            updateButtonStatus();
+        },
+        error: function(xhr, status, error) {
+            // Handle error
+        }
+        });
+    }
+
+    function updateButtonStatus() {
+        $('#previous-button').prop('disabled', !$('.pagination-link[data-page="' + (currentPage - 1) + '"]').length);
+        $('#next-button').prop('disabled', !$('.pagination-link[data-page="' + (currentPage + 1) + '"]').length);
+    }
+
+    // Initial page load
+    loadPage(currentPage);
+
+    // Handle pagination click event
+    $(document).on('click', '.pagination-link', function(e) {
+        e.preventDefault();
+        var page = $(this).data('page');
+        if (page !== currentPage) {
+        loadPage(page);
+        }
+    });
+
+    // Handle previous button click event
+    $(document).on('click', '#previous-button', function(e) {
+        e.preventDefault();
+        var page = currentPage - 1;
+        if (page >= 1 && page !== currentPage) {
+        loadPage(page);
+        }
+    });
+
+    // Handle next button click event
+    $(document).on('click', '#next-button', function(e) {
+        e.preventDefault();
+        var page = currentPage + 1;
+        if (page !== currentPage) {
+        loadPage(page);
+        }
+    });
+    });
+
+
+    </script>
 {% endblock dashboard %}
