@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from .utils.utils import video_parser
 from .utils.youCom import commentsAnalysis
 from django.core.paginator import Paginator
-
+from django.core.cache import cache
 
 def index(request):
 
@@ -19,7 +19,15 @@ def index(request):
 
 # Comment analysis view
 def analysis(request, video_id):
-    results, meta = commentsAnalysis(video_id=video_id)
+
+    cached_results = cache.get(video_id)
+    if cached_results is not None:
+        results, meta = cached_results
+    else:
+        # If not cached, perform analysis and cache the results
+        results, meta = commentsAnalysis(video_id=video_id)
+        cache.set(video_id, (results, meta))
+
     table_res = results[['comment_id', 'comment', 'like_count','reply_count','type']]
 
     # Create a paginator object, handle page request on front-end
@@ -28,8 +36,6 @@ def analysis(request, video_id):
     page_obj = paginator.get_page(page_number)
     columns = ['Comment Id', 'Comment', 'Like Count', 'Reply Count','Type']
     context = { "columns": columns,'comments': table_res.to_dict('records'), "meta":meta, "page_obj":page_obj}
-    print(meta.keys())
-    print(meta['thumbnail'])
 
     return render(request, 'html/dashboard.html', context)
 

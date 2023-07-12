@@ -91,7 +91,24 @@
     <div class="report-container">
         <div class="report-header">
             <h1 class="recent-Articles">Youtube Comments</h1>
-            <button class="view">View All</button>
+            <div class="pagination">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                    {% endif %}
+            
+                    <span class="current">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                    </span>
+            
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+
         </div>
 
         <div class="table-container">
@@ -126,13 +143,7 @@
                             </td>
                         </tr>
                     {% endfor %}
-                </tbody>
-
-                <div class="pagination">
-                    <button id="previous-button" disabled>Previous</button>
-                    <span class="current-page">{{ page.number }}</span>
-                    <button id="next-button" {% if not page.has_next %}disabled{% endif %}>Next</button>
-                </div>
+                </tbody> 
             </table>
         </div>
     </div>
@@ -151,63 +162,5 @@
 
 
     // Pagination method
-    $(document).ready(function() {
-    var currentPage = 1;
-
-    function loadPage(pageNumber) {
-        var url = window.location.href;
-        var queryParams = '?page=' + pageNumber;
-        var fullUrl = url + queryParams;
-
-        $.ajax({
-        url: fullUrl,
-        success: function(data) {
-            $('#result-container').html($(data).find('#result-container').html());
-            currentPage = pageNumber;
-            updateButtonStatus();
-        },
-        error: function(xhr, status, error) {
-            // Handle error
-        }
-        });
-    }
-
-    function updateButtonStatus() {
-        $('#previous-button').prop('disabled', !$('.pagination-link[data-page="' + (currentPage - 1) + '"]').length);
-        $('#next-button').prop('disabled', !$('.pagination-link[data-page="' + (currentPage + 1) + '"]').length);
-    }
-
-    // Initial page load
-    loadPage(currentPage);
-
-    // Handle pagination click event
-    $(document).on('click', '.pagination-link', function(e) {
-        e.preventDefault();
-        var page = $(this).data('page');
-        if (page !== currentPage) {
-        loadPage(page);
-        }
-    });
-
-    // Handle previous button click event
-    $(document).on('click', '#previous-button', function(e) {
-        e.preventDefault();
-        var page = currentPage - 1;
-        if (page >= 1 && page !== currentPage) {
-        loadPage(page);
-        }
-    });
-
-    // Handle next button click event
-    $(document).on('click', '#next-button', function(e) {
-        e.preventDefault();
-        var page = currentPage + 1;
-        if (page !== currentPage) {
-        loadPage(page);
-        }
-    });
-    });
-
-
     </script>
 {% endblock dashboard %}
