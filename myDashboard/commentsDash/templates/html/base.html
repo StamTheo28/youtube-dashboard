@@ -22,7 +22,7 @@
 		</div>
 
         <div class="search-container">
-            <form action="" method="post" class="search-bar" autocomplete="off">
+            <form action="{% url 'index' %}" method="post" class="search-bar" autocomplete="off">
                 {% csrf_token %}
                 <input autocomplete="false" type="text" name="video_link" placeholder="Youtube URL" required>
                 <button class="search-button"><i class="fa fa-search"></i></button>
