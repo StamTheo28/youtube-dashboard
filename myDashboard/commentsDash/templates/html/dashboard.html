@@ -2,6 +2,17 @@
 
 {% load static %}
 
+{% block header-search %}
+
+    <div class="search-container">
+        <form action="{% url 'index' %}" method="post" class="search-bar" autocomplete="off">
+            {% csrf_token %}
+            <input autocomplete="false" type="text" name="video_link" placeholder="Youtube URL" required>
+            <button class="search-button"><i class="fa fa-search"></i></button>
+        </form>
+    </div>
+
+{% endblock header-search %}
 
 {% block dashboard %}
 
@@ -34,7 +45,9 @@
                 <div class="description">
                     {{ meta.description }}
                 </div>
-                <span class="read-more">Read More</span>
+                {% if meta.description|length >= 10 %}
+                    <span class="read-more">Read More</span>
+                {% endif %}
                 </td>
             </tr>
         </table>
@@ -90,23 +103,6 @@
     <div class="report-container">
         <div class="report-header">
             <h1 class="recent-Articles">Youtube Comments</h1>
-            <div class="pagination">
-                <span class="step-links">
-                    {% if page_obj.has_previous %}
-                        <a href="?page=1">&laquo; first</a>
-                        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-                    {% endif %}
-            
-                    <span class="current">
-                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                    </span>
-            
-                    {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}">next</a>
-                        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-                    {% endif %}
-                </span>
-            </div>
 
         </div>
 
@@ -123,12 +119,6 @@
                     {% for row in page_obj  %}
                         <tr>
                             <td>{{ row.comment_id }}</td>
-                            <td>
-                                <div id="description2" class="description">
-                                     {{ row.comment }} 
-                                </div>
-                                <span class="read-more" >Read More</span>
-                            </td>
                             <td>{{ row.like_count }}</td>
                             <td>{{ row.reply_count }}</td>
                             <td>
@@ -140,14 +130,38 @@
                                     <span class="label-tag-neu">{{ row.type }}</span>
                                 {% endif %}
                             </td>
+                            <td>
+                                <div id="description2" class="description">
+                                    {{ row.comment }} 
+                                </div>
+                                <span class="read-more" >Read More</span>
+                            
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody> 
             </table>
+            <div class="pagination">
+                <span class="step-links">
+                  {% if page_obj.has_previous %}
+                    <a class="view" href="?page=1"> First</a>
+                    <a class="view" href="?page={{ page_obj.previous_page_number }}">Prev.</a>
+                  {% endif %}
+              
+                  <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                  </span>
+              
+                  {% if page_obj.has_next %}
+                    <a class="view" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    <a class="view" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                  {% endif %}
+                </span>
+              </div>
         </div>
     </div>
 
-    <script>
+<script>
     var readMoreButtons = document.querySelectorAll('.read-more');
 
     readMoreButtons.forEach(function(button) {
@@ -159,7 +173,13 @@
     });
     });
 
-
-    // Pagination method
-    </script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var closeButton = document.getElementById('close');
+      var errorPopup = document.getElementById('error-popup');
+  
+      closeButton.addEventListener('click', function() {
+          errorPopup.style.display = 'none';
+      });
+      });
+</script>
 {% endblock dashboard %}

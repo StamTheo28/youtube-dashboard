@@ -2,6 +2,14 @@
 
 {% load static %}
 
+
+{% block header-search %}
+  <div>
+    <h1 class="header-title">Welcome to YouDash</h1>
+  </div>
+
+{% endblock header-search %}
+
 {% block searchBar%}
 
 
@@ -24,5 +32,17 @@
         <li>Press enter to initiate analysis and view the results!</li>
     </ol>
   </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var closeButton = document.getElementById('close');
+      var errorPopup = document.getElementById('error-popup');
+  
+      closeButton.addEventListener('click', function() {
+          errorPopup.style.display = 'none';
+      });
+      });
+</script>
+
 
 {% endblock searchBar %}

@@ -6,6 +6,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Comment Analysis</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
@@ -20,14 +21,9 @@
 		<div class="logosec">
 			<div><a  class="logo" href="{% url 'index' %}">YouDash</a></div>
 		</div>
+        {% block header-search %}
 
-        <div class="search-container">
-            <form action="{% url 'index' %}" method="post" class="search-bar" autocomplete="off">
-                {% csrf_token %}
-                <input autocomplete="false" type="text" name="video_link" placeholder="Youtube URL" required>
-                <button class="search-button"><i class="fa fa-search"></i></button>
-            </form>
-        </div>
+        {% endblock header-search %}
 
         <div class="github-icon">
             <a href="https://github.com/StamTheo28/youtube-dashboard">
@@ -38,6 +34,25 @@
 	</header>
 
     <div class="main">
+        {% if messages %}
+        <div id="error-popup" class="overlay">
+            <div class="popup">
+                <ul class="messages">
+                {% for message in messages %}
+                    <ul{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    <div class="error-message">
+                        {{ message }}
+                    </div>
+                    </ul>
+                {% endfor %}
+                </ul>
+                <button class="close-button" id="close">
+                <span class="close-icon"></span>
+                </button>
+            </div>
+        </div>
+        {% endif %}
+
         {% block loading %}
 
         {% endblock loading %}
@@ -52,8 +67,6 @@
 
 
     </div>
-
-<script href="{% static 'js/index.js' %}"></script>
 </body>
 
 </html>

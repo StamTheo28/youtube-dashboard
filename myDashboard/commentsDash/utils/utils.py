@@ -1,10 +1,14 @@
 from django.core.cache import cache
 import re
+import requests
 
-def video_parser(url):
+
+
+# Check if the url is valid and is of the Youtube format
+def url_parser(url):
     regex = r"^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*"
     match = re.match(regex, url)
-    return match.group(7) if match and len(match.group(7)) == 11 else "Invalid URL"
+    return match.group(7) if match and len(match.group(7)) == 11 else False
 
 
 def clean_date(date):
