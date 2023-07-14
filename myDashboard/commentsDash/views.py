@@ -5,13 +5,13 @@ from .utils.youCom import commentsAnalysis
 from django.core.paginator import Paginator
 from django.core.cache import cache
 from django.contrib import messages
+import json
 
 
 def index(request):
     if request.method == "POST":
         url = request.POST.get('video_link')
         video_id = url_parser(url)
-        print(video_id)
         # Display message if url is invalid
         if video_id==False:
             messages.error(request, 'Invalid URL. Please provide a valid YouTube video URL.')
@@ -34,17 +34,16 @@ def analysis(request, video_id):
     cached_results = cache.get(video_id)
     
     if cached_results is not None:
-        results, meta = cached_results
+        results, meta, percentages = cached_results
     else:
-
-        # Delete existing ids
         existing_ids = get_all_video_ids_in_cache()
+        # Delete existing ids
         if len(existing_ids)==1:
             cache.delete(existing_ids[0])
 
         # If not cached, perform analysis and cache the results
-        results, meta = commentsAnalysis(video_id=video_id)
-        cache.set(video_id, (results, meta))
+        results, meta, percentages  = commentsAnalysis(video_id=video_id)
+        cache.set(video_id, (results, meta, percentages))
 
     table_res = results[['comment_id', 'like_count','reply_count','type', 'comment']]
     
@@ -52,9 +51,15 @@ def analysis(request, video_id):
     paginator = Paginator(table_res.to_dict('records'), 15)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
-    columns = ['Comment Id', 'Like Count', 'Reply Count','Type', 'Comment']
-    context = { "video_id":video_id, "columns": columns,'comments': table_res.to_dict('records'), "meta":meta, "page_obj":page_obj}
 
+    # Create graph formats
+    sentiment = ''
+    sentiment = json.dumps(percentages[0])
+    print(sentiment)
+   
+    columns = ['Comment Id', 'Like Count', 'Reply Count','Type', 'Comment']
+    context = { "video_id":video_id, "columns": columns,'comments': table_res.to_dict('records'), "meta":meta, "page_obj":page_obj, 'sentiment':sentiment}
+    
     return render(request, 'html/dashboard.html', context)
 
 

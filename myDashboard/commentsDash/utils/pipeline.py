@@ -1,19 +1,13 @@
-import pandas as pd
+
 import numpy as np
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
-
-from langdetect import detect
 import re
-import matplotlib.pyplot as plt
-import seaborn as sns
-import torch
 import emoji
-from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from transformers import BertTokenizer, TFBertForSequenceClassification
 from transformers import pipeline
-from tqdm import tqdm
+
 
 import warnings
 warnings.filterwarnings("ignore")

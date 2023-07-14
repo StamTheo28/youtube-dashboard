@@ -88,6 +88,13 @@ def get_most_famous_comments( video_id, max_comments=20):
     
     return comments_df, meta
 
+def get_sentiment_percentages(sentiments):
+    total = sum(sentiments.values())
+    for key, val in sentiments.items():
+        sentiments[key] = round(val/total * 100, 2)
+    return sentiments
+
+
 def get_model_results(data):
     pine = SentimentTopicModel(data,
                            sentiment_model_path='D:\youtube-dashboard\youtube-dashboard\model\comment',
@@ -95,10 +102,10 @@ def get_model_results(data):
                            num_labels=3)
 
     sentiments, sentiment_prob = pine.predict_sentiments(data)
-    sent_df = pd.DataFrame(sentiment_prob)
 
-    sent_df = sent_df[['negative','neutral','positive']].apply(pd.to_numeric)
-    return sentiments, sentiment_prob
+    topic, topic_prob = pine.predict_topics(data)
+
+    return sentiments, sentiment_prob, topic, topic_prob
 
 
 # Perform Comments classification 
@@ -114,6 +121,8 @@ def commentsAnalysis(video_id):
         results = get_model_results(comments)
         end = time.time()
 
+        sentimentPerc = get_sentiment_percentages(results[0])
+
         print("Predictions fort he top 10 most famous comments took: ", end-start)
         results_df= pd.DataFrame(results[1])
 
@@ -128,4 +137,7 @@ def commentsAnalysis(video_id):
 
        
         print(df.head(2))
-        return df, meta
+        return df, meta, [sentimentPerc]
+
+def comments_topic_analysis():
+    return

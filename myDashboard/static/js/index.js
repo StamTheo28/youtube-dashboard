@@ -20,3 +20,4 @@ function toggleViewMore() {
 	  btn.textContent = 'View Less';
 	}
   }
+

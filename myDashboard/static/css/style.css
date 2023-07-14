@@ -568,71 +568,71 @@ box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 	  }
   }
 
-
-
 /* Video metadata stats box */
+
+
 .box-container {
-	display: flex;
-	justify-content: space-evenly;
-	align-items: center;
-	flex-wrap: wrap;
-	gap: 0px;
-	margin-top: 30px;
-	margin-bottom: -30px;
-	
+	width: 700px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap:wrap;
+    gap: 15px;
+    margin-top: 30px;
+    margin-bottom: -30px;
 }
 
 .box {
-	height: 130px;
-	width: 230px;
-	border-radius: 20px;
-	box-shadow: 3px 3px 10px rgba(0, 30, 87, 0.751);
-	padding: 10px;
-	display: flex;
-	align-items: center;
-	justify-content: space-around;
-	cursor: pointer;
-	transition: transform 0.3s ease-in-out;
-}
-.box:hover {
-	transform: scale(1.08);
+    height: 130px;
+    width: 230px;
+    border-radius: 20px;
+    box-shadow: 3px 3px 10px rgba(0, 30, 87, 0.751);
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
 }
 
-.box:nth-child(1) {
-	background-color: var(--one-use-color);
+.box:hover {
+    transform: scale(1.08);
 }
+
+.box:nth-child(1),
 .box:nth-child(2) {
-	background-color: var(--two-use-color);
+    background-color: var(--one-use-color);
 }
-.box:nth-child(3) {
-	background-color: var(--one-use-color);
-}
+
+.box:nth-child(3),
 .box:nth-child(4) {
-	background-color: var(--two-use-color);
+    background-color: var(--two-use-color);
+}
+
+.box:nth-child(3),
+.box:nth-child(4) {
+    margin-top: 15px;
 }
 
 .box img {
-	height: 50px;
+    height: 50px;
 }
+
 .box .text {
-	color: white;
+    color: white;
 }
+
 .topic {
-	font-size: 13px;
-	font-weight: 400;
-	letter-spacing: 1px;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 1px;
 }
 
 .topic-heading {
-	font-size: 30px;
-	letter-spacing: 3px;
+    font-size: 30px;
+    letter-spacing: 3px;
 }
 
-@media (max-width: 910px) {
-	.box-container {
-		gap: 15px;
-	}
-  }
 
 /* Comments Section */
 .report-container {
@@ -654,25 +654,11 @@ box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 	border-bottom: 2px solid rgba(0, 20, 151, 0.59);
 }
 
-/* Delete */
 .recent-Articles {
 	font-size: 30px;
 	font-weight: 600;
 	color: #5500cb;
 }
-
-/* Delete */
-.view {
-	height: 35px;
-	width: 90px;
-	border-radius: 8px;
-	background-color: #5500cb;
-	color: white;
-	font-size: 15px;
-	border: none;
-	cursor: pointer;
-}
-
 
 /* Comments Table */
 .table-container {
@@ -705,7 +691,7 @@ box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   td {
     padding-right: 15px;
 	font-size: 12px;
-}
+   }
 
 
   @media (max-width: 600px) {
