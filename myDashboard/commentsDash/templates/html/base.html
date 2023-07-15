@@ -11,6 +11,7 @@
 	<title>Comment Analysis</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style2.css' %}">
+    <link rel="shortcut icon" href="{% static 'img/logo/favicon.png' %}" type="image/x-icon">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 </head>
@@ -20,7 +21,7 @@
 	<!-- for header part -->
 	<header>
 		<div class="logosec">
-			<div><a  class="logo" href="{% url 'index' %}">YouDash</a></div>
+			<a href="{% url 'index' %}"><img class="logo" src="{% static 'img/logo/logo.png' %}"  alt="Logo"></a>
 		</div>
         {% block header-search %}
 

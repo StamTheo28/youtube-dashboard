@@ -79,8 +79,11 @@ def get_most_famous_comments( video_id, max_comments=20):
             ).execute()
 
             # Clean the text comment by removing html tags and hashtags
-            text = full_comment['items'][0]['snippet']['textDisplay']
-            comment['comment'] = clean(text)
+            try:
+                text = clean(full_comment['items'][0]['snippet']['textDisplay'])
+            except:
+                text = False
+            comment['comment'] = text
             comments_list.append(comment)
         except Exception as e:
             print(f"An error occurred while retrieving comment {comment_id}: {e}")
@@ -135,9 +138,9 @@ def commentsAnalysis(video_id):
         df = pd.concat([comments, results_df], axis=1)
         df = df.loc[:, ~df.columns.duplicated()]
 
-       
-        print(df.head(2))
-        return df, meta, [sentimentPerc]
+        topic_df = pd.DataFrame(results[3])
+        print(results[2])
+        return df, meta, [sentimentPerc, topic_df]
 
 def comments_topic_analysis():
     return

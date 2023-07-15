@@ -55,7 +55,6 @@ def analysis(request, video_id):
     # Create graph formats
     sentiment = ''
     sentiment = json.dumps(percentages[0])
-    print(sentiment)
    
     columns = ['Comment Id', 'Like Count', 'Reply Count','Type', 'Comment']
     context = { "video_id":video_id, "columns": columns,'comments': table_res.to_dict('records'), "meta":meta, "page_obj":page_obj, 'sentiment':sentiment}
