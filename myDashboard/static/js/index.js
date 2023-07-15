@@ -1,23 +1,8 @@
-let menuicn = document.querySelector(".menuicn");
-let nav = document.querySelector(".navcontainer");
+document.addEventListener('DOMContentLoaded', function() {
+	var closeButton = document.getElementById('close');
+	var errorPopup = document.getElementById('error-popup');
 
-menuicn.addEventListener("click", () => {
-	nav.classList.toggle("navclose");
-})
-
-alert("Hello world")
-
-
-function toggleViewMore() {
-	var paragraph = document.getElementById('paragraph');
-	var btn = document.getElementById('viewMoreBtn');
-	
-	if (paragraph.classList.contains('show')) {
-	  paragraph.classList.remove('show');
-	  btn.textContent = 'View More';
-	} else {
-	  paragraph.classList.add('show');
-	  btn.textContent = 'View Less';
-	}
-  }
-
+	closeButton.addEventListener('click', function() {
+		errorPopup.style.display = 'none';
+	});
+	});
