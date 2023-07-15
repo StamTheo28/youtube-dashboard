@@ -98,11 +98,13 @@ class SentimentTopicModel:
         data[self.comment_col_name] = data[self.comment_col_name].apply(self.preprocess_text)
         for text in data[self.comment_col_name]:
             try:
-                preds = self.topic_model(text)
+                preds = self.topic_model(text)[0]
                 score = []
                 for v in preds:
                     score.append(v['score'])
+                    print(comments_topic_result_percentage[v['label']])
                     comments_topic_result_percentage[v['label']].append(v['score'])
+                    
                 comments_topic_result[list(comments_topic_result)[np.argmax(score)]] +=1
             except:
                 for key in comments_topic_result_percentage.keys():
