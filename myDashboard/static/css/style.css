@@ -292,7 +292,7 @@ header {
 	top: 40px;
 	height: calc(100vh - 70px);
 	position: relative;
-	width: 100%;
+	width:100%;
 	overflow-y: scroll;
 	overflow-x: hidden;
 	padding: 40px 30px 30px 30px;
@@ -569,22 +569,42 @@ box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
 
 /* Video metadata stats box */
-
-
-.box-container {
-	width: 700px;
+.stat-container {
+    min-height: 300px;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
-    flex-wrap:wrap;
-    gap: 15px;
-    margin-top: 30px;
-    margin-bottom: -30px;
 }
 
+.box-container {
+    height: 40vh;
+    width: 30vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin: 15px;
+}
+
+.chart-container {
+    position: relative;
+    height: 40vh;
+    width: 30vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 3px 3px 10px rgb(188, 188, 188);
+    padding: 5px;
+}
+
+
 .box {
-    height: 130px;
-    width: 230px;
+    max-height: 115px;
+    width: 200px;
     border-radius: 20px;
     box-shadow: 3px 3px 10px rgba(0, 30, 87, 0.751);
     padding: 10px;
@@ -634,9 +654,11 @@ box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 
+
+
 /* Comments Section */
 .report-container {
-	min-height: 300px;
+	min-height: 400px;
 	max-width: 1200px;
 	margin: 50px auto 0px auto;
 	background-color: #ffffff;
@@ -659,6 +681,18 @@ box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 	font-weight: 600;
 	color: #5500cb;
 }
+
+.view {
+	height: 35px;
+	width: 90px;
+	border-radius: 8px;
+	background-color: #5500cb;
+	color: white;
+	font-size: 15px;
+	border: none;
+	cursor: pointer;
+}
+
 
 /* Comments Table */
 .table-container {

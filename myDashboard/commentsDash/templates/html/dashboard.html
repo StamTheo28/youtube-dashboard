@@ -55,53 +55,49 @@
 </div>
 
 
-
-<div class="box-container">
-    <div class="box box1">
-        <div class="text">
-            <h2 class="topic-heading">{{ meta.viewCount }}</h2>
-            <h2 class="topic">Views</h2>
+<div class="stat-container">
+    <div class="box-container">
+        <div class="box box1">
+            <div class="text">
+                <h2 class="topic-heading">{{ meta.viewCount }}</h2>
+                <h2 class="topic">Views</h2>
+            </div>
+            <img src= "{% static 'img/icons/views.png' %}" alt="views">
         </div>
 
-        <img src=
-    "https://media.geeksforgeeks.org/wp-content/uploads/20221210184645/Untitled-design-(31).png"
-            alt="Views">
-    </div>
+        <div class="box box2">
+            <div class="text">
+                <h2 class="topic-heading">{{ meta.commentCount }}</h2>
+                <h2 class="topic">Number of Comments</h2>
+            </div>
 
-    <div class="box box2">
-        <div class="text">
-            <h2 class="topic-heading">{{ meta.likeCount }}</h2>
-            <h2 class="topic">Likes</h2>
+            <img src= "{% static 'img/icons/comments.png' %}" alt="comments">
         </div>
 
-        <img src=
-    "https://media.geeksforgeeks.org/wp-content/uploads/20221210185030/14.png"
-            alt="likes">
-    </div>
-
-    <div class="box box3">
-        <div class="text">
-            <h2 class="topic-heading">{{ meta.commentCount }}</h2>
-            <h2 class="topic">Number of Comments</h2>
+        <div class="box box3">
+            <div class="text">
+                <h2 class="topic-heading">{{ meta.likeCount }}</h2>
+                <h2 class="topic">Likes</h2>
+            </div>
+            
+            <img src= "{% static 'img/icons/like.png' %}" alt="likes">
         </div>
 
-        <img src=
-    "https://media.geeksforgeeks.org/wp-content/uploads/20221210184645/Untitled-design-(32).png"
-            alt="comments">
-    </div>
+        <div class="box box4">
+            <div class="text">
+                <h2 class="topic-heading">{{  meta.favoriteCount }}</h2>
+                <h2 class="topic">Favorite Count</h2>
+            </div>
 
-    <div class="box box4">
-        <div class="text">
-            <h2 class="topic-heading">{{  meta.favoriteCount }}</h2>
-            <h2 class="topic">Favorite Count</h2>
+            
+            <img src="{% static 'img/icons/published.png' %}" alt="published">
+        </div>
+    </div> 
+        <div class="chart-container">
+            <canvas id="pieChart"></canvas>
         </div>
 
-        <img src=
-    "https://media.geeksforgeeks.org/wp-content/uploads/20221210185029/13.png" alt="published">
-    </div>
 </div>
-
-
 <div class="report-container">
     <div class="report-header">
         <h1 class="recent-Articles">Youtube Comments</h1>
@@ -163,9 +159,7 @@
     </div>
 </div>
 <!-- Your HTML code -->
-<div>
-    <canvas id="pieChart"></canvas>
-</div>
+
     
 
 
@@ -214,14 +208,22 @@
                     data: data,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.6)',
-                        'rgba(54, 162, 235, 0.6)',
                         'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        
                     ]
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                title: {
+                    display: true,
+                    text: 'Percentage of Comment Type',
+                    fontSize: 18,
+                    fontColor: '#000000',
+                    fontStyle: 'bold'
+                }
             }
         });
     });
