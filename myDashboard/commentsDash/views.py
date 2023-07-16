@@ -55,9 +55,18 @@ def analysis(request, video_id):
     # Create graph formats
     sentiment = ''
     sentiment = json.dumps(percentages[0])
+    topics_results = json.dumps(percentages[1].to_dict())
+    sorted_topics = percentages[2]
+    topics_percentages = json.dumps(percentages[3])
    
     columns = ['Id','Comment Id', 'Like Count', 'Reply Count','Type', 'Comment']
-    context = { "video_id":video_id, "columns": columns,'comments': table_res.to_dict('records'), "meta":meta, "page_obj":page_obj, 'sentiment':sentiment}
+    context = { "video_id":video_id, 
+               "columns": columns,
+               'comments': table_res.to_dict('records'),
+                "meta":meta, "page_obj":page_obj,
+                'sentiment':sentiment,
+
+                   }
     
     return render(request, 'html/dashboard.html', context)
 

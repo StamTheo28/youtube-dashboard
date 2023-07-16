@@ -110,7 +110,7 @@ def rank_emotion_topics(df):
     for column in emotion_columns:
         ranked_df = df[['index','comment', column]].sort_values(by=column, ascending=False).reset_index(drop=True)
         
-        ranked_dataframes.append(ranked_df)
+        ranked_dataframes.append(ranked_df.to_dict())
     
     return ranked_dataframes
 
@@ -150,7 +150,10 @@ def commentsAnalysis(video_id):
 
         comments_df = pd.concat([comments, results_df], axis=1)
         comments_df = comments_df.loc[:, ~comments_df.columns.duplicated()]
+        comments_df = pd.concat([comments, results_df], axis=1)
+        comments_df = comments_df.loc[:, ~comments_df.columns.duplicated()]
         comments_df['index'] = comments_df.index
+
 
         topic_df = pd.DataFrame(results[3])
         sorted_topic_categories = rank_emotion_topics(topic_df)
