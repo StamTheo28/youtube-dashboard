@@ -116,6 +116,7 @@
             <tbody>
                 {% for row in page_obj  %}
                     <tr>
+                        <td>{{ row.index }}</td>
                         <td>{{ row.comment_id }}</td>
                         <td>{{ row.like_count }}</td>
                         <td>{{ row.reply_count }}</td>

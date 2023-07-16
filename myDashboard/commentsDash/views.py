@@ -45,7 +45,7 @@ def analysis(request, video_id):
         results, meta, percentages  = commentsAnalysis(video_id=video_id)
         cache.set(video_id, (results, meta, percentages))
 
-    table_res = results[['comment_id', 'like_count','reply_count','type', 'comment']]
+    table_res = results[['index','comment_id', 'like_count','reply_count','type', 'comment']]
     
     # Create a paginator object, handle page request on front-end
     paginator = Paginator(table_res.to_dict('records'), 15)
@@ -56,7 +56,7 @@ def analysis(request, video_id):
     sentiment = ''
     sentiment = json.dumps(percentages[0])
    
-    columns = ['Comment Id', 'Like Count', 'Reply Count','Type', 'Comment']
+    columns = ['Id','Comment Id', 'Like Count', 'Reply Count','Type', 'Comment']
     context = { "video_id":video_id, "columns": columns,'comments': table_res.to_dict('records'), "meta":meta, "page_obj":page_obj, 'sentiment':sentiment}
     
     return render(request, 'html/dashboard.html', context)

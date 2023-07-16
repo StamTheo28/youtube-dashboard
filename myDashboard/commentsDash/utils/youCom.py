@@ -97,17 +97,22 @@ def get_sentiment_percentages(sentiments):
         sentiments[key] = round(val/total * 100, 2)
     return sentiments
 
-def get_topic_percentages(topics):
+def get_emotion_topics_percentages(topics_dict):
+    total = sum(topics_dict.values())
+    for key, val in topics_dict.items():
+        topics_dict[key] = str(round(val/total * 100, 2)) + '%'
+    return topics_dict
+
+def rank_emotion_topics(df):
+    emotion_columns = df.columns[1:]  
+    ranked_dataframes = []
+    df['index'] = df.index
+    for column in emotion_columns:
+        ranked_df = df[['index','comment', column]].sort_values(by=column, ascending=False).reset_index(drop=True)
         
-    comparison_columns = ["joy", "disgust", "fear", "neutral", "sadness", "surprise"]
-    result = pd.DataFrame()
-
-    for column in comparison_columns:
-        query = topics[column] > topics[comparison_columns].max(axis=1)
-        filtered_rows = topics[query].sort_values(column, ascending=False)[['comment', column]]
-        result = result.append(filtered_rows[:5])
-
-    result = result.drop_duplicates()
+        ranked_dataframes.append(ranked_df)
+    
+    return ranked_dataframes
 
 
 def get_model_results(data):
@@ -125,12 +130,12 @@ def get_model_results(data):
 
 # Perform Comments classification 
 def commentsAnalysis(video_id):
-        # Retrieve the most famous comments of the video
+        # Retrieve the most famous comments of the video, using YouTube API
         start = time.time()
-        comments, meta = get_most_famous_comments(video_id)
+        comments, meta_data = get_most_famous_comments(video_id)
         end = time.time()
 
-        print("Retrieving the top 10 most famous comments took: ", end-start)
+        print("Retrieving the top k most famous comments took: ", end-start)
 
         start = time.time()
         results = get_model_results(comments)
@@ -138,21 +143,19 @@ def commentsAnalysis(video_id):
 
         sentimentPerc = get_sentiment_percentages(results[0])
 
-        print("Predictions fort he top 10 most famous comments took: ", end-start)
+        print("Predictions fort he top k most famous comments took: ", end-start)
         results_df= pd.DataFrame(results[1])
 
-
-        # Return the comment type
         results_df['type'] = results_df[['negative','neutral','positive']].idxmax(axis=1)
 
-
-        # Concatinate and remove duplicate columns
-        df = pd.concat([comments, results_df], axis=1)
-        df = df.loc[:, ~df.columns.duplicated()]
+        comments_df = pd.concat([comments, results_df], axis=1)
+        comments_df = comments_df.loc[:, ~comments_df.columns.duplicated()]
+        comments_df['index'] = comments_df.index
 
         topic_df = pd.DataFrame(results[3])
-        print(results[2])
-        return df, meta, [sentimentPerc, topic_df]
+        sorted_topic_categories = rank_emotion_topics(topic_df)
+        topics_percentage = get_emotion_topics_percentages(results[2])
+        print(topics_percentage)
+        return comments_df, meta_data, [sentimentPerc, topic_df, sorted_topic_categories, topics_percentage]
 
-def comments_topic_analysis():
-    return
+
