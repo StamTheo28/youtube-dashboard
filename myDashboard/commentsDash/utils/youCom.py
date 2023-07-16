@@ -97,6 +97,18 @@ def get_sentiment_percentages(sentiments):
         sentiments[key] = round(val/total * 100, 2)
     return sentiments
 
+def get_topic_percentages(topics):
+        
+    comparison_columns = ["joy", "disgust", "fear", "neutral", "sadness", "surprise"]
+    result = pd.DataFrame()
+
+    for column in comparison_columns:
+        query = topics[column] > topics[comparison_columns].max(axis=1)
+        filtered_rows = topics[query].sort_values(column, ascending=False)[['comment', column]]
+        result = result.append(filtered_rows[:5])
+
+    result = result.drop_duplicates()
+
 
 def get_model_results(data):
     pine = SentimentTopicModel(data,

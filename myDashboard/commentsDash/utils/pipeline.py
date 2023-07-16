@@ -102,7 +102,6 @@ class SentimentTopicModel:
                 score = []
                 for v in preds:
                     score.append(v['score'])
-                    print(comments_topic_result_percentage[v['label']])
                     comments_topic_result_percentage[v['label']].append(v['score'])
                     
                 comments_topic_result[list(comments_topic_result)[np.argmax(score)]] +=1
