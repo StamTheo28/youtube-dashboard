@@ -47,9 +47,6 @@
                 <div class="description">
                     {{ meta.description }}
                 </div>
-                {% if meta.description|length >= 10 %}
-                    <span class="read-more">Read More</span>
-                {% endif %}
                 </td>
             </tr>
         </table>
@@ -69,7 +66,11 @@
 
         <div class="box box2">
             <div class="text">
-                <h2 class="topic-heading">{{ meta.commentCount }}</h2>
+                {% if comments_page == None %}
+                    <h2 class="topic-heading">Disabled</h2>
+                {% else %}
+                    <h2 class="topic-heading">{{ meta.commentCount }}</h2>
+                {% endif %}
                 <h2 class="topic">Number of Comments</h2>
             </div>
 
@@ -95,17 +96,21 @@
             <img src="{% static 'img/icons/published.png' %}" alt="published">
         </div>
     </div> 
-
-        <div class="chart-container">
-            <canvas id="pieChart"></canvas>
-        </div>
+    <div class="chart-container">
+    {% if comments_page == None %}
+        <img src="{% static 'img/icons/graph_unavailable.png' %}" alt="graph unavailbale">
+        <p>Chart Unavailbale</p>
+    {% else %}
+        <canvas id="pieChart"></canvas>
+    {% endif %}
+    </div>
 
 </div>
 
 {% if comments_page == None %}
-    <div class="report-container">
+    <div class="report-error-container">
         <div >
-            <h3 class="comment-section-error">Youtube Comments are disabled by the video owner ( {{ meta.channelTitle }} )</h1>
+            <h3 class="comment-section-error">Youtube Comments are disabled by the video owner: <br> {{ meta.channelTitle }} </h3>
         </div>
     </div>
 
