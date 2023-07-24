@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from .utils.utils import url_parser, get_all_video_ids_in_cache
+from .utils.utils import url_parser, get_all_video_ids_in_cache, get_paginator
 from .utils.youCom import commentsAnalysis
 from django.core.paginator import Paginator
 from django.core.cache import cache
@@ -44,29 +44,54 @@ def analysis(request, video_id):
         # If not cached, perform analysis and cache the results
         results, meta, percentages  = commentsAnalysis(video_id=video_id)
         cache.set(video_id, (results, meta, percentages))
-
-    table_res = results[['index','comment_id', 'like_count','reply_count','type', 'comment']]
     
-    # Create a paginator object, handle page request on front-end
-    paginator = Paginator(table_res.to_dict('records'), 15)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    # Create paginator objects
+    if meta['commentCount'] == None:
+        comments_page = None
+        context = { "video_id":video_id, 
+            "meta":meta, 
+            "comments_page":comments_page,
+            }
+    else:
+        table_res = results[['index','comment_id', 'like_count','reply_count','type', 'comment']]
+        comments_page = get_paginator(table_res, request, "comments_page")
 
-    # Create graph formats
-    sentiment = ''
-    sentiment = json.dumps(percentages[0])
-    topics_results = json.dumps(percentages[1].to_dict())
-    sorted_topics = percentages[2]
-    topics_percentages = json.dumps(percentages[3])
-   
-    columns = ['Id','Comment Id', 'Like Count', 'Reply Count','Type', 'Comment']
-    context = { "video_id":video_id, 
-               "columns": columns,
-               'comments': table_res.to_dict('records'),
-                "meta":meta, "page_obj":page_obj,
-                'sentiment':sentiment,
+        topics_page = get_paginator(percentages[1][['index','comment','emotion']], request, "topics_page", 10)
 
-                   }
+        # Create graph formats
+        topics_results = json.dumps(percentages[1].to_dict())
+        sorted_topics = percentages[2]
+        topics_percentages = json.dumps(percentages[3])
+
+        emotions_pages = {}
+        for emotion, data in sorted_topics.items():
+            page_name = emotion+"_page"
+            page = get_paginator(data, request, page_name, 15)
+            
+            emotions_pages[emotion] = page
+
+        # Retrieve the current emotion
+        emotion = ""
+        try:
+            emotion = request.GET.get('topic-button')  # Get the selected button from the request
+            emotion_page = emotions_pages[emotion]
+        except:
+            emotion = "anger"
+            emotion_page = emotions_pages[emotion]
+
+        # Create Graph Data
+        emotion_data = json.dumps(percentages[1][['index','comment',emotion]].to_dict('records'))
+        sentiment = json.dumps(percentages[0])
+        context = { "video_id":video_id, 
+                    "meta":meta, 
+                    "comments_page":comments_page,
+                    'sentiment':sentiment,
+                    "emotion":emotion,
+                    "emotion_page":emotion_page,
+                    "emotion_data":emotion_data
+                    }
+        
+
     
     return render(request, 'html/dashboard.html', context)
 

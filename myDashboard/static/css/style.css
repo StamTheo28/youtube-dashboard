@@ -273,7 +273,17 @@ header {
   }
   
 
-     
+/* Comment section disabled error message */
+.comment-section-error {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	font-size: 18px;
+	font-weight: bold;
+	color: #721c24;
+  }
 
 /* Main Section Styles */
 .main-container {
@@ -810,7 +820,28 @@ background-color: #9e9e9eb2;
 	border-right: 10px solid #ddd;
   }
 
-
+  /* comment tooltip */
+  .comment-cell {
+	position: relative;
+  }
+  
+  .comment-popup {
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 1;
+	padding: 10px;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  }
+  
+  .comment-cell:hover .comment-popup {
+	display: block;
+  }
+  
 
 
 .report-body {
@@ -868,6 +899,76 @@ background-color: #9e9e9eb2;
 	color: white;
 	border-radius: 5px;
 }
+
+/* emotions container */
+.emotion-container {
+	min-height: 600px;
+	max-width: 1200px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 70px auto 0;
+	background-color: #ffffff;
+	border-radius: 20px;
+	box-shadow: 3px 3px 10px rgb(188, 188, 188);
+	padding: 10px;
+  }
+
+  .emotion-container .horizontal-bar-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .emotion-container .horizontal-bar-container .topic-button {
+    background-color: #eee;
+    color: #333;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .emotion-container .horizontal-bar-container .topic-button:hover {
+    background-color: #ccc !important;
+  }
+
+  .emotion-container .horizontal-bar-container .topic-button.selected {
+    background-color: #333 !important;
+    color: #fff !important;
+  }
+  
+  .bar-button {
+	padding: 10px;
+	background-color: #eaeaea;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+  }
+
+  /* Table section */
+  .topics-container {
+	min-height: 400px;
+	max-width: 40%;
+	margin: 0px;
+	background-color: #ffffff;
+	border-radius: 30px;
+	padding: 0px 20px 20px 20px;
+	display: inline-block;
+}
+  
+  .data-table {
+	width: 70%;
+	margin-right: 10px;
+  }
+  
+  .graph {
+	flex-grow: 1;
+	/* Add appropriate styling for the graph container */
+  }
+  
 
 
 /* Responsive CSS */

@@ -25,30 +25,9 @@ def clean(text):
     return text
 
 # Retrieves the top k most famous comments of a youtube video
-def get_most_famous_comments( video_id, max_comments=20):
+def get_most_famous_comments( video_id, max_comments=10):
     youtube = build('youtube', 'v3', developerKey=API_KEY)
 
-    # Retrieve the comment threads for the video
-    response = youtube.commentThreads().list(
-        part="snippet",
-        videoId=video_id,
-        order="relevance",
-        maxResults=max_comments
-    ).execute()
-
-    comments = []
-    for item in response['items']:
-        comment_data = {}
-        comment_data['comment_id'] = item['id']
-        comment_data['comment'] = item['snippet']['topLevelComment']['snippet']['textDisplay']
-        comment_data["like_count"] = item['snippet']['topLevelComment']['snippet']['likeCount']
-        comment_data["reply_count"] = item['snippet']['totalReplyCount']
-        if 'like_count' not in comment_data.keys():
-            comment_data["like_count"] = 0
-        if 'reply_count' not in comment_data.keys():
-            comment_data["reply_count"] = 0
-        comments.append(comment_data)
-    comments_list = []
 
     # Retrieve video statistics
     video = youtube.videos().list(
@@ -65,30 +44,64 @@ def get_most_famous_comments( video_id, max_comments=20):
     meta['thumbnail'] = video['items'][0]['snippet']['thumbnails']['medium']['url']
     meta['channelTitle'] = video['items'][0]['snippet']['channelTitle']
     meta['viewCount'] = video['items'][0]['statistics']['viewCount']
-    meta['commentCount'] = video['items'][0]['statistics']['commentCount']
+    try:
+        meta['commentCount'] = video['items'][0]['statistics']['commentCount']
+        commentSection = True
+    except:
+        meta['commentCount'] = None
+        commentSection = False
     meta['likeCount'] = video['items'][0]['statistics']['likeCount']
     meta['favoriteCount'] = video['items'][0]['statistics']['favoriteCount']
 
-	# Retrieve the full comments using the comment IDs
-    for comment in comments:
-        try:
-            comment_id = comment['comment_id']
-            full_comment = youtube.comments().list(
-                part="snippet",
-                id=comment_id
-            ).execute()
 
-            # Clean the text comment by removing html tags and hashtags
+    # Check the comment section is diabled
+    if commentSection:
+        # Retrieve the comment threads for the video
+        response = youtube.commentThreads().list(
+            part="snippet",
+            videoId=video_id,
+            order="relevance",
+            maxResults=max_comments
+        ).execute()
+
+        comments = []
+        for item in response['items']:
+            comment_data = {}
+            comment_data['comment_id'] = item['id']
+            comment_data['comment'] = item['snippet']['topLevelComment']['snippet']['textDisplay']
+            comment_data["like_count"] = item['snippet']['topLevelComment']['snippet']['likeCount']
+            comment_data["reply_count"] = item['snippet']['totalReplyCount']
+            if 'like_count' not in comment_data.keys():
+                comment_data["like_count"] = 0
+            if 'reply_count' not in comment_data.keys():
+                comment_data["reply_count"] = 0
+            comments.append(comment_data)
+        comments_list = []
+
+
+        # Retrieve the full comments using the comment IDs
+        for comment in comments:
             try:
-                text = clean(full_comment['items'][0]['snippet']['textDisplay'])
-            except:
-                text = False
-            comment['comment'] = text
-            comments_list.append(comment)
-        except Exception as e:
-            print(f"An error occurred while retrieving comment {comment_id}: {e}")
-    comments_df = pd.DataFrame(comments_list)
+                comment_id = comment['comment_id']
+                full_comment = youtube.comments().list(
+                    part="snippet",
+                    id=comment_id
+                ).execute()
+
+                # Clean the text comment by removing html tags and hashtags
+                try:
+                    text = clean(full_comment['items'][0]['snippet']['textDisplay'])
+                except:
+                    text = False
+                comment['comment'] = text
+                comments_list.append(comment)
+            except Exception as e:
+                print(f"An error occurred while retrieving comment {comment_id}: {e}")
+        comments_df = pd.DataFrame(comments_list)
+    else:
+        comments_df = pd.DataFrame()
     
+    print(comments_df)
     return comments_df, meta
 
 def get_sentiment_percentages(sentiments):
@@ -104,13 +117,13 @@ def get_emotion_topics_percentages(topics_dict):
     return topics_dict
 
 def rank_emotion_topics(df):
-    emotion_columns = df.columns[1:]  
-    ranked_dataframes = []
+    emotion_columns = ["anger", "disgust", "fear", "sadness" ,"neutral", "surprise", "joy"]
+    ranked_dataframes = {}
     df['index'] = df.index
     for column in emotion_columns:
         ranked_df = df[['index','comment', column]].sort_values(by=column, ascending=False).reset_index(drop=True)
         
-        ranked_dataframes.append(ranked_df.to_dict())
+        ranked_dataframes[column] = ranked_df
     
     return ranked_dataframes
 
@@ -137,28 +150,31 @@ def commentsAnalysis(video_id):
 
         print("Retrieving the top k most famous comments took: ", end-start)
 
-        start = time.time()
-        results = get_model_results(comments)
-        end = time.time()
+        if comments.empty:
+            return None, meta_data, []
+        else:
+            start = time.time()
+            results = get_model_results(comments)
+            end = time.time()
 
-        sentimentPerc = get_sentiment_percentages(results[0])
+            sentimentPerc = get_sentiment_percentages(results[0])
 
-        print("Predictions fort he top k most famous comments took: ", end-start)
-        results_df= pd.DataFrame(results[1])
+            print("Predictions fort he top k most famous comments took: ", end-start)
+            results_df= pd.DataFrame(results[1])
 
-        results_df['type'] = results_df[['negative','neutral','positive']].idxmax(axis=1)
+            results_df['type'] = results_df[['negative','neutral','positive']].idxmax(axis=1)
 
-        comments_df = pd.concat([comments, results_df], axis=1)
-        comments_df = comments_df.loc[:, ~comments_df.columns.duplicated()]
-        comments_df = pd.concat([comments, results_df], axis=1)
-        comments_df = comments_df.loc[:, ~comments_df.columns.duplicated()]
-        comments_df['index'] = comments_df.index
+            comments_df = pd.concat([comments, results_df], axis=1)
+            comments_df = comments_df.loc[:, ~comments_df.columns.duplicated()]
+    
+            comments_df['index'] = comments_df.index
 
 
-        topic_df = pd.DataFrame(results[3])
-        sorted_topic_categories = rank_emotion_topics(topic_df)
-        topics_percentage = get_emotion_topics_percentages(results[2])
-        print(topics_percentage)
-        return comments_df, meta_data, [sentimentPerc, topic_df, sorted_topic_categories, topics_percentage]
+            topic_df = pd.DataFrame(results[3])
+            topic_df['emotion'] = topic_df[["anger", "disgust", "fear", "sadness" ,"neutral", "surprise", "joy"]].idxmax(axis=1)
+            sorted_topic_categories = rank_emotion_topics(topic_df)
+            topics_percentage = get_emotion_topics_percentages(results[2])
+            return comments_df, meta_data, [sentimentPerc, topic_df, sorted_topic_categories, topics_percentage]
+
 
 

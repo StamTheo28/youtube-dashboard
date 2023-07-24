@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% load custom_filters %}
+
 {% block header-search %}
 
     <div class="search-container">
@@ -93,77 +95,212 @@
             <img src="{% static 'img/icons/published.png' %}" alt="published">
         </div>
     </div> 
+
         <div class="chart-container">
             <canvas id="pieChart"></canvas>
         </div>
 
 </div>
-<div class="report-container">
-    <div class="report-header">
-        <h1 class="recent-Articles">Youtube Comments</h1>
 
-    </div>
-
-    <div class="table-container">
-        <table class="responsive-table">
-            <thead>
-                <tr>
-                    {% for col in columns %}
-                        <th>{{ col }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in page_obj  %}
-                    <tr>
-                        <td>{{ row.index }}</td>
-                        <td>{{ row.comment_id }}</td>
-                        <td>{{ row.like_count }}</td>
-                        <td>{{ row.reply_count }}</td>
-                        <td>
-                            {% if row.type == "positive" %}
-                                <span class="label-tag-pos">{{ row.type }}</span>
-                            {% elif row.type == "negative" %}
-                                <span class="label-tag-neg">{{ row.type }}</span>
-                            {% else %}
-                                <span class="label-tag-neu">{{ row.type }}</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <div id="description2" class="description">
-                                {{ row.comment }} 
-                            </div>
-                            <span class="read-more" >Read More</span>
-                        
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody> 
-        </table>
-        <div class="pagination">
-            <span class="step-links">
-                {% if page_obj.has_previous %}
-                <a class="view" href="?page=1"> First</a>
-                <a class="view" href="?page={{ page_obj.previous_page_number }}">Prev.</a>
-                {% endif %}
-            
-                <span class="current">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                </span>
-            
-                {% if page_obj.has_next %}
-                <a class="view" href="?page={{ page_obj.next_page_number }}">Next</a>
-                <a class="view" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-                {% endif %}
-            </span>
+{% if comments_page == None %}
+    <div class="report-container">
+        <div >
+            <h3 class="comment-section-error">Youtube Comments are disabled by the video owner ( {{ meta.channelTitle }} )</h1>
         </div>
     </div>
-</div>
+
+{% else %}
+    <div class="report-container">
+        <div class="report-header">
+            <h1 class="recent-Articles">Youtube Comments</h1>
+
+        </div>
+
+        <div class="table-container">
+            <table class="responsive-table">
+                    <thead>
+                        <tr>
+                        <th>Id</th>
+                        <th>Comment_Id</th>
+                        <th>Like Count</th>
+                        <th>Reply Count</th>
+                        <th>Type</th>
+                        <th>Comment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in comments_page  %}
+                            <tr>
+                                <td>{{ row.index }}</td>
+                                <td>{{ row.comment_id }}</td>
+                                <td>{{ row.like_count }}</td>
+                                <td>{{ row.reply_count }}</td>
+                                <td>
+                                    {% if row.type == "positive" %}
+                                        <span class="label-tag-pos">{{ row.type }}</span>
+                                    {% elif row.type == "negative" %}
+                                        <span class="label-tag-neg">{{ row.type }}</span>
+                                    {% else %}
+                                        <span class="label-tag-neu">{{ row.type }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="comment-cell">
+                                    {% if row.comment|length > 40 %}
+                                        {{ row.comment|slice:40 }}...
+                                        <span class="comment-popup">{{ row.comment }}</span>
+                                    {% else  %}
+                                        {{ row.comment }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody> 
+            </table>
+
+            <div class="pagination">
+                <span class="step-links">
+                    {% if comments_page.has_previous %}
+                    <a class="view" href="?comments_page=1"> First</a>
+                    <a class="view" href="?comments_page={{ comments_page.previous_page_number }}">Prev.</a>
+                    {% endif %}
+                
+                    <span class="current">
+                    Page {{ comments_page.number }} of {{ comments_page.paginator.num_pages }}.
+                    </span>
+                
+                    {% if comments_page.has_next %}
+                    <a class="view" href="?comments_page={{ comments_page.next_page_number }}">Next</a>
+                    <a class="view" href="?comments_page={{ comments_page.paginator.num_pages }}">Last</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="emotion-container">
+        <div class="horizontal-bar-container">
+            
+            <button class="topic-button {% if emotion == 'anger' %} selected{% endif %}" onclick="handleButtonClick('anger')">Anger</button>
+            <button class="topic-button {% if emotion == 'disgust' %} selected{% endif %}" onclick="handleButtonClick('disgust')">Disgust</button>
+            <button class="topic-button {% if emotion == 'fear' %} selected{% endif %}" onclick="handleButtonClick('fear')">Fear</button>
+            <button class="topic-button {% if emotion == 'sadness' %} selected{% endif %}" onclick="handleButtonClick('sadness')">Sadness</button>
+            <button class="topic-button {% if emotion == 'neutral' %} selected{% endif %}" onclick="handleButtonClick('neutral')">Neutral</button>
+            <button class="topic-button {% if emotion == 'suprise' %} selected{% endif %}" onclick="handleButtonClick('surprise')">Suprise</button>
+            <button class="topic-button {% if emotion == 'joy' %} selected{% endif %}" onclick="handleButtonClick('joy')">Joy</button>
+        </div>
+
+
+        <div class="topics-container">
+            <div class="report-header">
+                <h1 class="recent-Articles">Emotion Analyser</h1>
+        
+            </div>
+            <table class="responsive-table">
+        
+                <thead>
+                    <tr>
+                        {% for key in emotion_page|get_paginator_emotion_keys %}
+                            <th>{{ key }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in emotion_page %}
+                    <tr>  
+                        {% with values=row|get_values %}          
+                            <td>{{ values.0 }}</td>
+                            <td class="comment-cell">
+                                {% if values.1|length > 40 %}
+                                    {{ values.1|slice:40 }}...
+                                    <span class="comment-popup">{{ values.1 }}</span>
+                                {% else  %}
+                                    {{ values.1}}
+                                {% endif %}
+                            </td>
+                            <td>{{ values.2 }}</td>
+                        {% endwith %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="pagination">
+                <span class="step-links">
+                    {% if topics_page.has_previous %}
+                        <a class="view" href="?emotion_page=1&comments_page={{ comments_page.number }}">First</a>
+                        <a class="view" href="?emotion_page={{ emotion_page.previous_page_number }}&comments_page={{ comments_page.number }}">Prev.</a>
+                    {% endif %}
+                    
+                    <span class="current">
+                        Page {{ topics_page.number }} of {{ topics_page.paginator.num_pages }}.
+                    </span>
+                    
+                    {% if topics_page.has_next %}
+                        <a class="view" href="?emotion_page={{ emotion_page.next_page_number }}&comments_page={{ comments_page.number }}">Next</a>
+                        <a class="view" href="?emotion_page={{ emotion_page.paginator.num_pages }}&comments_page={{ comments_page.number }}">Last</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <div class="graph">
+        <!-- Graph content goes here -->
+        <canvas id="densityChart"></canvas>
+        </div>
+    </div>
+
+{% endif %}
 <!-- Your HTML code -->
 
     
 <script src="{% static 'js/dashboard.js' %}"></script>
 <script>
+    
+    // Change the emotion according to the emotion button pressed
+    function handleButtonClick(button) {
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('topic-button', button);
+        window.location.search = urlParams.toString();
+    }
+
+    // Tooltip to show more information from text
+    $(document).ready(function() {
+    $('[data-toggle="tooltip"]').tooltip();
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    // Get the data from Django context
+    const comments = JSON.parse('{{ emotion_data|safe }}');
+    const emotion = '{{ emotion }}'
+
+    // Extract joy values into an array
+    const joyData = comments.map(comment => comment[emotion]);
+    const labels = comments.map(comment => comment['index']);
+
+    // Create a density chart
+    new Chart(document.getElementById('densityChart'), {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Joy Density',
+          data: joyData,
+          backgroundColor: 'rgba(75, 192, 192, 0.5)', // Customize the background color
+          borderColor: 'rgba(75, 192, 192, 1)', // Customize the line color
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 1, // Set the maximum value for the y-axis
+          },
+        },
+      },
+    });
+  });
+
+
     document.addEventListener('DOMContentLoaded', function() {
         var sentimentData = JSON.parse('{{ sentiment|safe }}');
         var labels = [];
