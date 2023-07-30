@@ -101,7 +101,7 @@
         <img src="{% static 'img/icons/graph_unavailable.png' %}" alt="graph unavailbale">
         <p>Chart Unavailbale</p>
     {% else %}
-        <canvas id="pieChart"></canvas>
+        <canvas id="sentimentPieChart" width="1200" height="300"></canvas>
     {% endif %}
     </div>
 
@@ -131,6 +131,7 @@
                         <th>Reply Count</th>
                         <th>Type</th>
                         <th>Comment</th>
+                        <th>Length</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -141,12 +142,12 @@
                                 <td>{{ row.like_count }}</td>
                                 <td>{{ row.reply_count }}</td>
                                 <td>
-                                    {% if row.type == "positive" %}
-                                        <span class="label-tag-pos">{{ row.type }}</span>
-                                    {% elif row.type == "negative" %}
-                                        <span class="label-tag-neg">{{ row.type }}</span>
+                                    {% if row.sentiment == "positive" %}
+                                        <span class="label-tag-pos">{{ row.sentiment }}</span>
+                                    {% elif row.sentiment == "negative" %}
+                                        <span class="label-tag-neg">{{ row.sentiment }}</span>
                                     {% else %}
-                                        <span class="label-tag-neu">{{ row.type }}</span>
+                                        <span class="label-tag-neu">{{ row.sentiment }}</span>
                                     {% endif %}
                                 </td>
                                 <td class="comment-cell">
@@ -156,6 +157,9 @@
                                     {% else  %}
                                         {{ row.comment }}
                                     {% endif %}
+                                </td>
+                                <td>
+                                    {{ row.word_length }}
                                 </td>
                             </tr>
                         {% endfor %}
@@ -182,177 +186,33 @@
         </div>
     </div>
 
-    <div class="emotion-container">
+    <!--Comments Analysis Graphs-->
+    <div class="comment-analysis-container">
         <div class="horizontal-bar-container">
+            <button class="section-button" data-name="length" onclick="handleGraphButtonClick('length')">Comments Length</button>
+            <button class="section-button" data-name="frequency" onclick="handleGraphButtonClick('frequency')">Most Frequent Words</button>
+            <button class="section-button" data-name="emojis" onclick="handleGraphButtonClick('emojis')">Emojis</button>
+        </div>
+        <div class="chart-table-container">
+            <div class="chart-container" id="chart-container">
+                <canvas id="myChart"></canvas>
+            </div>
             
-            <button class="topic-button {% if emotion == 'anger' %} selected{% endif %}" onclick="handleButtonClick('anger')">Anger</button>
-            <button class="topic-button {% if emotion == 'disgust' %} selected{% endif %}" onclick="handleButtonClick('disgust')">Disgust</button>
-            <button class="topic-button {% if emotion == 'fear' %} selected{% endif %}" onclick="handleButtonClick('fear')">Fear</button>
-            <button class="topic-button {% if emotion == 'sadness' %} selected{% endif %}" onclick="handleButtonClick('sadness')">Sadness</button>
-            <button class="topic-button {% if emotion == 'neutral' %} selected{% endif %}" onclick="handleButtonClick('neutral')">Neutral</button>
-            <button class="topic-button {% if emotion == 'suprise' %} selected{% endif %}" onclick="handleButtonClick('surprise')">Suprise</button>
-            <button class="topic-button {% if emotion == 'joy' %} selected{% endif %}" onclick="handleButtonClick('joy')">Joy</button>
-        </div>
-
-
-        <div class="topics-container">
-            <div class="report-header">
-                <h1 class="recent-Articles">Emotion Analyser</h1>
-        
+            <div class="table-container" id="tableContainer">
+                <table id="dataTable">
+                    <!-- Table content will be added dynamically -->
+                </table>
             </div>
-            <table class="responsive-table">
-        
-                <thead>
-                    <tr>
-                        {% for key in emotion_page|get_paginator_emotion_keys %}
-                            <th>{{ key }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in emotion_page %}
-                    <tr>  
-                        {% with values=row|get_values %}          
-                            <td>{{ values.0 }}</td>
-                            <td class="comment-cell">
-                                {% if values.1|length > 40 %}
-                                    {{ values.1|slice:40 }}...
-                                    <span class="comment-popup">{{ values.1 }}</span>
-                                {% else  %}
-                                    {{ values.1}}
-                                {% endif %}
-                            </td>
-                            <td>{{ values.2 }}</td>
-                        {% endwith %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <div class="pagination">
-                <span class="step-links">
-                    {% if topics_page.has_previous %}
-                        <a class="view" href="?emotion_page=1&comments_page={{ comments_page.number }}">First</a>
-                        <a class="view" href="?emotion_page={{ emotion_page.previous_page_number }}&comments_page={{ comments_page.number }}">Prev.</a>
-                    {% endif %}
-                    
-                    <span class="current">
-                        Page {{ topics_page.number }} of {{ topics_page.paginator.num_pages }}.
-                    </span>
-                    
-                    {% if topics_page.has_next %}
-                        <a class="view" href="?emotion_page={{ emotion_page.next_page_number }}&comments_page={{ comments_page.number }}">Next</a>
-                        <a class="view" href="?emotion_page={{ emotion_page.paginator.num_pages }}&comments_page={{ comments_page.number }}">Last</a>
-                    {% endif %}
-                </span>
-            </div>
-        </div>
-
-        <div class="graph">
-        <!-- Graph content goes here -->
-        <canvas id="densityChart"></canvas>
         </div>
     </div>
 
 {% endif %}
-<!-- Your HTML code -->
 
+{{ sentiment_percentages|json_script:"sentiment_percentages" }}
+{{ section_data|json_script:"section_data" }}
     
 <script src="{% static 'js/dashboard.js' %}"></script>
-<script>
-    
-    // Change the emotion according to the emotion button pressed
-    function handleButtonClick(button) {
-        const urlParams = new URLSearchParams(window.location.search);
-        urlParams.set('topic-button', button);
-        window.location.search = urlParams.toString();
-    }
-
-    // Tooltip to show more information from text
-    $(document).ready(function() {
-    $('[data-toggle="tooltip"]').tooltip();
-    });
-
-
-    document.addEventListener('DOMContentLoaded', function() {
-    // Get the data from Django context
-    const comments = JSON.parse('{{ emotion_data|safe }}');
-    const emotion = '{{ emotion }}'
-
-    // Extract joy values into an array
-    const joyData = comments.map(comment => comment[emotion]);
-    const labels = comments.map(comment => comment['index']);
-
-    // Create a density chart
-    new Chart(document.getElementById('densityChart'), {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Joy Density',
-          data: joyData,
-          backgroundColor: 'rgba(75, 192, 192, 0.5)', // Customize the background color
-          borderColor: 'rgba(75, 192, 192, 1)', // Customize the line color
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 1, // Set the maximum value for the y-axis
-          },
-        },
-      },
-    });
-  });
-
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var sentimentData = JSON.parse('{{ sentiment|safe }}');
-        var labels = [];
-        var data = [];
-        
-        for (var key in sentimentData) {
-            labels.push(key);
-            data.push(sentimentData[key]);
-        }
-        
-        
-        var ctx = document.getElementById('pieChart').getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: data,
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.6)',
-                        'rgba(255, 206, 86, 0.6)',
-                        'rgba(75, 192, 192, 0.6)',
-                    ],
-                    borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                ],
-                borderWidth: 1
-                }],
-                hoverOffset: 8
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                title: {
-                    display: true,
-                    text: 'Percentage of Comment Type',
-                    fontSize: 18,
-                    fontColor: '#000000',
-                    fontStyle: 'bold'
-                }
-            }
-        });
-    });
-</script>
-
+<script src="{% static 'js/chart.js' %}"></script>
 
 </body>
 </html>

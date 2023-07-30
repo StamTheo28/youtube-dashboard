@@ -390,11 +390,13 @@ background-color: #9e9e9eb2;
 .searchBox:hover > .searchInput {
     width: 520px;
     padding: 0 6px;
+	transition-delay: 0.2s;
 }
 
 .searchBox:hover > .searchButton {
   background: white;
   color : #2f3640;
+  transition-delay: 0.2s;
 }
 
 
@@ -977,14 +979,13 @@ background-color: #9e9e9eb2;
 	border-radius: 5px;
 }
 
-/* emotions container */
-.emotion-container {
+/* comment-analysis container */
+.comment-analysis-container {
 	min-height: 600px;
 	max-width: 1200px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	align-items: center;
 	margin: 70px auto 0;
 	background-color: #ffffff;
 	border-radius: 20px;
@@ -992,60 +993,59 @@ background-color: #9e9e9eb2;
 	padding: 10px;
   }
 
-  .emotion-container .horizontal-bar-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 10px;
-  }
 
-  .emotion-container .horizontal-bar-container .topic-button {
-    background-color: #eee;
-    color: #333;
-    border: none;
-    padding: 10px 20px;
-    margin: 0 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-
-  .emotion-container .horizontal-bar-container .topic-button:hover {
-    background-color: #ccc !important;
-  }
-
-  .emotion-container .horizontal-bar-container .topic-button.selected {
-    background-color: #333 !important;
-    color: #fff !important;
-  }
-  
-  .bar-button {
-	padding: 10px;
-	background-color: #eaeaea;
-	border: none;
-	border-radius: 5px;
-	cursor: pointer;
-  }
-
-  /* Table section */
-  .topics-container {
-	min-height: 400px;
-	max-width: 40%;
-	margin: 0px;
-	background-color: #ffffff;
-	border-radius: 30px;
-	padding: 0px 20px 20px 20px;
-	display: inline-block;
+.horizontal-bar-container {
+    margin-top: -30px; 
+	margin-bottom: 10px;
+	display: flex;
+	justify-content: center;
+	gap: 10px;
 }
-  
-  .data-table {
-	width: 70%;
-	margin-right: 10px;
-  }
-  
-  .graph {
-	flex-grow: 1;
-	/* Add appropriate styling for the graph container */
-  }
-  
+
+.section-button {
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px; 
+}
+
+.section-button.selected {
+    background-color: red; 
+    color: white; 
+}
+
+.chart-table-container {
+	min-height: 450px;
+	display: flex;
+	gap: 20px;
+}
+
+.chart-container{
+	position: relative;
+	min-width: 370px;
+	flex: 1;
+	border: none;
+	padding: 5px;
+}
+.table-container {
+	position: relative;
+	min-width: 370px;
+	flex: 1;
+	border: 1px solid #ccc;
+	padding: 5px;
+}
+
+@media (max-width: 768px) {
+	.chart-table-container {
+		flex-direction: column;
+		gap: 30px;
+	}
+
+	.horizontal-bar-container {
+		margin-top: -10px; 
+	}
+}
 
 
 /* Responsive CSS */

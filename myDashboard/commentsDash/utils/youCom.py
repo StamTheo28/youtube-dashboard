@@ -4,12 +4,23 @@ API_KEY = "AIzaSyCj_o0-0ej8EOa6tPYPKfhJyI3c-zPJ9Yc"
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from bs4 import BeautifulSoup
-from .pipeline import SentimentTopicModel
 from .utils import clean_date
+from .sentiment import comment_analysis, get_clean_data
 import pandas as pd
-import numpy as np
 import re
 import time
+from nltk.tokenize import word_tokenize
+from nltk.probability import FreqDist
+
+import spacy
+from spacymoji import Emoji
+
+from tqdm.auto import tqdm
+
+
+
+
+
 
 # Remove tags and hashhtags from comments
 def clean(text):
@@ -25,7 +36,7 @@ def clean(text):
     return text
 
 # Retrieves the top k most famous comments of a youtube video
-def get_most_famous_comments( video_id, max_comments=10):
+def get_most_famous_comments( video_id, max_comments=20):
     youtube = build('youtube', 'v3', developerKey=API_KEY)
 
 
@@ -94,6 +105,7 @@ def get_most_famous_comments( video_id, max_comments=10):
                 except:
                     text = False
                 comment['comment'] = text
+                comment['word_length'] = len(comment['comment'].split(' '))
                 comments_list.append(comment)
             except Exception as e:
                 print(f"An error occurred while retrieving comment {comment_id}: {e}")
@@ -101,44 +113,7 @@ def get_most_famous_comments( video_id, max_comments=10):
     else:
         comments_df = pd.DataFrame()
     
-    print(comments_df)
     return comments_df, meta
-
-def get_sentiment_percentages(sentiments):
-    total = sum(sentiments.values())
-    for key, val in sentiments.items():
-        sentiments[key] = round(val/total * 100, 2)
-    return sentiments
-
-def get_emotion_topics_percentages(topics_dict):
-    total = sum(topics_dict.values())
-    for key, val in topics_dict.items():
-        topics_dict[key] = str(round(val/total * 100, 2)) + '%'
-    return topics_dict
-
-def rank_emotion_topics(df):
-    emotion_columns = ["anger", "disgust", "fear", "sadness" ,"neutral", "surprise", "joy"]
-    ranked_dataframes = {}
-    df['index'] = df.index
-    for column in emotion_columns:
-        ranked_df = df[['index','comment', column]].sort_values(by=column, ascending=False).reset_index(drop=True)
-        
-        ranked_dataframes[column] = ranked_df
-    
-    return ranked_dataframes
-
-
-def get_model_results(data):
-    pine = SentimentTopicModel(data,
-                           sentiment_model_path='D:\youtube-dashboard\youtube-dashboard\model\comment',
-                           topic_model_path='j-hartmann/emotion-english-distilroberta-base',
-                           num_labels=3)
-
-    sentiments, sentiment_prob = pine.predict_sentiments(data)
-
-    topic, topic_prob = pine.predict_topics(data)
-
-    return sentiments, sentiment_prob, topic, topic_prob
 
 
 # Perform Comments classification 
@@ -150,31 +125,49 @@ def commentsAnalysis(video_id):
 
         print("Retrieving the top k most famous comments took: ", end-start)
 
+
         if comments.empty:
-            return None, meta_data, []
+            return None, meta_data
         else:
             start = time.time()
-            results = get_model_results(comments)
+            df = comment_analysis(comments)        
             end = time.time()
 
-            sentimentPerc = get_sentiment_percentages(results[0])
+            df['index'] = df.index
 
-            print("Predictions fort he top k most famous comments took: ", end-start)
-            results_df= pd.DataFrame(results[1])
+            print("Creating a sentemint analysis for the k comments took: ", end-start)
+            return df, meta_data
+        
+def get_most_frequent_words(data, word_number=10):
+    df = get_clean_data(data)
+    word_freq_dist = FreqDist(word_tokenize((" ").join(df['clean_comment'])))
+    frequent_words = word_freq_dist.most_common(word_number)
+    result_dict = {word: frequency for word, frequency in frequent_words}
+    return result_dict
 
-            results_df['type'] = results_df[['negative','neutral','positive']].idxmax(axis=1)
 
-            comments_df = pd.concat([comments, results_df], axis=1)
-            comments_df = comments_df.loc[:, ~comments_df.columns.duplicated()]
+
+# Emoji Extraction
+def get_emoji(data):
+    nlp = spacy.load("en_core_web_sm")
+    nlp.add_pipe("emoji", first=True)
+    nlp.pipe_names
+
+    def extract_emojies(x):
+        doc = nlp(x['comment']) #with emojis
+        emojis = [token.text for token in doc if token._.is_emoji]
+        return emojis
     
-            comments_df['index'] = comments_df.index
-
-
-            topic_df = pd.DataFrame(results[3])
-            topic_df['emotion'] = topic_df[["anger", "disgust", "fear", "sadness" ,"neutral", "surprise", "joy"]].idxmax(axis=1)
-            sorted_topic_categories = rank_emotion_topics(topic_df)
-            topics_percentage = get_emotion_topics_percentages(results[2])
-            return comments_df, meta_data, [sentimentPerc, topic_df, sorted_topic_categories, topics_percentage]
-
-
-
+    tqdm.pandas(desc="Detecting Emoji")
+    emojies_df = data.progress_apply(extract_emojies,axis=1)
+    emoji_counts = (emojies_df
+                    .apply(pd.Series)  # breaks up the list into separate columns
+                    .stack()  # collapses each column into one column
+                    .value_counts()  # counts the frequency of each item
+                    .rename('Count')
+                    .sort_values(ascending=False)
+                    .reset_index()
+                    .rename(columns={'index': 'Emoji'}))
+    
+    emoji_counts_dict = emoji_counts.head(10).set_index('Emoji')['Count'].to_dict()
+    return emoji_counts_dict

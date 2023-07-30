@@ -12,18 +12,17 @@
 
 {% block searchBar%}
 
-
 <form autocomplete="off" action="{% url 'index' %}" method="post">
-    {% csrf_token %}
-    <div class="searchBox">
+  {% csrf_token %}
+  <div class="searchBox">
       <input autocomplete="false" class="searchInput" type="text" name="video_link" placeholder="https://www.youtube.com/watch?v=wbAhmGFwZ-g" required>
       <button class="searchButton" type="submit">
-        <i class="material-icons">
-          search
-        </i>
+          <i class="material-icons">
+              search
+          </i>
       </button>
-    </div>
-  </form> 
+  </div>
+</form>
 
 
 
