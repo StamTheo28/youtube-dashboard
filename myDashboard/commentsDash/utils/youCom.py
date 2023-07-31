@@ -11,7 +11,7 @@ import re
 import time
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
-
+from datetime import datetime
 import spacy
 from spacymoji import Emoji
 
@@ -56,6 +56,11 @@ def get_most_famous_comments( video_id, max_comments=20):
     meta['channelTitle'] = video['items'][0]['snippet']['channelTitle']
     meta['viewCount'] = video['items'][0]['statistics']['viewCount']
     try:
+        meta['tags'] = video['items'][0]['snippet']['tags']
+    except:
+        meta['tags'] = None
+    print("Tags are here!  ",meta['tags'])
+    try:
         meta['commentCount'] = video['items'][0]['statistics']['commentCount']
         commentSection = True
     except:
@@ -82,6 +87,7 @@ def get_most_famous_comments( video_id, max_comments=20):
             comment_data['comment'] = item['snippet']['topLevelComment']['snippet']['textDisplay']
             comment_data["like_count"] = item['snippet']['topLevelComment']['snippet']['likeCount']
             comment_data["reply_count"] = item['snippet']['totalReplyCount']
+            comment_data['publishedAt'] = item['snippet']['topLevelComment']['snippet']['publishedAt']
             if 'like_count' not in comment_data.keys():
                 comment_data["like_count"] = 0
             if 'reply_count' not in comment_data.keys():
@@ -89,7 +95,7 @@ def get_most_famous_comments( video_id, max_comments=20):
             comments.append(comment_data)
         comments_list = []
 
-
+        print(comments[0]['publishedAt'])
         # Retrieve the full comments using the comment IDs
         for comment in comments:
             try:
@@ -171,3 +177,20 @@ def get_emoji(data):
     
     emoji_counts_dict = emoji_counts.head(10).set_index('Emoji')['Count'].to_dict()
     return emoji_counts_dict
+
+def get_month_count(data):
+    dates = data['publishedAt']
+    # Parse the datetimes into datetime objects
+    datetimes = sorted([datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%SZ') for dt_str in dates])
+
+    # Create a dictionary to store the count of each month
+    month_counts = {}
+
+    # Group the datetimes by month and count occurrences
+    for dt in datetimes:
+        month = dt.strftime('%Y-%m')  # Extract the year-month part (e.g., '2009-01')
+        if month not in month_counts:
+            month_counts[month] = 0
+        month_counts[month] += 1
+        
+    return month_counts

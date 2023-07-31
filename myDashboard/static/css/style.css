@@ -641,6 +641,7 @@ background-color: #9e9e9eb2;
 .stat-container {
     min-height: 300px;
 	max-height: 900px;
+	
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -659,11 +660,6 @@ background-color: #9e9e9eb2;
 }
 
 .chart-container {
-	top: 15px;
-	position: relative;
-	min-height: 36vh;
-	width: 40vh;
-	max-width: 60vh;
 	margin: 5px;
 	background-color: #ffffff;
 	border-radius: 20px;
@@ -1011,30 +1007,58 @@ background-color: #9e9e9eb2;
 }
 
 .section-button.selected {
-    background-color: red; 
+    background-color: var(--selected-color);
     color: white; 
 }
 
 .chart-table-container {
-	min-height: 450px;
+	min-height: 460px;
 	display: flex;
 	gap: 20px;
 }
 
 .chart-container{
 	position: relative;
-	min-width: 370px;
 	flex: 1;
 	border: none;
 	padding: 5px;
 }
+
+.chart-container-expanded {
+    justify-content: center;
+}
+
 .table-container {
 	position: relative;
 	min-width: 370px;
 	flex: 1;
 	border: 1px solid #ccc;
 	padding: 5px;
+	
 }
+
+.scatter-container {
+	min-height: 600px;
+	max-width: 1200px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	margin: 70px auto 0;
+	background-color: #ffffff;
+	border-radius: 20px;
+	box-shadow: 3px 3px 10px rgb(188, 188, 188);
+	padding: 10px;
+  }
+
+/* Tag Cloud*/
+.wordloud {
+	transition: transform 0.2s ease-in-out;
+  }
+  
+  /* Scale the word up when hovering over it */
+  .wordCloud:hover {
+	transform: scale(1.2);
+  }
 
 @media (max-width: 768px) {
 	.chart-table-container {

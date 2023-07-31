@@ -1,43 +1,41 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Create Sentiment Pie Chart
-    var ctx = document.getElementById('sentimentPieChart').getContext('2d');
-    const mydata = JSON.parse(document.getElementById('sentiment_percentages').textContent);
-    var myChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: Object.keys(mydata),
-            datasets: [{
-                data: Object.values(mydata),
-                backgroundColor: [
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(255, 206, 86, 0.6)',
-                    'rgba(255, 99, 132, 0.6)'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            title: {
-                display: true,
-                text: 'Percentages of Comment Sentiments',
-                fontSize: 18,
-                fontColor: '#000000',
-                fontStyle: 'bold'
-            },
-        tooltips: {
-            callbacks: {
-                label: function (tooltipItem, data) {
-                    const dataset = data.datasets[tooltipItem.datasetIndex];
-                    const currentValue = dataset.data[tooltipItem.index];
-                    return `${data.labels[tooltipItem.index]}: ${currentValue}%`;
-                    },
-            },
-        },
-        }
-    });
+// Create a tag cloud
+const tagCloudData = JSON.parse(document.getElementById('tag_cloud').textContent);
 
+const list = [];
+for (const i in tagCloudData) {
+    list.push([i,tagCloudData[i] ]);
+}
+
+WordCloud(document.getElementById('word_cloud'), {
+    list: list,
+    weightFactor: 25,
+    fontFamily: 'Arial, sans-serif',
+    color: 'random-dark',
+    rotateRatio: 0.4,
+    gridSize: 15,
+    shuffle: true,
+    minSize: 15,
+    maxWords: 40,
 });
+
+
+// Function to handle word hover event
+function handleWordHover(event) {
+    const word = event.target.getAttribute('data-word');
+    event.target.setAttribute('title', word);
+}
+
+// Add event listeners to each word in the word cloud
+const wordCloudElements = document.querySelectorAll('.wordcloud-word');
+wordCloudElements.forEach((element) => {
+    element.addEventListener('mouseover', handleWordHover);
+    element.addEventListener('mouseout', () => {
+        element.removeAttribute('title');
+    });
+});
+
+
+
 
 
 // Container for section graphs
@@ -52,14 +50,18 @@ function handleGraphButtonClick(section) {
     removeTable();
 
     // Render the graph and table for the selected dataset
+
     renderGraph(section);
     renderTable(section);
+
 }
 
 function updateSelectedButton(section) {
     const buttons = document.querySelectorAll('.section-button');
     buttons.forEach((button) => {
         if (button.dataset.name === section) {
+            const color = button.dataset.color; 
+            document.documentElement.style.setProperty('--selected-color', color);
             button.classList.add('selected');
         } else {
             button.classList.remove('selected');
@@ -83,6 +85,21 @@ function removeTable() {
 function renderGraph(section) {
     const ctx = document.getElementById('myChart').getContext('2d');
     const data = datasets[section];
+
+
+    // Remove the 'chart-container-expanded' class if the table-container exists
+    const chartTableContainer = document.querySelector('.chart-table-container');
+    const tableContainer = document.getElementById('tableContainer');
+
+    // Check if the table container exists
+    if (tableContainer || section==='sentiment') {
+        chartTableContainer.style.justifyContent = 'center';
+    } else {
+        chartTableContainer.style.justifyContent = 'initial';
+    }
+
+
+
     // Create graph
     chartInstance = new Chart(ctx, getGraphSettings(section, data))
 }
@@ -90,14 +107,32 @@ function renderGraph(section) {
 function renderTable(section) {
     const table = document.createElement('table');
     table.id = 'dataTable';
-    removeTable()
     const data = datasets[section];
     const tableContainer = document.getElementById('tableContainer');
-
-     
-
-    tableContainer.appendChild(getTableSettings(table, section, data));
+    
+  
+    if (section === 'sentiment') {
+            tableContainer.remove();
+        
+    } else {
+        if (!tableContainer && section != "sentiment") {
+            // If the table container does not exist, create it and append it to the parent container
+            const parentContainer = document.querySelector('.chart-table-container');
+            const newTableContainer = document.createElement('div');
+            newTableContainer.className = 'table-container';
+            newTableContainer.id = 'tableContainer';
+            newTableContainer.appendChild(getTableSettings(table, section, data));
+            parentContainer.appendChild(newTableContainer);
+        } else {
+            // If the table container exists, just update its content
+            tableContainer.innerHTML = ''; // Clear existing content
+            tableContainer.appendChild(getTableSettings(table, section, data)); // Append the new table
+        }
+        adjustContainerSize()
+    }
 }
+
+
 
 function getTableSettings(table, section, data){
 
@@ -129,8 +164,8 @@ function getTableSettings(table, section, data){
         // Add table data rows for each interval
         for (let i = 0; i < numRanges; i++) {
             const row = document.createElement('tr');
-            const rangeStart = min + i * intervalWidth;
-            const rangeEnd = min + (i + 1) * intervalWidth - 1;
+            const rangeStart = (min + i * intervalWidth).toFixed(1);
+            const rangeEnd = (min + (i + 1) * intervalWidth).toFixed(1);
             const labelCell = document.createElement('td');
             labelCell.textContent = `${rangeStart} - ${rangeEnd}`;
             const countCell = document.createElement('td');
@@ -163,29 +198,6 @@ function getTableSettings(table, section, data){
             table.appendChild(row);
         }
         return table
-    } else {
-         // Create the table and its header row
-         const headerRow = document.createElement('tr');
-         const headerCellLabel = document.createElement('th');
-         headerCellLabel.textContent = 'Emoji';
-         const headerCellCount = document.createElement('th');
-         headerCellCount.textContent = 'Count';
-         headerRow.appendChild(headerCellLabel);
-         headerRow.appendChild(headerCellCount);
-         table.appendChild(headerRow);
- 
-         // Add table data rows
-         for (const label in data) {
-             const row = document.createElement('tr');
-             const labelCell = document.createElement('td');
-             labelCell.textContent = label;
-             const countCell = document.createElement('td');
-             countCell.textContent = data[label];
-             row.appendChild(labelCell);
-             row.appendChild(countCell);
-             table.appendChild(row);
-         }
-         return table
     }
 }
 
@@ -197,7 +209,6 @@ function getGraphSettings(section, data){
         const minData = Math.min(...values);
         const maxData = Math.max(...values);
         const binCount = Math.ceil(Math.sqrt(values.length)); 
-        console.log(binCount)
         const binWidth = (maxData - minData) / binCount;
 
         const bins = Array(binCount).fill(0);
@@ -211,7 +222,9 @@ function getGraphSettings(section, data){
 
         const binLabels = [];
         for (let i = 0; i < binCount; i++) {
-            binLabels.push(`${minData + i * binWidth} - ${minData + (i + 1) * binWidth}`);
+            const lower = (minData + i * binWidth).toFixed(1);
+            const upper = (minData + (i + 1) * binWidth).toFixed(1);
+            binLabels.push(`${lower} - ${upper}`);
         }
 
 
@@ -220,8 +233,9 @@ function getGraphSettings(section, data){
             data: {
                 labels: binLabels,
                 datasets: [{
+                    label: "Distribution of Comment lengths",
                     data: bins,
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    backgroundColor: "#87CEEB",
                     barPercentage: 1.0, 
                     categoryPercentage: 1.0, 
                 }],
@@ -230,13 +244,17 @@ function getGraphSettings(section, data){
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: {
-                        beginAtZero: true,
-                    },
-                    y: {
-                        beginAtZero: true,
-                    },
-                },
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                        }
+                    }],
+                    yAxes: [{
+                      ticks: {
+                        beginAtZero: true, 
+                      },
+                    }],
+                  },
             },
         }
         return graphSettings
@@ -247,9 +265,9 @@ function getGraphSettings(section, data){
             data: {
                 labels: Object.keys(data),
                 datasets: [{
-                    label: 'Data',
+                    label: 'Top '+Object.keys(data).length.toString()+' most frequent words',
                     data: Object.values(data),
-                    backgroundColor: 'rgba(54, 170, 235, 0.6)',
+                    backgroundColor: "#9370DB",
                 }]
             },
             options: {
@@ -264,6 +282,9 @@ function getGraphSettings(section, data){
                     yAxes: [{
                         ticks: {
                             beginAtZero: true, // Set the y-axis to start from zero
+                            stepSize: 1,
+                            labelString: 'Count'
+
                         },
                     }],
                 },
@@ -272,74 +293,61 @@ function getGraphSettings(section, data){
         return graphSettings
 
     } else {
-
-        const scatterData = Object.entries(data).map(([emoji, count]) => ({ x: count, y: count, r: 10, emoji: emoji }));
-
-        const graphSettings = {
-            type: 'scatter',
-            data: {
-                datasets: [{
-                    label: 'Emoji Counts',
-                    data: scatterData,
-                    backgroundColor: 'rgba(54, 200, 235, 0.6)',
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        type: 'linear',
-                        position: 'bottom',
-                        title: {
-                            display: true,
-                            text: 'Emoji Count',
-                        },
-                    },
-                    y: {
-                        type: 'linear',
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'Emoji Count',
-                        },
-                    },
-                },
-                plugins: {
-                    legend: {
-                        display: false // Hide legend as we are using custom emojis
-                    },
-                    datalabels: {
-                        align: 'center',
-                        anchor: 'center',
-                        color: 'black',
-                        font: {
-                            size: 16, // Set label font size
-                        },
-                        formatter: function(value, context) {
-                            // Use the emoji as the label content
-                            return context.dataset.data[context.dataIndex].emoji;
-                        },
-                        // Custom draw function to place emojis at the data point coordinates
-                        draw: function(context) {
-                            const dataPoint = context.dataPoint;
-                            const emoji = dataPoint.emoji;
-                            const fontSize = 16;
-                            const x = dataPoint.x;
-                            const y = dataPoint.y;
+// Convert the data to the required format
+        data = datasets[section]
         
-                            context.ctx.font = fontSize + 'px Arial';
-                            context.ctx.textAlign = 'center';
-                            context.ctx.textBaseline = 'middle';
-                            context.ctx.fillText(emoji, x, y);
-                        }
-                    }
+        const graphSettings = {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(data),
+                    datasets: [{
+                        data: Object.values(data),
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(255, 99, 132, 0.6)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Percentages of Comment Sentiments',
+                        fontSize: 18,
+                        fontColor: '#000000',
+                        fontStyle: 'bold'
+                    },
+                tooltips: {
+                    callbacks: {
+                        label: function (tooltipItem, data) {
+                            const dataset = data.datasets[tooltipItem.datasetIndex];
+                            const currentValue = dataset.data[tooltipItem.index];
+                            return `${data.labels[tooltipItem.index]}: ${currentValue}%`;
+                            },
+                        },
+                    },
                 }
             }
-        };
         return graphSettings
     }
 };
+
+// Function to dynamically adjust the container size based on the table size
+function adjustContainerSize() {
+    const container = document.getElementById('tableContainer');
+    const table = document.getElementById('dataTable');
+    
+    // Get the width and height of the table, including the borders and padding
+    // Add 10 to the height to prevent y-axis overflow
+    const tableWidth = table.offsetWidth;
+    const tableHeight = table.offsetHeight + 15;
+    
+    // Set the container width and height based on the table size
+    container.style.width = tableWidth + 'px';
+    container.style.height = tableHeight + 'px';
+  }
 
 // Initial rendering on page load
 // Render the initial table on page load
@@ -348,4 +356,59 @@ renderTable('length');
 renderGraph('length');
 // Render initial button
 updateSelectedButton('length');
+
+
+// Create Scatter diagram of comments published dates
+var sac = document.getElementById('scatterGraph').getContext('2d');
+// Retrieve activity data and adjust format
+const data =datasets['activity'];
+const activityData = Object.entries(data).map(([month, count]) => ({ x: month, y: count }));
+
+const maxCount = activityData.reduce((max, dataPoint) => {
+    return Math.max(max, dataPoint.y);
+  }, 0);
+
+// ScatterChart settings
+var scatterChart = new Chart(sac,{
+    type: 'line', 
+    data: {
+        datasets: [{
+            label: 'Comments Published per Month',
+            data: activityData,
+            backgroundColor: "rgba(255, 165, 0, 0.2)", 
+            borderColor: "#FFA509",
+            pointBackgroundColor: "#FFA509",
+            pointBorderColor: 'rgba(255, 255, 255, 1)',
+            pointRadius: 5,
+            fill: true, 
+        }],
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        height: 350,
+
+        scales: {
+        xAxes: [{
+            type: 'category', // Use 'category' for x-axis with month names
+            labels: activityData.map(item => item.x), // Provide the x-axis labels (month names)
+        }],
+        yAxes: [{
+            ticks: {
+            beginAtZero: true, // Set the y-axis to start from zero
+            suggestedMax: maxCount+2,
+            stepSize: 1,
+            },
+        }],
+        },
+    },
+});
+
+const scatterChartCanvas = document.getElementById('scatterGraph');
+
+
+
+
+
+
 

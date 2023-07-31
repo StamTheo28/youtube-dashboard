@@ -97,11 +97,15 @@
         </div>
     </div> 
     <div class="chart-container">
-    {% if comments_page == None %}
-        <img src="{% static 'img/icons/graph_unavailable.png' %}" alt="graph unavailbale">
-        <p>Chart Unavailbale</p>
-    {% else %}
-        <canvas id="sentimentPieChart" width="1200" height="300"></canvas>
+        {% if comments_page == None %}
+            <img src="{% static 'img/icons/graph_unavailable.png' %}" alt="graph unavailbale">
+            <p>Video Tags Unavailbale</p>
+        {% else %}
+        <div class="report-header">
+            <h5 class="recent-Articles">Video Tags</h5>
+        </div>
+        
+            <canvas id="word_cloud" class="word_cloud" width="300" height="250"></canvas>
     {% endif %}
     </div>
 
@@ -186,12 +190,20 @@
         </div>
     </div>
 
+    <!--Scatter comment Publish date-->
+    <div class="scatter-container">
+        <div class="report-header">
+            <h5 class="recent-Articles">Comment Publications</h5>
+        </div>
+        <canvas id="scatterGraph" height="400"></canvas>
+    </div>
+
     <!--Comments Analysis Graphs-->
     <div class="comment-analysis-container">
         <div class="horizontal-bar-container">
-            <button class="section-button" data-name="length" onclick="handleGraphButtonClick('length')">Comments Length</button>
-            <button class="section-button" data-name="frequency" onclick="handleGraphButtonClick('frequency')">Most Frequent Words</button>
-            <button class="section-button" data-name="emojis" onclick="handleGraphButtonClick('emojis')">Emojis</button>
+            <button class="section-button" data-name="length" data-color="#87CEEB" onclick="handleGraphButtonClick('length')">Comments Length</button>
+            <button class="section-button" data-name="frequency" data-color="#9370DB" onclick="handleGraphButtonClick('frequency')">Most Frequent Words</button>
+            <button class="section-button" data-name="sentiment" data-color="#FFA500" onclick="handleGraphButtonClick('sentiment')">Sentiment Distribution</button>
         </div>
         <div class="chart-table-container">
             <div class="chart-container" id="chart-container">
@@ -206,10 +218,14 @@
         </div>
     </div>
 
+
+
+
 {% endif %}
 
 {{ sentiment_percentages|json_script:"sentiment_percentages" }}
 {{ section_data|json_script:"section_data" }}
+{{ tag_cloud|json_script:"tag_cloud" }}
     
 <script src="{% static 'js/dashboard.js' %}"></script>
 <script src="{% static 'js/chart.js' %}"></script>

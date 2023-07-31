@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .utils.utils import url_parser, get_all_video_ids_in_cache, get_paginator
 from .utils.youCom import commentsAnalysis
-from .utils.graph import get_sentiment_pie_data, get_graph_data
+from .utils.graph import get_graph_data, get_tag_cloud_data
 from django.core.paginator import Paginator
 from django.core.cache import cache
 from django.contrib import messages
@@ -58,9 +58,12 @@ def analysis(request, video_id):
         comments_page = get_paginator(table_res, request, "comments_page")
 
         # Create graph data
-        sentiment_percentages = get_sentiment_pie_data(table_res)
-        section_data = get_graph_data(table_res)
-        print(section_data)
+        section_data = get_graph_data(results)
+        if meta['tags']==None:
+            tag_cloud = None
+        else:
+            tag_cloud = get_tag_cloud_data(meta['tags'])
+        
 
         #section_page = section_page[section]
 
@@ -68,8 +71,8 @@ def analysis(request, video_id):
         context = { "video_id":video_id, 
                     "meta":meta, 
                     "comments_page":comments_page,
-                    "sentiment_percentages": sentiment_percentages,
-                    "section_data":section_data
+                    "section_data":section_data,
+                    "tag_cloud":tag_cloud
                     }
         
 
