@@ -1,9 +1,8 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from .utils.utils import url_parser, get_all_video_ids_in_cache, get_paginator
+from .utils.utils import url_parser, get_all_video_ids_in_cache
 from .utils.youCom import commentsAnalysis
 from .utils.graph import get_graph_data, get_tag_cloud_data
-from django.core.paginator import Paginator
 from django.core.cache import cache
 from django.contrib import messages
 import json
@@ -48,14 +47,12 @@ def analysis(request, video_id):
     
     # Create paginator objects
     if meta['commentCount'] == None:
-        comments_page = None
         context = { "video_id":video_id, 
             "meta":meta, 
-            "comments_page":comments_page,
+            "comments":None,
             }
     else:
         table_res = results[['index','comment_id', 'like_count','reply_count','sentiment', 'comment','word_length']]
-        comments_page = get_paginator(table_res, request, "comments_page")
 
         # Create graph data
         section_data = get_graph_data(results)
@@ -63,16 +60,12 @@ def analysis(request, video_id):
             tag_cloud = None
         else:
             tag_cloud = get_tag_cloud_data(meta['tags'])
-        
-
-        #section_page = section_page[section]
-
-        
+    
         context = { "video_id":video_id, 
                     "meta":meta, 
-                    "comments_page":comments_page,
                     "section_data":section_data,
-                    "tag_cloud":tag_cloud
+                    "tag_cloud":tag_cloud,
+                    "comments":table_res.to_dict(orient='records')
                     }
         
 

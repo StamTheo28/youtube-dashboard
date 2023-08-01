@@ -34,6 +34,10 @@
                 <td>{{ meta.video_id }}</td>
             </tr>
             <tr>
+                <th>Video Category:</th>
+                <td>{{ meta.category }}</td>
+            </tr>
+            <tr>
                 <th>Channel Name:</th>
                 <td>{{ meta.channelTitle }}</td>
             </tr>
@@ -45,7 +49,11 @@
                 <th>Description:</th>
                 <td>
                 <div class="description">
-                    {{ meta.description }}
+                    {% if meta.description == None %}
+                        <p>N/A</p>
+                    {% else %}
+                        {{ meta.description }}
+                    {% endif %}
                 </div>
                 </td>
             </tr>
@@ -66,7 +74,7 @@
 
         <div class="box box2">
             <div class="text">
-                {% if comments_page == None %}
+                {% if comments == None %}
                     <h2 class="topic-heading">Disabled</h2>
                 {% else %}
                     <h2 class="topic-heading">{{ meta.commentCount }}</h2>
@@ -88,30 +96,27 @@
 
         <div class="box box4">
             <div class="text">
-                <h2 class="topic-heading">{{  meta.favoriteCount }}</h2>
-                <h2 class="topic">Favorite Count</h2>
+                <h2 class="topic-heading">{{  meta.duration }}</h2>
+                <h2 class="topic">Duration</h2>
             </div>
-
-            
-            <img src="{% static 'img/icons/published.png' %}" alt="published">
+            <img src="{% static 'img/icons/clock.png' %}" alt="duration">
         </div>
     </div> 
     <div class="chart-container">
-        {% if comments_page == None %}
-            <img src="{% static 'img/icons/graph_unavailable.png' %}" alt="graph unavailbale">
+        <div class="report-header">
+            <h5 class="recent-Articles">Youtube Video Tags</h5>
+        </div>
+        {% if tag_cloud == None %}
+            <img src="{% static 'img/icons/graph_unavailable.png' %}" alt="graph unavailbale" height="200" >
             <p>Video Tags Unavailbale</p>
         {% else %}
-        <div class="report-header">
-            <h5 class="recent-Articles">Video Tags</h5>
-        </div>
-        
             <canvas id="word_cloud" class="word_cloud" width="300" height="250"></canvas>
     {% endif %}
     </div>
 
 </div>
 
-{% if comments_page == None %}
+{% if comments == None %}
     <div class="report-error-container">
         <div >
             <h3 class="comment-section-error">Youtube Comments are disabled by the video owner: <br> {{ meta.channelTitle }} </h3>
@@ -122,72 +127,60 @@
     <div class="report-container">
         <div class="report-header">
             <h1 class="recent-Articles">Youtube Comments</h1>
+            <button id="exportButton">Export to CSV</button>
 
         </div>
 
         <div class="table-container">
-            <table class="responsive-table">
-                    <thead>
-                        <tr>
-                        <th>Id</th>
-                        <th>Comment_Id</th>
-                        <th>Like Count</th>
-                        <th>Reply Count</th>
-                        <th>Type</th>
-                        <th>Comment</th>
-                        <th>Length</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for row in comments_page  %}
-                            <tr>
-                                <td>{{ row.index }}</td>
-                                <td>{{ row.comment_id }}</td>
-                                <td>{{ row.like_count }}</td>
-                                <td>{{ row.reply_count }}</td>
-                                <td>
-                                    {% if row.sentiment == "positive" %}
-                                        <span class="label-tag-pos">{{ row.sentiment }}</span>
-                                    {% elif row.sentiment == "negative" %}
-                                        <span class="label-tag-neg">{{ row.sentiment }}</span>
-                                    {% else %}
-                                        <span class="label-tag-neu">{{ row.sentiment }}</span>
-                                    {% endif %}
-                                </td>
-                                <td class="comment-cell">
-                                    {% if row.comment|length > 40 %}
-                                        {{ row.comment|slice:40 }}...
-                                        <span class="comment-popup">{{ row.comment }}</span>
-                                    {% else  %}
-                                        {{ row.comment }}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {{ row.word_length }}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody> 
-            </table>
+            <div id="filters">
+                <label for="sentiment">Sentiment:</label>
+                <select id="sentiment">
+                    <option value="all">All</option>
+                    <option value="positive">Positive</option>
+                    <option value="negative">Negative</option>
+                    <option value="neutral">Neutral</option>
+                </select>
+                
+                <label for="sortBy">Sort By:</label>
+                <select id="sortBy">
+                    <option value="index">Index</option>
+                    <option value="likes">Likes</option>
+                    <option value="replies">Replies</option>
+                    <option value="word_length">Length</option>
+                </select>
 
-            <div class="pagination">
-                <span class="step-links">
-                    {% if comments_page.has_previous %}
-                    <a class="view" href="?comments_page=1"> First</a>
-                    <a class="view" href="?comments_page={{ comments_page.previous_page_number }}">Prev.</a>
-                    {% endif %}
-                
-                    <span class="current">
-                    Page {{ comments_page.number }} of {{ comments_page.paginator.num_pages }}.
-                    </span>
-                
-                    {% if comments_page.has_next %}
-                    <a class="view" href="?comments_page={{ comments_page.next_page_number }}">Next</a>
-                    <a class="view" href="?comments_page={{ comments_page.paginator.num_pages }}">Last</a>
-                    {% endif %}
-                </span>
+                <label for="sortOrder">Sort Order:</label>
+                <select id="sortOrder">
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
             </div>
+            <table>
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Comment ID</th>
+                    <th>Likes</th>
+                    <th>Replies</th>
+                    <th>Type</th>
+                    <th>Comment</th>
+                    <th>Length</th>
+                  </tr>
+                </thead>
+                <tbody id="content"></tbody>
+              </table>
+              <div class="paginator">
+                <button class="prev-btn" onclick="gotoPage(currentPage - 1)">Previous</button>
+                <div class="page-numbers" id="paginator">
+                  <!-- Paginator buttons will be dynamically added here -->
+                </div>
+                <button class="next-btn" onclick="gotoPage(currentPage + 1)">Next</button>
+              </div>
+              
+              
+
         </div>
+
     </div>
 
     <!--Scatter comment Publish date-->
@@ -226,7 +219,8 @@
 {{ sentiment_percentages|json_script:"sentiment_percentages" }}
 {{ section_data|json_script:"section_data" }}
 {{ tag_cloud|json_script:"tag_cloud" }}
-    
+{{ comments|json_script:"comments" }}
+
 <script src="{% static 'js/dashboard.js' %}"></script>
 <script src="{% static 'js/chart.js' %}"></script>
 

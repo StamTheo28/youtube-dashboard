@@ -641,7 +641,6 @@ background-color: #9e9e9eb2;
 .stat-container {
     min-height: 300px;
 	max-height: 900px;
-	
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -661,6 +660,7 @@ background-color: #9e9e9eb2;
 
 .chart-container {
 	margin: 5px;
+	max-width: 500px;
 	background-color: #ffffff;
 	border-radius: 20px;
 	box-shadow: 3px 3px 10px rgb(188, 188, 188);
@@ -673,8 +673,8 @@ background-color: #9e9e9eb2;
   }
   
   .chart-container img {
-	width: 60%;
-	height: 60%;
+	width: 50%;
+	height: 50%;
 	border-radius: 20px;
 	object-fit: cover;
   }
@@ -778,7 +778,7 @@ background-color: #9e9e9eb2;
 	padding: 0px 20px 20px 20px;
 }
 .report-header {
-	height: 80px;
+	height: 60px;
 	width: 100%;
 	display: flex;
 	align-items: center;
@@ -792,6 +792,7 @@ background-color: #9e9e9eb2;
 	font-weight: 600;
 	color: #5500cb;
 }
+
 
 .view {
 	height: 35px;
@@ -859,7 +860,7 @@ background-color: #9e9e9eb2;
 	  display: block;
 	  margin-bottom: 5px;
 	}
-  }
+  }  
   
   .table-container {
 	max-width: 100%;
@@ -975,6 +976,48 @@ background-color: #9e9e9eb2;
 	border-radius: 5px;
 }
 
+/* Paginator Styles */
+.paginator {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20px;
+  }
+  
+  .paginator button {
+	border: none;
+	background-color: var(--primary-color);
+	color: #fff;
+	padding: 10px 15px;
+	border-radius: 5px;
+	cursor: pointer;
+  }
+  
+  .paginator button:hover {
+	background-color: var(--secondary-color);
+  }
+  
+  .paginator button:focus {
+	outline: none;
+  }
+  
+  .paginator .prev-btn {
+	margin-right: 10px;
+  }
+  
+  .paginator .next-btn {
+	margin-left: 10px;
+  }
+  
+  .paginator .page-numbers button {
+	margin: 0 5px;
+  }
+  
+  .paginator .page-numbers button.active {
+	background-color: var(--one-use-color);
+  }
+  
+
 /* comment-analysis container */
 .comment-analysis-container {
 	min-height: 600px;
@@ -1018,6 +1061,7 @@ background-color: #9e9e9eb2;
 }
 
 .chart-container{
+	top:10px;
 	position: relative;
 	flex: 1;
 	border: none;
@@ -1038,27 +1082,18 @@ background-color: #9e9e9eb2;
 }
 
 .scatter-container {
-	min-height: 600px;
+	min-height: 500px;
 	max-width: 1200px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	margin: 70px auto 0;
+	margin: 40px auto 0;
 	background-color: #ffffff;
 	border-radius: 20px;
 	box-shadow: 3px 3px 10px rgb(188, 188, 188);
-	padding: 10px;
+	padding: 5px;
   }
 
-/* Tag Cloud*/
-.wordloud {
-	transition: transform 0.2s ease-in-out;
-  }
-  
-  /* Scale the word up when hovering over it */
-  .wordCloud:hover {
-	transform: scale(1.2);
-  }
 
 @media (max-width: 768px) {
 	.chart-table-container {
@@ -1162,6 +1197,7 @@ background-color: #9e9e9eb2;
     .recent-Articles {
         font-size: 20px;
     }
+	
     .report-topic-heading,
     .item1,
     .items {

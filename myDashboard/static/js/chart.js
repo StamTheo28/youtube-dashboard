@@ -1,23 +1,25 @@
 // Create a tag cloud
 const tagCloudData = JSON.parse(document.getElementById('tag_cloud').textContent);
 
-const list = [];
-for (const i in tagCloudData) {
-    list.push([i,tagCloudData[i] ]);
+// Check if tags are available to create cloud graph
+if (tagCloudData!=null){
+    const list = [];
+    for (const i in tagCloudData) {
+        list.push([i,tagCloudData[i] ]);
+    }
+
+    WordCloud(document.getElementById('word_cloud'), {
+        list: list,
+        weightFactor: 25,
+        fontFamily: 'Arial, sans-serif',
+        color: 'random-dark',
+        rotateRatio: 0.4,
+        gridSize: 15,
+        shuffle: true,
+        minSize: 15,
+        maxWords: 40,
+    });
 }
-
-WordCloud(document.getElementById('word_cloud'), {
-    list: list,
-    weightFactor: 25,
-    fontFamily: 'Arial, sans-serif',
-    color: 'random-dark',
-    rotateRatio: 0.4,
-    gridSize: 15,
-    shuffle: true,
-    minSize: 15,
-    maxWords: 40,
-});
-
 
 // Function to handle word hover event
 function handleWordHover(event) {

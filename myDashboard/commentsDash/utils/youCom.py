@@ -17,9 +17,64 @@ from spacymoji import Emoji
 
 from tqdm.auto import tqdm
 
+# Youtube categories ids and their names
+youtube_categories = {
+    '1': 'Film & Animation',
+    '2': 'Autos & Vehicles',
+    '10': 'Music',
+    '15': 'Pets & Animals',
+    '17': 'Sports',
+    '18': 'Short Movies',
+    '19': 'Travel & Events',
+    '20': 'Gaming',
+    '21': 'Videoblogging',
+    '22': 'People & Blogs',
+    '23': 'Comedy',
+    '24': 'Entertainment',
+    '25': 'News & Politics',
+    '26': 'Howto & Style',
+    '27': 'Education',
+    '28': 'Science & Technology',
+    '29': 'Nonprofits & Activism',
+    '30': 'Movies',
+    '31': 'Anime/Animation',
+    '32': 'Action/Adventure',
+    '33': 'Classics',
+    '34': 'Comedy',
+    '35': 'Documentary',
+    '36': 'Drama',
+    '37': 'Family',
+    '38': 'Foreign',
+    '39': 'Horror',
+    '40': 'Sci-Fi/Fantasy',
+    '41': 'Thriller',
+    '42': 'Shorts',
+    '43': 'Shows',
+    '44': 'Trailers'
+}
 
+def convert_duration(duration):
+    # Check if the duration is in the right format
+    if not duration.startswith("PT"):
+        raise ValueError("Invalid duration format")
 
+    # Remove the 'PT' prefix and 'S' suffix from the duration
+    duration = duration[2:-1]
 
+    # Split the duration into minutes and seconds
+    minutes, seconds = map(int, duration.split("M"))
+
+    # Convert minutes to hours if necessary
+    hours = minutes // 60
+    minutes %= 60
+
+    # Format the duration as a string
+    if hours > 0:
+        return f"{hours}h {minutes}m {seconds}s"
+    elif minutes > 0:
+        return f"{minutes}m {seconds}s"
+    else:
+        return f"{seconds}s"
 
 
 # Remove tags and hashhtags from comments
@@ -42,24 +97,26 @@ def get_most_famous_comments( video_id, max_comments=20):
 
     # Retrieve video statistics
     video = youtube.videos().list(
-    part='snippet,statistics',
+    part='snippet,statistics,contentDetails',
     id=video_id
     ).execute()
 
     # Extract the video metadata
     meta = {}
+    meta['category'] = youtube_categories[video['items'][0]['snippet']['categoryId']]
     meta['video_id'] = video_id
     meta['title'] = video['items'][0]['snippet']['title']
     meta['description'] = video['items'][0]['snippet']['description']
+    if len(meta['description'])==0:
+        meta['description'] = None
     meta['publishedAt'] = clean_date(video['items'][0]['snippet']['publishedAt'])
-    meta['thumbnail'] = video['items'][0]['snippet']['thumbnails']['medium']['url']
+    meta['thumbnail'] = video['items'][0]['snippet']['thumbnails']['high']['url']
     meta['channelTitle'] = video['items'][0]['snippet']['channelTitle']
     meta['viewCount'] = video['items'][0]['statistics']['viewCount']
     try:
         meta['tags'] = video['items'][0]['snippet']['tags']
     except:
         meta['tags'] = None
-    print("Tags are here!  ",meta['tags'])
     try:
         meta['commentCount'] = video['items'][0]['statistics']['commentCount']
         commentSection = True
@@ -67,8 +124,8 @@ def get_most_famous_comments( video_id, max_comments=20):
         meta['commentCount'] = None
         commentSection = False
     meta['likeCount'] = video['items'][0]['statistics']['likeCount']
-    meta['favoriteCount'] = video['items'][0]['statistics']['favoriteCount']
-
+    meta['duration'] = convert_duration(video['items'][0]['contentDetails']['duration'])
+    print(meta['duration'])
 
     # Check the comment section is diabled
     if commentSection:
