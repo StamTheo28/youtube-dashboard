@@ -127,7 +127,7 @@
     <div class="report-container">
         <div class="report-header">
             <h1 class="recent-Articles">Youtube Comments</h1>
-            <button id="exportButton">Export to CSV</button>
+            <button class="exportButton" id="exportButton">Export to CSV</button>
 
         </div>
 
@@ -187,9 +187,56 @@
     <div class="scatter-container">
         <div class="report-header">
             <h5 class="recent-Articles">Comment Publications</h5>
+            <div class="scatter-menu">
+                <div class="dropdown-container">
+                    <label for="x-axis-option">Per:</label>
+                    <select id="x-axis-option" onchange="updateScatterPlot()">
+                        <option value="month">Monthly</option>
+                        <option value="semester">Semester</option>
+                        <option value="year">Yearly</option>
+                    </select>
+                </div>
+                <div class="graph-help-cell">
+                    <i class="fa fa-question-circle"></i>
+                    <div class="help-popup">
+                        <table>
+                          <caption><strong>Months</strong></caption>
+                          <tr>
+                            <td>The number of comments in each month.</td>
+                          </tr>
+                        </table>
+                      
+                        <table>
+                          <caption><strong>Semesters</strong></caption>
+                          <tr>
+                            <td>The number of comments in each semester.</td>
+                          </tr>
+                          <tr>
+                            <td>T1: Jan-Apr</td>
+                          </tr>
+                          <tr>
+                            <td>T2: May-Aug</td>
+                          </tr>
+                          <tr>
+                            <td>T3: Sept-Dec</td>
+                          </tr>
+                        </table>
+                      
+                        <table>
+                          <caption><strong>Years</strong></caption>
+                          <tr>
+                            <td>The number of comments in each year.</td>
+                          </tr>
+                        </table>
+                    </div>                      
+                </div>
+            </div>
         </div>
-        <canvas id="scatterGraph" height="400"></canvas>
+        <div>
+            <canvas id="scatterGraph"></canvas>
+        </div>
     </div>
+    
 
     <!--Comments Analysis Graphs-->
     <div class="comment-analysis-container">

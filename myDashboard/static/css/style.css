@@ -976,6 +976,20 @@ background-color: #9e9e9eb2;
 	border-radius: 5px;
 }
 
+/* Export button */
+.exportButton {
+	border: none;
+	background-color: var(--primary-color);
+	color: #fff;
+	padding: 10px 15px;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.exportButton:hover {
+	background-color: var(--secondary-color);
+  }
+
 /* Paginator Styles */
 .paginator {
 	display: flex;
@@ -1105,6 +1119,47 @@ background-color: #9e9e9eb2;
 		margin-top: -10px; 
 	}
 }
+
+.scatter-menu {
+	display: grid;
+	grid-template-columns: 1fr 0.3fr; /* Divide the container into two equal columns */
+	grid-gap: 40px;
+}
+
+.dropdown-container {
+	margin-top:10px;
+}
+
+
+/* Charts Help Tooltip */
+.graph-help-cell {
+	position: relative;
+	font-size: 30px;
+	width: 25px;
+  }
+  
+  .help-popup {
+	font-size: 14px;
+	display: none;
+	position: absolute;
+	top: 100%;
+	width:200px;
+	z-index: 1;
+	padding: 10px;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  }
+  
+  .graph-help-cell:hover .help-popup {
+	display: block;
+  }
+  
+  
+
+  
+  
 
 
 /* Responsive CSS */

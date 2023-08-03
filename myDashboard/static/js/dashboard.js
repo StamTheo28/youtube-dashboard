@@ -15,55 +15,43 @@ button.addEventListener('click', function() {
 const jsonData = JSON.parse(document.getElementById('comments').textContent);
 // Parse the JSON data passed from the Django view
 
-console.log(jsonData)
 // Set the number of items per page
     // Global variables
 var currentPage = 1; // Current page number
 var itemsPerPage = 10; // Number of items per page
 
 // Function to initialize the paginator
-function initPaginator() {
-var paginator = document.getElementById("paginator");
-var totalPages = Math.ceil(jsonData.length / itemsPerPage);
+function initPaginator(data) {
+    var paginator = document.getElementById("paginator");
+    var totalPages = Math.ceil(data.length / itemsPerPage);
+    console.log(totalPages)
+    // Clear the paginator content before re-creating buttons
+    paginator.innerHTML = "";
 
-// Clear the paginator content before re-creating buttons
-paginator.innerHTML = "";
-
-// Create buttons for each page
-for (var i = 1; i <= totalPages; i++) {
-    var button = document.createElement("button");
-    button.textContent = i;
-    button.addEventListener("click", function() {
-    var pageNum = parseInt(this.textContent);
-    displayPage(pageNum);
-    });
-    paginator.appendChild(button);
-}
-
-// Highlight the current page button
-var buttons = paginator.getElementsByTagName("button");
-for (var i = 0; i < buttons.length; i++) {
-    if (parseInt(buttons[i].textContent) === currentPage) {
-    buttons[i].classList.add("active");
-    } else {
-    buttons[i].classList.remove("active");
+    // Create buttons for each page
+    for (var i = 1; i <= totalPages; i++) {
+        var button = document.createElement("button");
+        button.textContent = i;
+        button.addEventListener("click", function() {
+        console.log(this.textContent)
+        var pageNum = parseInt(this.textContent);
+        displayPage(pageNum, data);
+        });
+        paginator.appendChild(button);
     }
-}
+
+    // Highlight the current page button
+    var buttons = paginator.getElementsByTagName("button");
+    for (var i = 0; i < buttons.length; i++) { 
+        if (parseInt(buttons[i].textContent) === currentPage) {
+        buttons[i].classList.add("active");
+        } else {
+        buttons[i].classList.remove("active");
+        }
+    }
 }
 
     // Function to navigate to a specific page
-function gotoPage(pageNum) {
-    var totalPages = Math.ceil(jsonData.length / itemsPerPage);
-
-    if (pageNum < 1) {
-        pageNum = 1;
-    } else if (pageNum > totalPages) {
-        pageNum = totalPages;
-    }
-
-    currentPage = pageNum;
-    displayPage(currentPage);
-}
 
 function displayPage(pageNum, data) {
     currentPage = pageNum; // Update the current page number
@@ -159,28 +147,30 @@ function filterAndSortData() {
 function handleSortAndFilter() {
     sortOption = document.getElementById("sortBy").value;
     var sortOrder = document.getElementById("sortOrder").value;
+    
     var sortedAndFilteredData = filterAndSortData();
-    console.log(sortedAndFilteredData)
     displayPage(1, sortedAndFilteredData); // Re-display the first page after sorting and filtering
+    console.log(sortedAndFilteredData)
+    initPaginator(sortedAndFilteredData);
     }
 
 // Call the initialization function when the page loads
 document.getElementById("sortBy").addEventListener("change", function() {
     handleSortAndFilter();
     paginatorInitialized = false; // Reset the flag when sorting changes
-    initPaginator(); // Reinitialize the paginator after sorting and filtering
+    initPaginator(sortedAndFilteredData); // Reinitialize the paginator after sorting and filtering
 });
 
 document.getElementById("sortOrder").addEventListener("change", function() {
     handleSortAndFilter();
     paginatorInitialized = false; // Reset the flag when sorting changes
-    initPaginator(); // Reinitialize the paginator after sorting and filtering
+    initPaginator(sortedAndFilteredData); // Reinitialize the paginator after sorting and filtering
 });
 
 document.getElementById("sentiment").addEventListener("change", function() {
     handleSortAndFilter();
     paginatorInitialized = false; // Reset the flag when sentiment filter changes
-    initPaginator(); // Reinitialize the paginator after sorting and filtering
+    initPaginator(sortedAndFilteredData); // Reinitialize the paginator after sorting and filtering
 });
 
 // Initialize the sorting and paginator by calling the handleSortAndFilter function

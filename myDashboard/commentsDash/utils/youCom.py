@@ -11,7 +11,7 @@ import re
 import time
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
-from datetime import datetime
+from datetime import datetime, timedelta
 import spacy
 from spacymoji import Emoji
 
@@ -61,12 +61,16 @@ def convert_duration(duration):
     # Remove the 'PT' prefix and 'S' suffix from the duration
     duration = duration[2:-1]
 
-    # Split the duration into minutes and seconds
-    minutes, seconds = map(int, duration.split("M"))
-
-    # Convert minutes to hours if necessary
-    hours = minutes // 60
-    minutes %= 60
+    # Split the duration into minutes and seconds if video is less than a minute
+    if "M" not in duration:
+        hours = 0
+        minutes = 0
+        seconds = int(duration[:2].replace("S",""))
+    else:
+        minutes, seconds = map(int, duration.split("M"))
+        # Convert minutes to hours if necessary
+        hours = minutes // 60
+        minutes %= 60
 
     # Format the duration as a string
     if hours > 0:
@@ -91,7 +95,7 @@ def clean(text):
     return text
 
 # Retrieves the top k most famous comments of a youtube video
-def get_most_famous_comments( video_id, max_comments=20):
+def get_most_famous_comments( video_id, max_comments=30):
     youtube = build('youtube', 'v3', developerKey=API_KEY)
 
 
@@ -125,7 +129,7 @@ def get_most_famous_comments( video_id, max_comments=20):
         commentSection = False
     meta['likeCount'] = video['items'][0]['statistics']['likeCount']
     meta['duration'] = convert_duration(video['items'][0]['contentDetails']['duration'])
-    print(meta['duration'])
+    
 
     # Check the comment section is diabled
     if commentSection:
@@ -152,7 +156,6 @@ def get_most_famous_comments( video_id, max_comments=20):
             comments.append(comment_data)
         comments_list = []
 
-        print(comments[0]['publishedAt'])
         # Retrieve the full comments using the comment IDs
         for comment in comments:
             try:
@@ -235,19 +238,82 @@ def get_emoji(data):
     emoji_counts_dict = emoji_counts.head(10).set_index('Emoji')['Count'].to_dict()
     return emoji_counts_dict
 
-def get_month_count(data):
+
+from datetime import datetime, timedelta
+
+from datetime import datetime, timedelta
+def get_comment_activity(data):
     dates = data['publishedAt']
     # Parse the datetimes into datetime objects
     datetimes = sorted([datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%SZ') for dt_str in dates])
 
-    # Create a dictionary to store the count of each month
+    # Create dictionaries to store the count of each month, trimester, and year
     month_counts = {}
+    trimester_counts = {}
+    year_counts = {}
 
-    # Group the datetimes by month and count occurrences
+    # Group the datetimes by month, trimester, and year and count occurrences
     for dt in datetimes:
         month = dt.strftime('%Y-%m')  # Extract the year-month part (e.g., '2009-01')
+        trimester = f"{dt.year}-T{((dt.month-1) // 4) + 1}"  # Calculate the trimester based on the month
+        year = str(dt.year)
+
         if month not in month_counts:
             month_counts[month] = 0
+        if trimester not in trimester_counts:
+            trimester_counts[trimester] = 0
+        if year not in year_counts:
+            year_counts[year] = 0
+
         month_counts[month] += 1
+        trimester_counts[trimester] += 1
+        year_counts[year] += 1
+
+    # Step 2: Check for missing months, trimesters, and years and add them with a count of 0
+    start_date = min(datetimes).replace(day=1)
+    end_date = max(datetimes).replace(day=28) + timedelta(days=4)  # To make sure the last month is included
+
+    current_date = start_date
+    while current_date <= end_date:
+        month = current_date.strftime('%Y-%m')
+        trimester = f"{current_date.year}-T{((current_date.month-1) // 4) + 1}"
+        year = str(current_date.year)
+
+        if month not in month_counts:
+            month_counts[month] = 0
+        if trimester not in trimester_counts:
+            trimester_counts[trimester] = 0
+        if year not in year_counts:
+            year_counts[year] = 0
+
+        current_date += timedelta(days=32)  # Move to the next month
+
+    # Check if there are only two dates in the month, semester, or year dictionaries
+    if len(month_counts) <= 2:
+        prev_date = min(datetimes) - timedelta(days=32)
+        next_date = max(datetimes) + timedelta(days=32)
+        month_counts[prev_date.strftime('%Y-%m')] = 0
         
-    return month_counts
+
+    if len(trimester_counts) <= 2:
+        prev_date = min(datetimes) - timedelta(days=140)
+        next_date = max(datetimes) + timedelta(days=140)
+        trimester_counts[prev_date.strftime('%Y-T1')] = 0
+       
+
+    if len(year_counts) <= 2:
+        prev_date = min(datetimes) - timedelta(days=365)
+        next_date = max(datetimes) + timedelta(days=365)
+        year_counts[str(prev_date.year)] = 0
+        
+
+    # Sort the dictionaries by keys to have the data in chronological order
+    month_counts = dict(sorted(month_counts.items()))
+    trimester_counts = dict(sorted(trimester_counts.items()))
+    year_counts = dict(sorted(year_counts.items()))
+
+    return {
+        'month': month_counts,
+        'semester': trimester_counts,
+        'year': year_counts
+    }

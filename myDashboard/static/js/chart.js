@@ -360,53 +360,79 @@ renderGraph('length');
 updateSelectedButton('length');
 
 
-// Create Scatter diagram of comments published dates
-var sac = document.getElementById('scatterGraph').getContext('2d');
-// Retrieve activity data and adjust format
-const data =datasets['activity'];
-const activityData = Object.entries(data).map(([month, count]) => ({ x: month, y: count }));
 
-const maxCount = activityData.reduce((max, dataPoint) => {
-    return Math.max(max, dataPoint.y);
-  }, 0);
+let scatterInstance = null
 
-// ScatterChart settings
-var scatterChart = new Chart(sac,{
-    type: 'line', 
-    data: {
-        datasets: [{
-            label: 'Comments Published per Month',
-            data: activityData,
-            backgroundColor: "rgba(255, 165, 0, 0.2)", 
-            borderColor: "#FFA509",
-            pointBackgroundColor: "#FFA509",
-            pointBorderColor: 'rgba(255, 255, 255, 1)',
-            pointRadius: 5,
-            fill: true, 
-        }],
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        height: 350,
+function updateScatterPlot() {
+    // Get the canvas element and context
+    var canvas = document.getElementById('scatterGraph');
+    var sac = canvas.getContext('2d');
 
-        scales: {
-        xAxes: [{
-            type: 'category', // Use 'category' for x-axis with month names
-            labels: activityData.map(item => item.x), // Provide the x-axis labels (month names)
-        }],
-        yAxes: [{
-            ticks: {
-            beginAtZero: true, // Set the y-axis to start from zero
-            suggestedMax: maxCount+2,
-            stepSize: 1,
-            },
-        }],
+    // Retrieve activity data and adjust format
+    const data = datasets['activity'];
+
+    // Get the dropdown element
+    var dropdown = document.getElementById("x-axis-option");
+
+    const activityData = Object.entries(data[dropdown.value]).map(([date, count]) => ({ x: date, y: count }));
+
+    const maxCount = activityData.reduce((max, dataPoint) => {
+        return Math.max(max, dataPoint.y);
+    }, 0);
+
+    // Clear the canvas and all event listeners
+    canvas.width  = 400;
+    canvas.height = 400; 
+    sac.clearRect(0, 0, canvas.width, canvas.height);
+
+    // ScatterChart settings
+    if (scatterInstance) {
+        scatterInstance.destroy(); // Clear previous chart and event listeners
+    }
+
+    scatterInstance = new Chart(sac, {
+        type: 'line', 
+        data: {
+            datasets: [{
+                label: 'Comments Published per ' + dropdown.value,
+                data: activityData,
+                backgroundColor: "rgba(255, 165, 0, 0.2)", 
+                borderColor: "#FFA509",
+                pointBackgroundColor: "#FFA509",
+                pointBorderColor: 'rgba(255, 255, 255, 1)',
+                pointRadius: 5,
+                fill: true, 
+            }],
         },
-    },
-});
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            height: 350,
 
-const scatterChartCanvas = document.getElementById('scatterGraph');
+            scales: {
+                xAxes: [{
+                    type: 'category', // Use 'category' for x-axis with month names
+                    labels: activityData.map(item => item.x), // Provide the x-axis labels (month names)
+                }],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true, // Set the y-axis to start from zero
+                        suggestedMax: maxCount+1,
+                        stepSize: 2,
+                    },
+                }],
+            },
+        },
+    });
+}
+
+
+updateScatterPlot();
+
+
+
+
+
 
 
 

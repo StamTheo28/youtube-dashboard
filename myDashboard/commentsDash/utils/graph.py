@@ -1,4 +1,4 @@
-from .youCom import get_most_frequent_words, get_emoji, get_month_count
+from .youCom import get_most_frequent_words, get_emoji, get_comment_activity
 
 
 
@@ -20,7 +20,7 @@ def get_graph_data(data):
     emoji_counts =  get_emoji(data)
 
     # Number of most famous comments per month (Scatter plot)
-    month_count = get_month_count(data)
+    month_count = get_comment_activity(data)
     graph_dict = {'length':comment_length,
                   "frequency":most_frequent_words,
                   "emojis":emoji_counts,
