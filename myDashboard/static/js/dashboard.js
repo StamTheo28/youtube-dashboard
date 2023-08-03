@@ -70,7 +70,7 @@ function displayPage(pageNum, data) {
     var tr = document.createElement("tr");
     tr.innerHTML = `
         <td>${row.index}</td>
-        <td class="comment-cell">${row.comment_id.substring(0, 5)}...<span class="comment-popup">${row.comment_id}</span></td>
+        <td class="comment-cell">${row.comment_id.substring(0, 10)}...<span class="comment-popup">${row.comment_id}</span></td>
         <td>${row.like_count}</td>
         <td>${row.reply_count}</td>
         <td><span class="${getClassForSentiment(row.sentiment)}">${row.sentiment}</span></td>

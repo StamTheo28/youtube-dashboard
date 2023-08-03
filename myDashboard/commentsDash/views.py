@@ -60,6 +60,8 @@ def analysis(request, video_id):
             tag_cloud = None
         else:
             tag_cloud = get_tag_cloud_data(meta['tags'])
+
+       
     
         context = { "video_id":video_id, 
                     "meta":meta, 

@@ -140,18 +140,26 @@ function getTableSettings(table, section, data){
 
     if (section==='length'){
         
-        const min = Math.min(...data);
-        const max = Math.max(...data);
-        const numRanges = Math.ceil(Math.sqrt(data.length)); 
-        
-        const intervalWidth = (max - min) / numRanges;
-        const counts = new Array(numRanges).fill(0);
+        const minData = Math.min(...data);
+        const maxData = Math.max(...data);
+        const binCount = Math.ceil(Math.sqrt(data.length)); 
+        const binWidth = Math.ceil((maxData - minData) / binCount); // Round up the bin width
 
-        // Count how many data points fall into each interval
-        data.forEach((length) => {
-            const intervalIndex = Math.ceil((length - min) / intervalWidth);
-            counts[intervalIndex]++;
+        const bins = Array(binCount).fill(0);
+
+        data.forEach((value) => {
+            const binIndex = Math.floor((value - minData) / binWidth);
+            if (binIndex >= 0 && binIndex < binCount) {
+                bins[binIndex]++;
+            }
         });
+
+        const binLabels = [];
+        for (let i = 0; i < binCount; i++) {
+            const lower = minData + i * binWidth;
+            const upper = minData + (i + 1) * binWidth;
+            binLabels.push(`${lower} - ${upper}`);
+        }
 
         // Create the table and its header row
         const headerRow = document.createElement('tr');
@@ -164,19 +172,18 @@ function getTableSettings(table, section, data){
         table.appendChild(headerRow);
 
         // Add table data rows for each interval
-        for (let i = 0; i < numRanges; i++) {
+        for (let i = 0; i < binCount; i++) {
             const row = document.createElement('tr');
-            const rangeStart = (min + i * intervalWidth).toFixed(1);
-            const rangeEnd = (min + (i + 1) * intervalWidth).toFixed(1);
             const labelCell = document.createElement('td');
-            labelCell.textContent = `${rangeStart} - ${rangeEnd}`;
+            labelCell.textContent = `${binLabels[i]}`;
             const countCell = document.createElement('td');
-            countCell.textContent = counts[i];
+            countCell.textContent = bins[i];
             row.appendChild(labelCell);
             row.appendChild(countCell);
             table.appendChild(row);
         }
         return table
+
     } else if (section==='frequency'){
         // Create the table and its header row
         const headerRow = document.createElement('tr');
@@ -205,13 +212,12 @@ function getTableSettings(table, section, data){
 
 function getGraphSettings(section, data){
     if (section === 'length'){
-        // Create histogram data
-        const values = Object.values(data)
-        
+       // Create histogram data
+        const values = Object.values(data);
         const minData = Math.min(...values);
         const maxData = Math.max(...values);
         const binCount = Math.ceil(Math.sqrt(values.length)); 
-        const binWidth = (maxData - minData) / binCount;
+        const binWidth = Math.ceil((maxData - minData) / binCount); // Round up the bin width
 
         const bins = Array(binCount).fill(0);
 
@@ -224,13 +230,13 @@ function getGraphSettings(section, data){
 
         const binLabels = [];
         for (let i = 0; i < binCount; i++) {
-            const lower = (minData + i * binWidth).toFixed(1);
-            const upper = (minData + (i + 1) * binWidth).toFixed(1);
+            const lower = minData + i * binWidth;
+            const upper = minData + (i + 1) * binWidth;
             binLabels.push(`${lower} - ${upper}`);
         }
 
 
-        const graphSettings =  {
+        const graphSettings = {
             type: 'bar',
             data: {
                 labels: binLabels,
@@ -252,13 +258,14 @@ function getGraphSettings(section, data){
                         }
                     }],
                     yAxes: [{
-                      ticks: {
-                        beginAtZero: true, 
-                      },
+                        ticks: {
+                            beginAtZero: true, 
+                        },
                     }],
-                  },
+                },
             },
-        }
+        };
+
         return graphSettings
 
     } else if(section === 'frequency'){
@@ -297,13 +304,14 @@ function getGraphSettings(section, data){
     } else {
 // Convert the data to the required format
         data = datasets[section]
+        const roundedData = Object.values(data).map(value => parseFloat(value.toFixed(1)));
         
         const graphSettings = {
                 type: 'pie',
                 data: {
                     labels: Object.keys(data),
                     datasets: [{
-                        data: Object.values(data),
+                        data: roundedData,
                         backgroundColor: [
                             'rgba(75, 192, 192, 0.6)',
                             'rgba(255, 206, 86, 0.6)',

@@ -20,33 +20,54 @@
 
 
 <div class="meta-container">
-    <div class="left-div">
+    <div class="video-frame">
             <img class="profile-picture" src="{{ meta.thumbnail }}" alt="Thumbnail">
+            <div class="controls">
+                <a href="https://www.youtube.com/watch?v={{ meta.video_id }}" target="_blank">
+                    <div class="play-button">
+                        <span class="play-icon"></span>
+                    </div>
+                </a>
+                <div class="progress-bar-container">
+                    <div class="progress-bar"></div>
+                    <div class="video-tip-cell">
+                        <i class="fa fa-question-circle"></i>
+                        <div class="tip-popup">
+                            <table>
+                            <caption><strong>Tip</strong></caption>
+                            <tr>
+                                <td>You can visit the YouTube video directly by pressing the play button on the left.</td>
+                            </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </div>
     <div class="right-div">
-        <table>
+        <table id="interactive-table">
             <tr>
-                <th>Video Title:</th>
+                <th> Video Title: </th>
                 <td>{{ meta.title }}</td>
             </tr>
             <tr>
-                <th>Video ID:</th>
+                <th> Video ID: </th>
                 <td>{{ meta.video_id }}</td>
             </tr>
             <tr>
-                <th>Video Category:</th>
+                <th> Video Category: </th>
                 <td>{{ meta.category }}</td>
             </tr>
             <tr>
-                <th>Channel Name:</th>
+                <th> Channel Name: </th>
                 <td>{{ meta.channelTitle }}</td>
             </tr>
             <tr>
-                <th>Publish Date:</th>
+                <th> Publish Date: </th>
                 <td>{{ meta.publishedAt }}</td>
             </tr>
             <tr>
-                <th>Description:</th>
+                <th> Description: </th>
                 <td>
                 <div class="description">
                     {% if meta.description == None %}
@@ -127,7 +148,51 @@
     <div class="report-container">
         <div class="report-header">
             <h1 class="recent-Articles">Youtube Comments</h1>
-            <button class="exportButton" id="exportButton">Export to CSV</button>
+            <div class="export-menu">
+                <div class="export-help-cell">
+                    <button class="exportButton" id="exportButton">Export to CSV</button>
+                    <div class="help-popup">
+                        <table>
+                            <caption><strong>Export to CSV</strong></caption>
+                            <tr>
+                            <td>Export the Youtube Comments table to a CSV file in the sorted order of the table.</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="graph-help-cell">
+                    <i class="fa fa-question-circle"></i>
+                    <div class="help-popup">
+                        <table>
+                          <caption><strong>Information</strong></caption>
+                          <tr>
+                            <td>This graph contains the top 200 most famous/relevant comments provided by Youtube.</td>
+                          </tr>
+                        </table>
+                        
+                        <table>
+                          <caption><strong>Sort By Sentiment</strong></caption>
+                          <tr>
+                            <td>Sort comments based on their sentiment value (Positive, Neutral & Negative).</td>
+                          </tr>
+                        </table>
+                      
+                        <table>
+                          <caption><strong>Sort By Attribute</strong></caption>
+                          <tr>
+                            <td>Sort comments based on one of their numeric attributes (Index(Relevant), Comment Likes, Comment Replies & Comment Lenght).</td>
+                          </tr>
+                        </table>
+
+                        <table>
+                            <caption><strong>Sort By Order</strong></caption>
+                            <tr>
+                              <td>Sort comments in Ascending/Descending order.</td>
+                            </tr>
+                          </table>
+                    </div>                      
+                </div>
+            </div>
 
         </div>
 
@@ -176,11 +241,7 @@
                 </div>
                 <button class="next-btn" onclick="gotoPage(currentPage + 1)">Next</button>
               </div>
-              
-              
-
         </div>
-
     </div>
 
     <!--Scatter comment Publish date-->
@@ -241,10 +302,39 @@
     <!--Comments Analysis Graphs-->
     <div class="comment-analysis-container">
         <div class="horizontal-bar-container">
-            <button class="section-button" data-name="length" data-color="#87CEEB" onclick="handleGraphButtonClick('length')">Comments Length</button>
-            <button class="section-button" data-name="frequency" data-color="#9370DB" onclick="handleGraphButtonClick('frequency')">Most Frequent Words</button>
-            <button class="section-button" data-name="sentiment" data-color="#FFA500" onclick="handleGraphButtonClick('sentiment')">Sentiment Distribution</button>
+            <div class="buttons-container">
+                <button class="section-button" data-name="length" data-color="#87CEEB" onclick="handleGraphButtonClick('length')">Comments Length</button>
+                <button class="section-button" data-name="frequency" data-color="#9370DB" onclick="handleGraphButtonClick('frequency')">Most Frequent Words</button>
+                <button class="section-button" data-name="sentiment" data-color="#FFA500" onclick="handleGraphButtonClick('sentiment')">Sentiment Distribution</button> 
+            </div> 
+            <div class="graph-help-cell">
+                <i class="fa fa-question-circle"></i>
+                <div class="help-popup">
+                    <table>
+                        <caption><strong>Comment Length</strong></caption>
+                        <tr>
+                        <td>A histogram with the distribution of comment lengths.</td>
+                        </tr>
+                    </table>
+                    
+                    <table>
+                        <caption><strong>Top 10 Words</strong></caption>
+                        <tr>
+                        <td>A bar chart with the 10 most frequent words from the comments.</td>
+                        </tr>
+                    </table>
+                    
+                    <table>
+                        <caption><strong>Sentiment Percentages</strong></caption>
+                        <tr>
+                        <td>A pie chart showing the percentage of each sentiment in the comments.</td>
+                        </tr>
+                    </table>
+                </div>                      
+            </div>
         </div>
+        
+
         <div class="chart-table-container">
             <div class="chart-container" id="chart-container">
                 <canvas id="myChart"></canvas>
