@@ -1,18 +1,27 @@
-
+// Laoding effect listener
 document.getElementById('myForm').addEventListener('submit', function () {
     // Show the loading effect
     console.log('Loading effect')
     document.getElementById('loadingEffect').style.display = 'block';
 });
 
+function random_color() {
+    const letters = '0123456789ABCDEF';
+    let color = '';
+    do {
+        color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+    } while (color === '#FFA500'); // Ensure orange (#FFA500) is not chosen
+    return color;
+}
 
 // Comments Table Related Javascript
 const jsonData = JSON.parse(document.getElementById('comments').textContent);
 // Parse the JSON data passed from the Django view
 
-// Set the number of items per page
-    // Global variables
-var currentPage = 1; // Current page number
+var currentPage = 1; 
 var itemsPerPage = 10; // Number of items per page
 
 // Function to initialize the paginator

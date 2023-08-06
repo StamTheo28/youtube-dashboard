@@ -67,7 +67,7 @@ def analysis(request, video_id):
         context = { "video_id":video_id, 
                     "meta":meta, 
                     "section_data":section_data,
-                    "tag_cloud":tag_cloud,
+                    "tags":tag_cloud,
                     "comments":table_res.to_dict(orient='records')
                     }
         

@@ -135,14 +135,18 @@
         <div class="report-header">
             <h5 class="recent-Articles">Youtube Video Tags</h5>
         </div>
-        {% if tag_cloud == None %}
+        {% if tags == None %}
             <img src="{% static 'img/icons/graph_unavailable.png' %}" alt="graph unavailbale" height="200" >
             <p>Video Tags Unavailbale</p>
         {% else %}
-            <canvas id="word_cloud" class="word_cloud" width="300" height="240"></canvas>
+        <div id="visualization">
+            <!-- Loop through the video tags list passed from the Django view -->
+            {% for tag in tags %}
+                <span class="tag-label" title="{{ tag }}">{{ tag }}</span>
+            {% endfor %}
+        </div>
     {% endif %}
     </div>
-
 </div>
 
 {% if comments == None %}

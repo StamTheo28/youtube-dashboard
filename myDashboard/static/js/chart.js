@@ -1,44 +1,16 @@
 // Create a tag cloud
-const tagCloudData = JSON.parse(document.getElementById('tag_cloud').textContent);
-
-// Check if tags are available to create cloud graph
-if (tagCloudData!=null){
-    const list = [];
-    for (const i in tagCloudData) {
-        list.push([i,tagCloudData[i] ]);
-    }
-
-    WordCloud(document.getElementById('word_cloud'), {
-        list: list,
-        weightFactor: 25,
-        fontFamily: 'Arial, sans-serif',
-        color: 'random-dark',
-        rotateRatio: 0.4,
-        gridSize: 15,
-        shuffle: true,
-        minSize: 15,
-        maxWords: 40,
-    });
+function random_color() {
+    let hue = Math.random() * 360; // Random hue between 0 and 360
+    let s = 40 + Math.random() * 5; // Random saturation between 20% and 25%
+    let l = 70 + Math.random() * 5; // Random lightness between 70% and 75%
+    return `hsl(${hue}, ${s}%, ${l}%)`;
 }
 
-// Function to handle word hover event
-function handleWordHover(event) {
-    const word = event.target.getAttribute('data-word');
-    event.target.setAttribute('title', word);
-}
-
-// Add event listeners to each word in the word cloud
-const wordCloudElements = document.querySelectorAll('.wordcloud-word');
-wordCloudElements.forEach((element) => {
-    element.addEventListener('mouseover', handleWordHover);
-    element.addEventListener('mouseout', () => {
-        element.removeAttribute('title');
-    });
+// Get all video tag labels and apply random colors
+const tagLabels = document.querySelectorAll('.tag-label');
+tagLabels.forEach(label => {
+    label.style.backgroundColor = random_color();
 });
-
-
-
-
 
 // Container for section graphs
 const datasets = JSON.parse(document.getElementById('section_data').textContent);

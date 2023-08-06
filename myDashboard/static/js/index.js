@@ -2,38 +2,18 @@
 var closeButton = document.getElementById('close');
 var errorPopup = document.getElementById('error-popup');
 
-
-document.addEventListener('DOMContentLoaded', function () {
-  closeButton.addEventListener('click', function() {
-    errorPopup.style.display = 'none';
-  });
-
-
-  document.getElementById('myform').addEventListener('submit', function () {
-      // Show the loading effect
-      console.log("Loading Effect")
-      document.getElementById('loadingEffect').style.display = 'block';
-  });
+// Close error popup listener
+closeButton.addEventListener('click', function() {
+  errorPopup.style.display = 'none';
 });
 
-let hoverTimeout;
+// Activate loading effect listener
+document.getElementById('myform').addEventListener('submit', function () {
+  console.log("Activating Loading Effect")
+  document.getElementById('loadingEffect').style.display = 'block';
+});
 
-function handleMouseLeave() {
-  hoverTimeout = setTimeout(() => {
-    const searchInput = document.querySelector('.searchInput');
-    const searchButton = document.querySelector('.searchButton');
-    searchInput.classList.remove('hover-effect');
-    searchButton.classList.remove('hover-effect');
-  }, 600); // Delay in milliseconds (200ms = 0.2 seconds)
-}
 
-function handleMouseEnter() {
-  clearTimeout(hoverTimeout);
-  const searchInput = document.querySelector('.searchInput');
-  const searchButton = document.querySelector('.searchButton');
-  searchInput.classList.add('hover-effect');
-  searchButton.classList.add('hover-effect');
-}
 
 
 // Function to validate the URL (replace this with your actual URL validation logic)

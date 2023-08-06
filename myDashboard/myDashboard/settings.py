@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load API-KEYS/KEYS
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-tx%-r7q1vzgsn75$sk67uu@m(^x0-so_eavv%0$!k#*h0gh=-j'
+SECRET_KEY =  os.environ.get('DJANGO-KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -138,7 +143,3 @@ CACHES = {
     }
 }
 
-
-# Youtube API keys
-API_KEY = os.environ.get('YOUR_API_KEY', 'default_value')
-print(API_KEY)

@@ -1,6 +1,5 @@
 # ADD TO ENVIROMENT VARIABLES
 from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 from bs4 import BeautifulSoup
 from .utils import clean_date
 from .sentiment import comment_analysis, get_clean_data
@@ -51,7 +50,7 @@ youtube_categories = {
     '43': 'Shows',
     '44': 'Trailers'
 }
-print(os.environ.get('YOUR_API_KEY', 'default_value'))
+
 def convert_duration(duration):
     # Check if the duration is in the right format
     if not duration.startswith("PT"):
@@ -93,10 +92,11 @@ def clean(text):
 
     return text
 
+API_KEY = "AIzaSyCj_o0-0ej8EOa6tPYPKfhJyI3c-zPJ9Yc"
 # Retrieves the top k most famous comments of a youtube video
 def get_most_famous_comments( video_id, max_comments=30):
-    youtube = build('youtube', 'v3', developerKey=os.environ.get('YOUR_API_KEY', 'default_value'))
-
+    youtube = build('youtube', 'v3', developerKey=API_KEY)
+    
 
     # Retrieve video statistics
     video = youtube.videos().list(
