@@ -10,3 +10,12 @@ This project is a dashboard for YouTube video analytics, designed to provide use
 - Video Analytics: Users can access a wide range of analytics related to the specified video, providing valuable insights into its performance and impact.
 - Popular Comment Analysis: The dashboard specifically focuses on the 200 most famous comments associated with the video, offering users a detailed understanding of public sentiment.
 - Sentiment Analysis: By leveraging a trained machine learning model, the dashboard determines the sentiment (positive, neutral, or negative) of each comment, aiding users in gauging public opinion accurately. Also, it can predict the kind of emotion that the comment shows (1 from 7 emotions)
+
+
+## SetUp
+
+- Clone
+- Move to project directory
+- Run setup 
+- move to manage directory
+- Run py manage.py runserver

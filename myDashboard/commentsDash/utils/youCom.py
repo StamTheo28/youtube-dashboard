@@ -51,7 +51,7 @@ youtube_categories = {
     '43': 'Shows',
     '44': 'Trailers'
 }
-
+print(os.environ.get('YOUR_API_KEY', 'default_value'))
 def convert_duration(duration):
     # Check if the duration is in the right format
     if not duration.startswith("PT"):
@@ -95,7 +95,7 @@ def clean(text):
 
 # Retrieves the top k most famous comments of a youtube video
 def get_most_famous_comments( video_id, max_comments=30):
-    youtube = build('youtube', 'v3', developerKey=os.environ['YOUTUBE_API_KEY'])
+    youtube = build('youtube', 'v3', developerKey=os.environ.get('YOUR_API_KEY', 'default_value'))
 
 
     # Retrieve video statistics

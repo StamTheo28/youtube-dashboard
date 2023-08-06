@@ -140,4 +140,5 @@ CACHES = {
 
 
 # Youtube API keys
-os.environ['YOUTUBE_API_KEY'] = "AIzaSyCj_o0-0ej8EOa6tPYPKfhJyI3c-zPJ9Yc"
+API_KEY = os.environ.get('YOUR_API_KEY', 'default_value')
+print(API_KEY)
