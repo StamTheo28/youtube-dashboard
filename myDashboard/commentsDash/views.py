@@ -1,23 +1,25 @@
-from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .utils.utils import url_parser, get_all_video_ids_in_cache
 from .utils.youCom import commentsAnalysis
 from .utils.graph import get_graph_data, get_tag_cloud_data
 from django.core.cache import cache
 from django.contrib import messages
-import json
+
 
 
 def index(request):
     if request.method == "POST":
         url = request.POST.get('video_link')
+        print('Gettign URL: ',url)
         video_id = url_parser(url)
+        print("Current Video ID",video_id)
         # Display message if url is invalid
         if video_id==False:
             messages.error(request, 'Invalid URL. Please provide a valid YouTube video URL.')
             cached_results = cache.get(video_id)
-            if cached_results is not None:
-                return redirect('index')
+            if cached_results is None:
+                context = {}
+                return render(request, 'html/index.html', context)
             else:
                 video_id=get_all_video_ids_in_cache()[0]
                 return redirect('analysis', video_id=video_id)
@@ -26,7 +28,6 @@ def index(request):
     else:
         context = {}
         return render(request, 'html/index.html', context)
-
 
 # Comment analysis view
 def analysis(request, video_id):
@@ -70,9 +71,9 @@ def analysis(request, video_id):
                     "comments":table_res.to_dict(orient='records')
                     }
         
-
     
     return render(request, 'html/dashboard.html', context)
 
 
-    
+def custom_404(request, exception=None):
+    return render(request, 'errors/404.html', status=404)

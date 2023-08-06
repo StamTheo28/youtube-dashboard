@@ -112,26 +112,21 @@ function renderTable(section) {
     const data = datasets[section];
     const tableContainer = document.getElementById('tableContainer');
     
-  
-    if (section === 'sentiment') {
-            tableContainer.remove();
-        
+    if (!tableContainer) {
+        // If the table container does not exist, create it and append it to the parent container
+        const parentContainer = document.querySelector('.chart-table-container');
+        const newTableContainer = document.createElement('div');
+        newTableContainer.className = 'table-container';
+        newTableContainer.id = 'tableContainer';
+        newTableContainer.appendChild(getTableSettings(table, section, data));
+        parentContainer.appendChild(newTableContainer);
     } else {
-        if (!tableContainer && section != "sentiment") {
-            // If the table container does not exist, create it and append it to the parent container
-            const parentContainer = document.querySelector('.chart-table-container');
-            const newTableContainer = document.createElement('div');
-            newTableContainer.className = 'table-container';
-            newTableContainer.id = 'tableContainer';
-            newTableContainer.appendChild(getTableSettings(table, section, data));
-            parentContainer.appendChild(newTableContainer);
-        } else {
-            // If the table container exists, just update its content
-            tableContainer.innerHTML = ''; // Clear existing content
-            tableContainer.appendChild(getTableSettings(table, section, data)); // Append the new table
-        }
-        adjustContainerSize()
+        // If the table container exists, just update its content
+        tableContainer.innerHTML = ''; // Clear existing content
+        tableContainer.appendChild(getTableSettings(table, section, data)); // Append the new table
     }
+    adjustContainerSize()
+    
 }
 
 
@@ -202,6 +197,30 @@ function getTableSettings(table, section, data){
             labelCell.textContent = label;
             const countCell = document.createElement('td');
             countCell.textContent = data[label];
+            row.appendChild(labelCell);
+            row.appendChild(countCell);
+            table.appendChild(row);
+        }
+        return table
+    } else if(section=="sentiment"){
+        console.log('Creating sentiment table')
+        // Create the table and its header row
+        const headerRow = document.createElement('tr');
+        const headerCellLabel = document.createElement('th');
+        headerCellLabel.textContent = 'Sentiment';
+        const headerCellCount = document.createElement('th');
+        headerCellCount.textContent = 'Percentage';
+        headerRow.appendChild(headerCellLabel);
+        headerRow.appendChild(headerCellCount);
+        table.appendChild(headerRow);
+
+        // Add table data rows
+        for (const label in data) {
+            const row = document.createElement('tr');
+            const labelCell = document.createElement('td');
+            labelCell.textContent = label;
+            const countCell = document.createElement('td');
+            countCell.textContent = Math.ceil(data[label]);
             row.appendChild(labelCell);
             row.appendChild(countCell);
             table.appendChild(row);

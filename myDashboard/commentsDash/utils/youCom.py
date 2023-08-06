@@ -1,6 +1,4 @@
 # ADD TO ENVIROMENT VARIABLES
-API_KEY = "AIzaSyCj_o0-0ej8EOa6tPYPKfhJyI3c-zPJ9Yc"
-
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from bs4 import BeautifulSoup
@@ -8,6 +6,7 @@ from .utils import clean_date
 from .sentiment import comment_analysis, get_clean_data
 import pandas as pd
 import re
+import os
 import time
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
@@ -96,13 +95,14 @@ def clean(text):
 
 # Retrieves the top k most famous comments of a youtube video
 def get_most_famous_comments( video_id, max_comments=30):
-    youtube = build('youtube', 'v3', developerKey=API_KEY)
+    youtube = build('youtube', 'v3', developerKey=os.environ['MY_ENV_VARIABLE'])
 
 
     # Retrieve video statistics
     video = youtube.videos().list(
-    part='snippet,statistics,contentDetails',
-    id=video_id
+        part='snippet,statistics,contentDetails',
+        id=video_id,
+        maxResults=max_comments
     ).execute()
 
     # Extract the video metadata
@@ -140,7 +140,6 @@ def get_most_famous_comments( video_id, max_comments=30):
             order="relevance",
             maxResults=max_comments
         ).execute()
-
         comments = []
         for item in response['items']:
             comment_data = {}
@@ -162,7 +161,7 @@ def get_most_famous_comments( video_id, max_comments=30):
                 comment_id = comment['comment_id']
                 full_comment = youtube.comments().list(
                     part="snippet",
-                    id=comment_id
+                    id=comment_id,
                 ).execute()
 
                 # Clean the text comment by removing html tags and hashtags

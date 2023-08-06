@@ -14,17 +14,12 @@
 
     <!--WordCloud-->
     <script src="https://pulipulichen.github.io/blogger/posts/2016/11/r-text-mining/wordcloud2.js"></script>
-    
-    <!--Tippy (REMOVE AFTER @5)-->
-   
 
-   
     <!--Externall css styles-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style2.css' %}">
     <link rel="shortcut icon" href="{% static 'img/logo/favicon.png' %}" type="image/x-icon">
 
 </head>
@@ -48,6 +43,9 @@
 
 	</header>
 
+    <div id="loading">
+        <p>Loading</p>
+    </div>
 
 
     <div class="main">
@@ -68,12 +66,10 @@
                 </button>
             </div>
         </div>
+  
         {% endif %}
 
-        <div id="loading-overlay" class="loading-overlay">
-            <div class="loading-spinner"></div>
-        </div>
-
+ 
         {% block searchBar %}
 
         {% endblock searchBar %}
@@ -84,6 +80,8 @@
 
 
     </div>
-</body>
 <script src="{% static 'js/index.js' %}"></script>
+</body>
+
+
 </html>

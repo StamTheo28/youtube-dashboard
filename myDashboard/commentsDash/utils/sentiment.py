@@ -8,7 +8,8 @@ import re
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 
-
+# Model used
+# en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0-py3-none-any.wh
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
 

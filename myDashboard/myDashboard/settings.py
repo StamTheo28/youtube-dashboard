@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-tx%-r7q1vzgsn75$sk67uu@m(^x0-so_eavv%0$!k#*h0gh=-j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -119,6 +120,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Change when deployed on AWS
+#STATIC_ROOT = 'D:\youtube-dashboard\youtube-dashboard\myDashboard\static/'
+
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 
@@ -134,3 +138,6 @@ CACHES = {
     }
 }
 
+
+# Youtube API keys
+os.environ['YOUTUBE_API_KEY'] = "AIzaSyCj_o0-0ej8EOa6tPYPKfhJyI3c-zPJ9Yc"

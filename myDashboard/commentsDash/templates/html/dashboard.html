@@ -7,12 +7,20 @@
 {% block header-search %}
 
     <div class="search-container">
-        <form action="{% url 'index' %}" method="post" class="search-bar" autocomplete="off">
+        <form id='myForm' action="{% url 'index' %}" method="post" class="search-bar" autocomplete="off">
             {% csrf_token %}
             <input autocomplete="false" type="text" name="video_link" placeholder="Youtube URL" required>
             <button class="search-button"><i class="fa fa-search"></i></button>
         </form>
     </div>
+
+    <div id="loadingEffect" style="display: none;">
+        <div class="loading-overlay">
+          <!-- Loading spinner -->
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+
 
 {% endblock header-search %}
 
@@ -131,7 +139,7 @@
             <img src="{% static 'img/icons/graph_unavailable.png' %}" alt="graph unavailbale" height="200" >
             <p>Video Tags Unavailbale</p>
         {% else %}
-            <canvas id="word_cloud" class="word_cloud" width="300" height="250"></canvas>
+            <canvas id="word_cloud" class="word_cloud" width="300" height="240"></canvas>
     {% endif %}
     </div>
 
@@ -166,7 +174,7 @@
                         <table>
                           <caption><strong>Information</strong></caption>
                           <tr>
-                            <td>This graph contains the top 200 most famous/relevant comments provided by Youtube.</td>
+                            <td>This graph contains the top 100 most famous/relevant comments provided by Youtube.</td>
                           </tr>
                         </table>
                         
@@ -235,11 +243,9 @@
                 <tbody id="content"></tbody>
               </table>
               <div class="paginator">
-                <button class="prev-btn" onclick="gotoPage(currentPage - 1)">Previous</button>
                 <div class="page-numbers" id="paginator">
                   <!-- Paginator buttons will be dynamically added here -->
                 </div>
-                <button class="next-btn" onclick="gotoPage(currentPage + 1)">Next</button>
               </div>
         </div>
     </div>
@@ -247,7 +253,7 @@
     <!--Scatter comment Publish date-->
     <div class="scatter-container">
         <div class="report-header">
-            <h5 class="recent-Articles">Comment Publications</h5>
+            <h5 class="recent-Articles">Comment Activity</h5>
             <div class="scatter-menu">
                 <div class="dropdown-container">
                     <label for="x-axis-option">Per:</label>

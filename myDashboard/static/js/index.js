@@ -1,12 +1,20 @@
-document.addEventListener('DOMContentLoaded', function() {
-	var closeButton = document.getElementById('close');
-	var errorPopup = document.getElementById('error-popup');
+// Produce invald PopUp message
+var closeButton = document.getElementById('close');
+var errorPopup = document.getElementById('error-popup');
 
-	closeButton.addEventListener('click', function() {
-		errorPopup.style.display = 'none';
-	});
+
+document.addEventListener('DOMContentLoaded', function () {
+  closeButton.addEventListener('click', function() {
+    errorPopup.style.display = 'none';
+  });
+
+
+  document.getElementById('myform').addEventListener('submit', function () {
+      // Show the loading effect
+      console.log("Loading Effect")
+      document.getElementById('loadingEffect').style.display = 'block';
+  });
 });
-
 
 let hoverTimeout;
 
@@ -28,27 +36,13 @@ function handleMouseEnter() {
 }
 
 
-$(document).ready(function() {
-	$('#calculate-button').click(function() {
-	  // Show the loading overlay
-	  $('#loading-overlay').show();
+// Function to validate the URL (replace this with your actual URL validation logic)
+function validateURL(url) {
   
-	  // Make an AJAX request to the calculate_view
-	  $.ajax({
-		type: 'GET',
-		url: '/calculate/',
-		success: function(response) {
-		  // Hide the loading overlay
-		  $('#loading-overlay').hide();
-		  
-		  // Process the response from the calculate_view
-		  var result = response.result;
-		  // Do something with the result
-		},
-		error: function() {
-		  // Handle the error case
-		  $('#loading-overlay').hide();
-		}
-	  });
-	});
-  });
+  const regex = new RegExp(
+      "^.*((youtu.be\\/)|(v\\/)|(\\/u\\/\\w\\/)|(embed\\/)|(watch\\?))\\??v?=?" +
+      "([^#&?]*).*"
+  );
+  const match = url.match(regex);
+  return  match && match[7] && match[7].length === 11 ? true : false;
+}

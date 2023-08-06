@@ -12,7 +12,7 @@
 
 {% block searchBar%}
 
-<form autocomplete="off" action="{% url 'index' %}" method="post">
+<form id="myform" autocomplete="off" action="{% url 'index' %}" method="post">
   {% csrf_token %}
   <div class="searchBox">
       <input autocomplete="false" class="searchInput" type="text" name="video_link" placeholder="https://www.youtube.com/watch?v=wbAhmGFwZ-g" required>
@@ -23,6 +23,14 @@
       </button>
   </div>
 </form>
+
+<div id="loadingEffect" style="display: none;">
+  <div class="loading-overlay">
+    <!-- Loading spinner -->
+    <div class="loading-spinner"></div>
+  </div>
+</div>
+
 
 
 
@@ -35,5 +43,6 @@
   </div>
 
 
-
+  <script src="{% static 'js/index.js' %}"></script>
 {% endblock searchBar %}
+

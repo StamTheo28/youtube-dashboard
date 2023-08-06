@@ -7,3 +7,11 @@
         <div class="loading-spinner"></div>
     </div>
 {% endblock  %}
+
+<!-- loading.html -->
+<script>
+    // Wait for some time (e.g., 3 seconds) to simulate loading
+    setTimeout(function() {
+        window.location.href = "{% url 'content' %}";
+    }, 13000);
+</script>

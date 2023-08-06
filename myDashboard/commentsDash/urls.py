@@ -1,10 +1,13 @@
 from django.urls import path
-
 from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("<str:video_id>/", views.analysis, name='analysis'),
-    
+    path("video_id/<str:video_id>/", views.analysis, name='analysis'),
     
 ]
+
+urlpatterns += [
+    path('404/', views.custom_404),
+]
+

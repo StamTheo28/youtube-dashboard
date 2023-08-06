@@ -1,15 +1,10 @@
 
-// Read more button
-var readMoreButtons = document.querySelectorAll('.read-more');
-
-readMoreButtons.forEach(function(button) {
-button.style.display = 'inline';
-button.addEventListener('click', function() {
-    var description = this.previousElementSibling;
-    description.classList.toggle('expanded');
-    this.textContent = description.classList.contains('expanded') ? 'Read Less' : 'Read More';
-    });
+document.getElementById('myForm').addEventListener('submit', function () {
+    // Show the loading effect
+    console.log('Loading effect')
+    document.getElementById('loadingEffect').style.display = 'block';
 });
+
 
 // Comments Table Related Javascript
 const jsonData = JSON.parse(document.getElementById('comments').textContent);
