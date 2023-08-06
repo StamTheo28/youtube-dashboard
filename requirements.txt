@@ -1,7 +1,7 @@
 langdetect == 1.0.9
 emoji == 2.6.0
 tensorflow == 2.12.0
-django == 4.0.5
+django >= 4.0.5
 google-api-python-client == 2.95.0
 nltk 
 beautifulsoup4 == 4.12.2
