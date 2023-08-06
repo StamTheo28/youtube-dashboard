@@ -95,7 +95,7 @@ def clean(text):
 
 # Retrieves the top k most famous comments of a youtube video
 def get_most_famous_comments( video_id, max_comments=30):
-    youtube = build('youtube', 'v3', developerKey=os.environ['MY_ENV_VARIABLE'])
+    youtube = build('youtube', 'v3', developerKey=os.environ['YOUTUBE_API_KEY'])
 
 
     # Retrieve video statistics
