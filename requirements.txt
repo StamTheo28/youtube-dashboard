@@ -3,7 +3,7 @@ emoji == 2.6.0
 tensorflow == 2.12.0
 django == 4.0.5
 google-api-python-client == 2.0
-nltk == 3.0
+nltk 
 beautifulsoup4 == 4.12.2
 pandas == 2.0.3
 numpy 

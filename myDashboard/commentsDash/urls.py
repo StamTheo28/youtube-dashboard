@@ -7,7 +7,4 @@ urlpatterns = [
     
 ]
 
-urlpatterns += [
-    path('404/', views.custom_404),
-]
 
