@@ -81,6 +81,7 @@ header {
 	font-size: 20px;
 	flex-grow: 1;
 	display: flex;
+	text-align: center;
 	justify-content: center;
 	border-color: transparent;
 	margin-left: -100px;
@@ -1314,6 +1315,7 @@ background-color: #9e9e9eb2;
         border: 2px solid var(--secondary-color);
     }
 
+
 	.searchBox:hover > .searchInput {
 		width: 150px;
 		padding: 0 6px;
@@ -1451,11 +1453,21 @@ background-color: #9e9e9eb2;
 
   @media (max-width: 500px) {
 
+	.box-container {
+		gap: 5px;
+		width: 90%;
+		height: 55vh;
+	}
+
     .right-div table th,
     .right-div table td {
       width: 100%;
 	  font-size: 11px
     }
+
+	#interactive-table tbody th {
+	width:30%;
+	}
 
   }
 
@@ -1469,31 +1481,46 @@ background-color: #9e9e9eb2;
   }
     
 @media screen and (max-width: 490px) {
+
+	.tag-label {
+		font-size: 9px;
+	}
+
+	.search-container{
+		gap:0;
+	}
+
+	.searchInput{
+		font-size: 11px;
+	}
+
+    .searchBox:hover > .searchInput {
+        width: 130px;
+        padding: 0 6px;
+    }
+
+	.search-bar{
+		width: 180px ;
+	}
+
+	.search-bar input {
+		width: 135px;
+	}
+
+	.header-title {
+		font-size: 17px;
+	}
+
     .message {
         display: none;
     }
     .logosec {
-        width: 100%;
+        width: 115px;
         justify-content: space-between;
     }
     .logo {
         font-size: 20px;
-    }
-    .menuicn {
-        height: 25px;
-    }
-    .nav-img {
-        height: 25px;
-    }
-    .nav-option {
-        gap: 25px;
-    }
-    .nav-option h3 {
-        font-size: 12px;
-    }
-    .nav-upper-options {
-        gap: 15px;
-    }
+    }	
 	
     .report-topic-heading,
     .item1,
@@ -1501,8 +1528,86 @@ background-color: #9e9e9eb2;
         width: 550px;
     }
 }
-    
-    @media screen and (max-width: 400px) {
+
+@media(max-width:450px){
+
+	.search-container{
+		margin-left:5dvb;
+	}
+
+	.search-bar{
+		width: 170px ;
+	}
+
+	.search-bar input {
+		font-size: 11px;
+		width: 125px;
+	}
+
+	.logosec {
+        width: 100px;
+    }
+}
+
+
+@media screen and (max-width: 400px) {
+
+	.box-container {
+		gap: 2px;
+		width: 90%;
+		height: 55vh;
+	}
+	
+	.search-container{
+		margin-left:10px;
+	}
+
+	.search-bar{
+
+		width: 150px ;
+	}
+
+	.search-bar input {
+		font-size: 11px;
+		width: 105px;
+	}
+
+	.searchBox:hover > .searchInput {
+		width: 110px;
+		padding: 0 6px;
+	}
+
+	.header{
+		width: 70vw;
+	}
+	
+
+	.header-title {
+		font-size: 14px;
+		margin-left: 0;
+	}
+
+	.logosec{
+		left:0px;
+		margin-right: 8px;
+	}
+
+	.logo{
+		height:55px;
+		width:110px;
+	}
+		
+	.instructions-container body {
+		font-family: 'Roboto Slab', serif;
+		font-size: 1.0rem;
+		margin: 0;
+		padding: 0.8rem;
+		display: grid;
+		place-items: center;
+		min-height: 90vh;
+		}
+
+
     .recent-Articles {
         font-size: 17px;
     }
@@ -1519,8 +1624,30 @@ background-color: #9e9e9eb2;
         height: 20px;
     }
     }
+
+	@media(max-width: 360px){
+
+		.logosec{
+			width: 90px;
+		}
+		.logo{
+			height:45px;
+			width:95px;
+		}
+
+		.searchBox:hover > .searchInput {
+			width: 95px;
+			padding: 0 4px;
+		}
+	}
     
     @media screen and (max-width: 320px) {
+
+	.searchBox:hover > .searchInput {
+		width: 90px;
+		padding: 0 4px;
+	}
+	
     .recent-Articles {
         font-size: 12px;
     }

@@ -2,16 +2,21 @@
 var closeButton = document.getElementById('close');
 var errorPopup = document.getElementById('error-popup');
 
-// Close error popup listener
-closeButton.addEventListener('click', function() {
-  errorPopup.style.display = 'none';
-});
+if(closeButton){
+  // Close error popup listener
+  closeButton.addEventListener('click', function() {
+    errorPopup.style.display = 'none';
+  });
+}
 
-// Activate loading effect listener
-document.getElementById('myform').addEventListener('submit', function () {
-  console.log("Activating Loading Effect")
-  document.getElementById('loadingEffect').style.display = 'block';
-});
+form = document.getElementById('myform');
+
+if(form){
+  form.addEventListener('submit', function () {
+    console.log("Activating Loading Effect")
+    document.getElementById('loadingEffect').style.display = 'block';
+  });
+}
 
 
 

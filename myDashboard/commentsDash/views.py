@@ -4,6 +4,7 @@ from .utils.youCom import commentsAnalysis
 from .utils.graph import get_graph_data, get_tag_cloud_data
 from django.core.cache import cache
 from django.contrib import messages
+import os
 
 
 
@@ -63,7 +64,7 @@ def analysis(request, video_id):
             tag_cloud = get_tag_cloud_data(meta['tags'])
 
        
-    
+        print(os.environ.get('SECRET-KEY'))
         context = { "video_id":video_id, 
                     "meta":meta, 
                     "section_data":section_data,
