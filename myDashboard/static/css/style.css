@@ -921,6 +921,7 @@ background-color: #9e9e9eb2;
   }  
   
   .table-container {
+	min-width: 210px;
 	max-width: 100%;
 	overflow-x: auto;
   }
@@ -1152,6 +1153,7 @@ background-color: #9e9e9eb2;
 
 .chart-table-container {
 	min-height: 460px;
+
 	display: flex;
 	gap: 20px;
 }
@@ -1170,7 +1172,6 @@ background-color: #9e9e9eb2;
 
 .table-container {
 	position: relative;
-	min-width: 370px;
 	flex: 1;
 	border: 1px solid #ccc;
 	padding: 5px;
@@ -1449,14 +1450,18 @@ background-color: #9e9e9eb2;
 	.recent-Articles {
         font-size: 20px;
     }
+
+	.report-header{
+		padding: 10px 10px 5px 10px;		;
+	}
   }
 
   @media (max-width: 500px) {
-
 	.box-container {
-		gap: 5px;
+		gap: 1px;
 		width: 90%;
-		height: 55vh;
+		height: 70vh;
+		margin-bottom: 5px;
 	}
 
     .right-div table th,
@@ -1471,14 +1476,6 @@ background-color: #9e9e9eb2;
 
   }
 
-  @media (max-width: 415px) {
-    .right-div table th,
-    .right-div table td {
-      width: 100%;
-	  font-size: 9px
-    }
-
-  }
     
 @media screen and (max-width: 490px) {
 
@@ -1527,9 +1524,28 @@ background-color: #9e9e9eb2;
     .items {
         width: 550px;
     }
+
+	#filters{
+		font-size: 12px;
+	}
+
+	.section-button{
+		font-size: 12px;
+		padding: 5px 10px;
+	}
+
+	.dropdown-container {
+		margin-top: 10px;
+		font-size: 11px;
+	}
+
 }
 
 @media(max-width:450px){
+
+	.export-help-cell{
+		font-size: 25px;
+	}
 
 	.search-container{
 		margin-left:5dvb;
@@ -1547,16 +1563,55 @@ background-color: #9e9e9eb2;
 	.logosec {
         width: 100px;
     }
+
+	.recent-Articles{
+		font-size: 18px;
+		margin-block-start: 0.5em;
+		margin-block-end: 0.5em;
+	}
+
+	.section-button{
+		font-size: 10px;
+		padding: 3px 7px;
+	}
+
 }
 
+@media (max-width: 415px) {
+
+
+
+	#filters{
+		font-size: 9px;
+	}
+
+	.export-menu {
+		grid-template-columns: 2.5fr 0.3fr;
+		grid-gap: 40px;
+	}
+
+
+	.recent-Articles{
+		font-size: 16px;
+	}
+
+	.exportButton {
+		width: 80px;
+		font-size: 9px;
+		padding: 5px 5px;
+		margin-left: 5px;
+	}
+
+
+    .right-div table th,
+    .right-div table td {
+      width: 100%;
+	  font-size: 9px
+    }
+
+  }
 
 @media screen and (max-width: 400px) {
-
-	.box-container {
-		gap: 2px;
-		width: 90%;
-		height: 55vh;
-	}
 	
 	.search-container{
 		margin-left:10px;
@@ -1610,6 +1665,7 @@ background-color: #9e9e9eb2;
 
     .recent-Articles {
         font-size: 17px;
+		text-align: center;
     }
     .view {
         width: 60px;
@@ -1623,7 +1679,31 @@ background-color: #9e9e9eb2;
     .searchbtn img {
         height: 20px;
     }
-    }
+
+	.exportButton {
+		margin-left: 3px;
+	}
+
+	.dropdown-container {
+		margin-top: 5px;
+	}
+
+}
+
+@media(max-width:385px){
+	.export-menu {
+		grid-template-columns: 3.5fr 0.3fr;
+	}
+
+	.section-button{
+		font-size: 8px;
+		padding: 2px 5px;
+	}
+
+	.chart-container{
+		max-width: 245px;
+	}
+}
 
 	@media(max-width: 360px){
 
@@ -1639,8 +1719,25 @@ background-color: #9e9e9eb2;
 			width: 95px;
 			padding: 0 4px;
 		}
+
+		.export-menu {
+			grid-template-columns: 4.5fr 0.3fr;
+		}
 	}
     
+	@media(max-width:340px){
+		.recent-Articles{
+			font-size: 15px;
+		}	
+
+		.exportButton {
+			width: 75px;
+			font-size: 7px;
+			padding: 5px 5px;
+			margin-left: 1px;
+		}
+	}
+
     @media screen and (max-width: 320px) {
 
 	.searchBox:hover > .searchInput {
@@ -1649,7 +1746,7 @@ background-color: #9e9e9eb2;
 	}
 	
     .recent-Articles {
-        font-size: 12px;
+        font-size: 14px;
     }
     .view {
         width: 50px;
@@ -1683,4 +1780,10 @@ background-color: #9e9e9eb2;
     .searchbar2 input {
         width: 180px;
     }
+
+	.exportButton {
+		width: 70px;
+		font-size: 8px;
+		padding: 2px 2px;
+	}
 }
