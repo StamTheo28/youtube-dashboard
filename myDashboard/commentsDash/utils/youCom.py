@@ -104,81 +104,90 @@ def get_most_famous_comments( video_id, max_comments=30):
         id=video_id,
         maxResults=max_comments
     ).execute()
-
-    # Extract the video metadata
-    meta = {}
-    meta['category'] = youtube_categories[video['items'][0]['snippet']['categoryId']]
-    meta['video_id'] = video_id
-    meta['title'] = video['items'][0]['snippet']['title']
-    meta['description'] = video['items'][0]['snippet']['description']
-    if len(meta['description'])==0:
-        meta['description'] = None
-    meta['publishedAt'] = clean_date(video['items'][0]['snippet']['publishedAt'])
-    meta['thumbnail'] = video['items'][0]['snippet']['thumbnails']['high']['url']
-    meta['channelTitle'] = video['items'][0]['snippet']['channelTitle']
-    meta['viewCount'] = video['items'][0]['statistics']['viewCount']
-    try:
-        meta['tags'] = video['items'][0]['snippet']['tags']
-    except:
-        meta['tags'] = None
-    try:
-        meta['commentCount'] = video['items'][0]['statistics']['commentCount']
-        commentSection = True
-    except:
-        meta['commentCount'] = None
-        commentSection = False
-    meta['likeCount'] = video['items'][0]['statistics']['likeCount']
-    meta['duration'] = convert_duration(video['items'][0]['contentDetails']['duration'])
     
-
-    # Check the comment section is diabled
-    if commentSection:
-        # Retrieve the comment threads for the video
-        response = youtube.commentThreads().list(
-            part="snippet",
-            videoId=video_id,
-            order="relevance",
-            maxResults=max_comments
-        ).execute()
-        comments = []
-        for item in response['items']:
-            comment_data = {}
-            comment_data['comment_id'] = item['id']
-            comment_data['comment'] = item['snippet']['topLevelComment']['snippet']['textDisplay']
-            comment_data["like_count"] = item['snippet']['topLevelComment']['snippet']['likeCount']
-            comment_data["reply_count"] = item['snippet']['totalReplyCount']
-            comment_data['publishedAt'] = item['snippet']['topLevelComment']['snippet']['publishedAt']
-            if 'like_count' not in comment_data.keys():
-                comment_data["like_count"] = 0
-            if 'reply_count' not in comment_data.keys():
-                comment_data["reply_count"] = 0
-            comments.append(comment_data)
-        comments_list = []
-
-        # Retrieve the full comments using the comment IDs
-        for comment in comments:
-            try:
-                comment_id = comment['comment_id']
-                full_comment = youtube.comments().list(
-                    part="snippet",
-                    id=comment_id,
-                ).execute()
-
-                # Clean the text comment by removing html tags and hashtags
-                try:
-                    text = clean(full_comment['items'][0]['snippet']['textDisplay'])
-                except:
-                    text = False
-                comment['comment'] = text
-                comment['word_length'] = len(comment['comment'].split(' '))
-                comments_list.append(comment)
-            except Exception as e:
-                print(f"An error occurred while retrieving comment {comment_id}: {e}")
-        comments_df = pd.DataFrame(comments_list)
+    # Returns null if video_id does not exist
+    if len(video['items'])==0:
+        print('Video id does not exist in youtube')
+        return None, None
     else:
-        comments_df = pd.DataFrame()
-    
-    return comments_df, meta
+        # Extract the video metadata
+        meta = {}
+        try:
+            meta['category'] = youtube_categories[video['items'][0]['snippet']['categoryId']]
+        except:
+            meta['category'] = 'N/A'
+
+        meta['video_id'] = video_id
+        meta['title'] = video['items'][0]['snippet']['title']
+        meta['description'] = video['items'][0]['snippet']['description']
+        if len(meta['description'])==0:
+            meta['description'] = None
+        meta['publishedAt'] = clean_date(video['items'][0]['snippet']['publishedAt'])
+        meta['thumbnail'] = video['items'][0]['snippet']['thumbnails']['high']['url']
+        meta['channelTitle'] = video['items'][0]['snippet']['channelTitle']
+        meta['viewCount'] = video['items'][0]['statistics']['viewCount']
+        try:
+            meta['tags'] = video['items'][0]['snippet']['tags']
+        except:
+            meta['tags'] = None
+        try:
+            meta['commentCount'] = video['items'][0]['statistics']['commentCount']
+            commentSection = True
+        except:
+            meta['commentCount'] = None
+            commentSection = False
+        meta['likeCount'] = video['items'][0]['statistics']['likeCount']
+        meta['duration'] = convert_duration(video['items'][0]['contentDetails']['duration'])
+        
+
+        # Check the comment section is diabled
+        if commentSection:
+            # Retrieve the comment threads for the video
+            response = youtube.commentThreads().list(
+                part="snippet",
+                videoId=video_id,
+                order="relevance",
+                maxResults=max_comments
+            ).execute()
+            comments = []
+            for item in response['items']:
+                comment_data = {}
+                comment_data['comment_id'] = item['id']
+                comment_data['comment'] = item['snippet']['topLevelComment']['snippet']['textDisplay']
+                comment_data["like_count"] = item['snippet']['topLevelComment']['snippet']['likeCount']
+                comment_data["reply_count"] = item['snippet']['totalReplyCount']
+                comment_data['publishedAt'] = item['snippet']['topLevelComment']['snippet']['publishedAt']
+                if 'like_count' not in comment_data.keys():
+                    comment_data["like_count"] = 0
+                if 'reply_count' not in comment_data.keys():
+                    comment_data["reply_count"] = 0
+                comments.append(comment_data)
+            comments_list = []
+
+            # Retrieve the full comments using the comment IDs
+            for comment in comments:
+                try:
+                    comment_id = comment['comment_id']
+                    full_comment = youtube.comments().list(
+                        part="snippet",
+                        id=comment_id,
+                    ).execute()
+
+                    # Clean the text comment by removing html tags and hashtags
+                    try:
+                        text = clean(full_comment['items'][0]['snippet']['textDisplay'])
+                    except:
+                        text = False
+                    comment['comment'] = text
+                    comment['word_length'] = len(comment['comment'].split(' '))
+                    comments_list.append(comment)
+                except Exception as e:
+                    print(f"An error occurred while retrieving comment {comment_id}: {e}")
+            comments_df = pd.DataFrame(comments_list)
+        else:
+            comments_df = pd.DataFrame()
+        
+        return comments_df, meta
 
 
 # Perform Comments classification 
@@ -189,9 +198,11 @@ def commentsAnalysis(video_id):
         end = time.time()
 
         print("Retrieving the top k most famous comments took: ", end-start)
-
-
-        if comments.empty:
+        if not isinstance(comments, pd.DataFrame) and meta_data == None:
+            print("Creating a sentemint analysis for the k comments took: ", end-start)
+            return comments, meta_data
+        elif comments.empty:
+            print("Creating a sentemint analysis for the k comments took: ", end-start)
             return None, meta_data
         else:
             start = time.time()

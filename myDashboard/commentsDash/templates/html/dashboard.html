@@ -29,7 +29,7 @@
 
 <div class="meta-container">
     <div class="video-frame">
-            <img class="profile-picture" src="{{ meta.thumbnail }}" alt="Thumbnail">
+            <img class="profile-picture" src="{% if meta.thumbnail %}{{ meta.thumbnail }}{% else %}{% static 'img/icons/img_unavailable.png' %}{% endif %}" alt="Thumbnail">
             <div class="controls">
                 <a href="https://www.youtube.com/watch?v={{ meta.video_id }}" target="_blank">
                     <div class="play-button">

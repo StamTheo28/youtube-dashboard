@@ -4,7 +4,8 @@ from .utils.youCom import commentsAnalysis
 from .utils.graph import get_graph_data, get_tag_cloud_data
 from django.core.cache import cache
 from django.contrib import messages
-import os
+import pandas as pd
+
 
 
 
@@ -44,8 +45,19 @@ def analysis(request, video_id):
             cache.delete(existing_ids[0])
 
         # If not cached, perform analysis and cache the results
+        print(video_id)
         results, meta  = commentsAnalysis(video_id=video_id)
-        cache.set(video_id, (results, meta))
+        if not isinstance(results, pd.DataFrame) and meta==None:
+            messages.error(request, 'Invalid URL. Please provide a valid YouTube video URL.')
+            cached_results = cache.get(video_id)
+            if cached_results is None:
+                context = {}
+                return render(request, 'html/index.html', context)
+            else:
+                video_id=get_all_video_ids_in_cache()[0]
+                return redirect('analysis', video_id=video_id)
+        else:
+            cache.set(video_id, (results, meta))
     
     # Create paginator objects
     if meta['commentCount'] == None:
@@ -63,8 +75,6 @@ def analysis(request, video_id):
         else:
             tag_cloud = get_tag_cloud_data(meta['tags'])
 
-       
-        print(os.environ.get('SECRET-KEY'))
         context = { "video_id":video_id, 
                     "meta":meta, 
                     "section_data":section_data,
