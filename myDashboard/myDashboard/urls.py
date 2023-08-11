@@ -17,9 +17,9 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import RedirectView
 from django.conf import settings
-from django.conf.urls import handler404
+from django.conf.urls import handler404, handler400, handler403, handler500
 from django.conf.urls.static import static
-from commentsDash.views import custom_404
+from commentsDash.views import error_400, error_403, error_404, error_500
 
 urlpatterns = [
     path("dashboard/", include("commentsDash.urls")),
@@ -27,4 +27,7 @@ urlpatterns = [
     path('', RedirectView.as_view(url='/dashboard/', permanent=True)),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-handler404 = custom_404
+handler400 = error_400
+handler403 = error_403
+handler404 = error_404
+handler500 = error_500
