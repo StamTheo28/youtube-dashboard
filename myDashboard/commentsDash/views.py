@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .utils.utils import url_parser, get_all_video_ids_in_cache
+from .utils.utils import url_to_videoId_parser, get_all_video_ids_in_cache
 from .utils.youCom import commentsAnalysis
 from .utils.graph import get_graph_data, get_tag_cloud_data
 from django.core.cache import cache
@@ -13,7 +13,7 @@ def index(request):
     if request.method == "POST":
         url = request.POST.get('video_link')
         print('Gettign URL: ',url)
-        video_id = url_parser(url)
+        video_id = url_to_videoId_parser(url)
         print("Current Video ID",video_id)
         # Display message if url is invalid
         if video_id==False:
@@ -45,7 +45,6 @@ def analysis(request, video_id):
             cache.delete(existing_ids[0])
 
         # If not cached, perform analysis and cache the results
-        print(video_id)
         results, meta  = commentsAnalysis(video_id=video_id)
         if not isinstance(results, pd.DataFrame) and meta==None:
             messages.error(request, 'Invalid URL. Please provide a valid YouTube video URL.')

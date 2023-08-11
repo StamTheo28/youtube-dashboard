@@ -92,17 +92,30 @@ def clean(text):
 
     return text
 
-API_KEY = "AIzaSyCj_o0-0ej8EOa6tPYPKfhJyI3c-zPJ9Yc"
-# Retrieves the top k most famous comments of a youtube video
-def get_most_famous_comments( video_id, max_comments=30):
-    youtube = build('youtube', 'v3', developerKey=API_KEY)
-    
+def get_comment_threads(response, comments):
+    print(len(response['items']))
+    for item in response['items']:
+        comment_data = {}
+        comment_data['comment_id'] = item['id']
+        comment_data['comment'] = item['snippet']['topLevelComment']['snippet']['textDisplay']
+        comment_data["like_count"] = item['snippet']['topLevelComment']['snippet']['likeCount']
+        comment_data["reply_count"] = item['snippet']['totalReplyCount']
+        comment_data['publishedAt'] = item['snippet']['topLevelComment']['snippet']['publishedAt']
+        if 'like_count' not in comment_data.keys():
+            comment_data["like_count"] = 0
+        if 'reply_count' not in comment_data.keys():
+            comment_data["reply_count"] = 0
+        comments.append(comment_data)
+    return comments
 
+# Retrieves the top k most famous comments of a youtube video
+def get_most_famous_comments( video_id, max_comments=200):
+    youtube = build('youtube', 'v3', developerKey=os.environ.get('YOUTUBE-API-KEY'))
+    
     # Retrieve video statistics
     video = youtube.videos().list(
         part='snippet,statistics,contentDetails',
         id=video_id,
-        maxResults=max_comments
     ).execute()
     
     # Returns null if video_id does not exist
@@ -147,23 +160,28 @@ def get_most_famous_comments( video_id, max_comments=30):
                 part="snippet",
                 videoId=video_id,
                 order="relevance",
-                maxResults=max_comments
-            ).execute()
+                maxResults=101
+                ).execute()
+            
             comments = []
-            for item in response['items']:
-                comment_data = {}
-                comment_data['comment_id'] = item['id']
-                comment_data['comment'] = item['snippet']['topLevelComment']['snippet']['textDisplay']
-                comment_data["like_count"] = item['snippet']['topLevelComment']['snippet']['likeCount']
-                comment_data["reply_count"] = item['snippet']['totalReplyCount']
-                comment_data['publishedAt'] = item['snippet']['topLevelComment']['snippet']['publishedAt']
-                if 'like_count' not in comment_data.keys():
-                    comment_data["like_count"] = 0
-                if 'reply_count' not in comment_data.keys():
-                    comment_data["reply_count"] = 0
-                comments.append(comment_data)
-            comments_list = []
+            comments = get_comment_threads(response, comments)
+            
+            if 'nextPageToken' in response:
+                response = youtube.commentThreads().list(
+                part="snippet",
+                videoId=video_id,
+                order="relevance",
+                pageToken=response['nextPageToken'],
+                maxResults=101
+                ).execute()
+                
+                # application code
+                comments = get_comment_threads(response, comments)
+            else:
+                pass
+            
 
+            comments_list = []
             # Retrieve the full comments using the comment IDs
             for comment in comments:
                 try:
@@ -183,7 +201,10 @@ def get_most_famous_comments( video_id, max_comments=30):
                     comments_list.append(comment)
                 except Exception as e:
                     print(f"An error occurred while retrieving comment {comment_id}: {e}")
+            
+           
             comments_df = pd.DataFrame(comments_list)
+            
         else:
             comments_df = pd.DataFrame()
         

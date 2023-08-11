@@ -4,6 +4,7 @@ from .youCom import get_most_frequent_words, get_emoji, get_comment_activity
 
 def get_graph_data(data):
     # Sentiment Percentages (Pie Chart)
+    print(data)
     sentiment_data = {}
     percentages = data['sentiment'].value_counts()/len(data)*100
     sentiment_data['positive'] = percentages['positive']
