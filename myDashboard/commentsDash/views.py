@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .utils.utils import url_to_videoId_parser, get_all_video_ids_in_cache
 from .utils.youCom import commentsAnalysis
-from .utils.graph import get_graph_data, get_tag_cloud_data
+from .utils.graph import get_graph_data, get_tag_cloud_data, get_emoji_graph
 from django.core.cache import cache
 from django.contrib import messages
 import pandas as pd
@@ -74,10 +74,14 @@ def analysis(request, video_id):
         else:
             tag_cloud = get_tag_cloud_data(meta['tags'])
 
+        # Create emoji plot
+        graph_path = get_emoji_graph(section_data['emojis'], video_id)
+
         context = { "video_id":video_id, 
                     "meta":meta, 
                     "section_data":section_data,
                     "tags":tag_cloud,
+                    "emoji_graph":graph_path,
                     "comments":table_res.to_dict(orient='records')
                     }
         

@@ -93,7 +93,6 @@ def clean(text):
     return text
 
 def get_comment_threads(response, comments):
-    print(len(response['items']))
     for item in response['items']:
         comment_data = {}
         comment_data['comment_id'] = item['id']
@@ -109,7 +108,7 @@ def get_comment_threads(response, comments):
     return comments
 
 # Retrieves the top k most famous comments of a youtube video
-def get_most_famous_comments( video_id, max_comments=200):
+def get_most_famous_comments( video_id, max_comments=100):
     youtube = build('youtube', 'v3', developerKey=os.environ.get('YOUTUBE-API-KEY'))
     
     # Retrieve video statistics
@@ -160,26 +159,28 @@ def get_most_famous_comments( video_id, max_comments=200):
                 part="snippet",
                 videoId=video_id,
                 order="relevance",
-                maxResults=101
+                maxResults=max_comments
                 ).execute()
             
             comments = []
             comments = get_comment_threads(response, comments)
             
+            """
+            # Section used for scalability in amount of comments
             if 'nextPageToken' in response:
                 response = youtube.commentThreads().list(
                 part="snippet",
                 videoId=video_id,
                 order="relevance",
                 pageToken=response['nextPageToken'],
-                maxResults=101
+                maxResults=max_comments
                 ).execute()
                 
                 # application code
                 comments = get_comment_threads(response, comments)
             else:
                 pass
-            
+            """
 
             comments_list = []
             # Retrieve the full comments using the comment IDs
