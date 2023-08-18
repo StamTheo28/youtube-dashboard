@@ -129,7 +129,7 @@ STATIC_URL = '/static/'
 
 # Change when deployed on AWS
 
-STATIC_ROOT = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 #STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
