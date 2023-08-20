@@ -159,7 +159,7 @@ def get_most_famous_comments( video_id, max_comments=100):
                 part="snippet",
                 videoId=video_id,
                 order="relevance",
-                maxResults=max_comments
+                maxResults=max_comments 
                 ).execute()
             
             comments = []
