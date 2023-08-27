@@ -15,6 +15,7 @@ python-dotenv == 1.0.0
 gunicorn == 21.2.0
 plotly ==  
 kaleido == 0.2.1
+whitenoise==6.0.0
 
 
 
