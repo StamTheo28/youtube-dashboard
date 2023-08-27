@@ -1,10 +1,4 @@
 from .youCom import get_most_frequent_words, get_emoji, get_comment_activity
-import matplotlib.pyplot as plt
-import emoji
-import io
-import base64
-import plotly.graph_objects as go
-import plotly.io as pio
 import plotly.express as px
 import plotly.offline as pyo
 

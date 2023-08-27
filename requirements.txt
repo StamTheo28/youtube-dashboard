@@ -13,7 +13,7 @@ unidecode == 1.3.6
 spacymoji == 3.1.0
 python-dotenv == 1.0.0
 gunicorn == 21.2.0
-matplotlib 
+plotly ==  
 kaleido == 0.2.1
 
 
