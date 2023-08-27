@@ -125,7 +125,7 @@ USE_TZ = True
 
 
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 
 # Change when deployed on AWS
 
