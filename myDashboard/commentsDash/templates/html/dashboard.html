@@ -119,7 +119,7 @@
                 <h2 class="topic-heading">{{ meta.likeCount }}</h2>
                 <h2 class="topic">Likes</h2>
             </div>
-            
+
             <img src= "{% static 'img/icons/like.png' %}" alt="likes">
         </div>
 
@@ -130,7 +130,7 @@
             </div>
             <img src="{% static 'img/icons/clock.png' %}" alt="duration">
         </div>
-    </div> 
+    </div>
     <div class="chart-container">
         <div class="report-header">
             <h5 class="recent-Articles">Youtube Video Tags</h5>
@@ -181,14 +181,14 @@
                             <td>This graph contains the top {{ comments|length }} most famous/relevant comments provided by Youtube.</td>
                           </tr>
                         </table>
-                        
+
                         <table>
                           <caption><strong>Sort By Sentiment</strong></caption>
                           <tr>
                             <td>Sort comments based on their sentiment value (Positive, Neutral & Negative).</td>
                           </tr>
                         </table>
-                      
+
                         <table>
                           <caption><strong>Sort By Attribute</strong></caption>
                           <tr>
@@ -202,7 +202,7 @@
                               <td>Sort comments in Ascending/Descending order.</td>
                             </tr>
                           </table>
-                    </div>                      
+                    </div>
                 </div>
             </div>
 
@@ -217,7 +217,7 @@
                     <option value="negative">Negative</option>
                     <option value="neutral">Neutral</option>
                 </select>
-                
+
                 <label for="sortBy">Sort By:</label>
                 <select id="sortBy">
                     <option value="index">Index</option>
@@ -276,7 +276,7 @@
                             <td>The number of comments in each month.</td>
                           </tr>
                         </table>
-                      
+
                         <table>
                           <caption><strong>Semesters</strong></caption>
                           <tr>
@@ -292,14 +292,14 @@
                             <td>T3: Sept-Dec</td>
                           </tr>
                         </table>
-                      
+
                         <table>
                           <caption><strong>Years</strong></caption>
                           <tr>
                             <td>The number of comments in each year.</td>
                           </tr>
                         </table>
-                    </div>                      
+                    </div>
                 </div>
             </div>
         </div>
@@ -307,7 +307,7 @@
             <canvas id="scatterGraph"></canvas>
         </div>
     </div>
-    
+
 
     <!--Comments Analysis Graphs-->
     <div class="comment-analysis-container">
@@ -315,8 +315,8 @@
             <div class="buttons-container">
                 <button class="section-button" data-name="length" data-color="#87CEEB" onclick="handleGraphButtonClick('length')">Comments Length</button>
                 <button class="section-button" data-name="frequency" data-color="#9370DB" onclick="handleGraphButtonClick('frequency')">Most Frequent Words</button>
-                <button class="section-button" data-name="sentiment" data-color="#FFA500" onclick="handleGraphButtonClick('sentiment')">Sentiment Distribution</button> 
-            </div> 
+                <button class="section-button" data-name="sentiment" data-color="#FFA500" onclick="handleGraphButtonClick('sentiment')">Sentiment Distribution</button>
+            </div>
             <div class="graph-help-cell">
                 <i class="fa fa-question-circle"></i>
                 <div class="help-popup">
@@ -326,30 +326,30 @@
                         <td>A histogram with the distribution of comment lengths.</td>
                         </tr>
                     </table>
-                    
+
                     <table>
                         <caption><strong>Top 10 Words</strong></caption>
                         <tr>
                         <td>A bar chart with the 10 most frequent words from the comments.</td>
                         </tr>
                     </table>
-                    
+
                     <table>
                         <caption><strong>Sentiment Percentages</strong></caption>
                         <tr>
                         <td>A pie chart showing the percentage of each sentiment in the comments.</td>
                         </tr>
                     </table>
-                </div>                      
+                </div>
             </div>
         </div>
-        
+
 
         <div class="chart-table-container">
             <div class="chart-container" id="chart-container">
                 <canvas id="myChart"></canvas>
             </div>
-            
+
             <div class="table-container" id="tableContainer">
                 <table id="dataTable">
                     <!-- Table content will be added dynamically -->
@@ -359,7 +359,15 @@
     </div>
 
     <div class="emoji-container">
-        {% include "html/emoji_chart.html" %}
+        {% if emoji_graph %}
+            {% include "html/emoji_chart.html" %}
+        {% else %}
+            <div class="img-container" >
+                <img src="{% static 'img/icons/graph_unavailable.png' %}" thumbnail="Emoji Graph Unavailbale">
+            </div>
+
+        {% endif %}
+
     </div>
 
 
