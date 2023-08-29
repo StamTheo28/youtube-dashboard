@@ -21,14 +21,13 @@ function random_color() {
 const jsonData = JSON.parse(document.getElementById('comments').textContent);
 // Parse the JSON data passed from the Django view
 
-var currentPage = 1; 
+var currentPage = 1;
 var itemsPerPage = 10; // Number of items per page
 
 // Function to initialize the paginator
 function initPaginator(data) {
     var paginator = document.getElementById("paginator");
     var totalPages = Math.ceil(data.length / itemsPerPage);
-    console.log(totalPages)
     // Clear the paginator content before re-creating buttons
     paginator.innerHTML = "";
 
@@ -46,7 +45,7 @@ function initPaginator(data) {
 
     // Highlight the current page button
     var buttons = paginator.getElementsByTagName("button");
-    for (var i = 0; i < buttons.length; i++) { 
+    for (var i = 0; i < buttons.length; i++) {
         if (parseInt(buttons[i].textContent) === currentPage) {
         buttons[i].classList.add("active");
         } else {
@@ -151,7 +150,7 @@ function filterAndSortData() {
 function handleSortAndFilter() {
     sortOption = document.getElementById("sortBy").value;
     var sortOrder = document.getElementById("sortOrder").value;
-    
+
     var sortedAndFilteredData = filterAndSortData();
     displayPage(1, sortedAndFilteredData); // Re-display the first page after sorting and filtering
     console.log(sortedAndFilteredData)
@@ -189,19 +188,31 @@ if (!paginatorInitialized) {
 // Create export to csv functionality
 // Function to convert JSON data to CSV format
 function convertToCSV(data) {
+    console.log(data[8]['comment'][6])
+    console.log(data[8]['comment'][7])
     const separator = ',';
     const keys = Object.keys(data[0]);
     const csvRows = [keys.join(separator)];
-  
+
     for (const item of data) {
-      const values = keys.map(key => item[key]);
+      const values = keys.map(key => {
+        let value = item[key];
+        if (key === 'comment' && typeof value === 'string' && value.includes('  ')){
+            value = value.replace('  ', " ");
+        }
+        if (key === 'comment' && typeof value === 'string' && value.includes(',')) {
+            //console.log(value)
+            value = `"${value}"`; // Enclose comment value in double quotes if it contains a comma
+        }
+        return value;
+      });
       const row = values.join(separator);
       csvRows.push(row);
     }
-  
+
     return csvRows.join('\n');
   }
-  
+
   // Function to download the CSV file
   function downloadCSV(csvData, filename) {
     const csvBlob = new Blob([csvData], { type: 'text/csv' });
@@ -211,7 +222,7 @@ function convertToCSV(data) {
     link.setAttribute('download', filename);
     link.click();
   }
-  
+
   // Function to handle the export button click
   document.getElementById('exportButton').addEventListener('click', function () {
     const sortedAndFilteredData = filterAndSortData(); // Use your filter and sort function to get the data
@@ -219,4 +230,3 @@ function convertToCSV(data) {
     const filename = 'comments.csv';
     downloadCSV(csvData, filename);
   });
-  
