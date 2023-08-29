@@ -11,57 +11,81 @@ import plotly.offline as pyo
 from .youCom import get_emoji
 from .youCom import get_most_frequent_words
 
-# Function to create an emoji count bar chart
-
 
 def create_emoji_graph(data):
-    # If there aren't any emojis return False
+    """
+    Creates a bar chart visualization for emoji frequencies using Plotly.
+
+    Args:
+        data (dict): A dictionary containing emojis as keys and their corresponding count as values.
+
+    Returns:
+        bool: True if the graph is successfully created, False if there are no emojis.
+    """
+    # If there aren't any emojis, return False
     if len(data) == 0:
         return False
     else:
-        emojis = list(data.keys())
-        counts = list(data.values())
+        emojis = list(data.keys())  # Extract emojis from the dictionary
+        counts = list(data.values())  # Extract counts from the dictionary
+        # Get emoji names using a function (get_emoji_names)
         emojis_names = get_emoji_names(emojis)
         emojis_dict = {
             'emoji': emojis,
             'count': counts,
             'emoji name': emojis_names,
         }
-        df = pd.DataFrame(emojis_dict)
-        # Create a bar chart using plotly
+        df = pd.DataFrame(emojis_dict)  # Create a DataFrame with emoji data
+        # Create a bar chart using Plotly Express (px)
         fig = px.bar(
             df,
             x='emoji',
             y='count',
-            hover_data=['emoji name'],
+            hover_data=['emoji name'],  # Show emoji names on hover
         )
 
-        # Customize the layout
+        # Customize the layout of the chart
         fig.update_layout(
             xaxis_title='Emoji',
             yaxis_title='Count',
             xaxis_tickangle=-45,
-            showlegend=False,
+            showlegend=False,  # Hide the legend
         )
 
         # Save the plot as an HTML file
         plot_filename = 'commentsDash/templates/html/emoji_chart.html'
         pyo.plot(fig, filename=plot_filename, auto_open=False)
-        return True
-
-# Function that returns the video tag/counts as a dictionary
+        return True  # Return True indicating the successful creation of the graph
 
 
 def get_tag_cloud_data(data):
+    """
+    Generates a dictionary of video tags and their corresponding counts.
+
+    Args:
+        data (list): A list of video tags.
+
+    Returns:
+        dict: A dictionary containing video tags as keys and their corresponding counts.
+    """
     data_dict = {}
     for tag in data:
-        data_dict[tag] = 1
+        data_dict[tag] = 1  # Assign a count of 1 to each tag
     return data_dict
 
 
 def get_comment_activity(data):
+    """
+    Analyzes comment activity over time and returns counts grouped by month, trimester, and year.
+
+    Args:
+        data (pd.DataFrame): A DataFrame containing comment data with 'publishedAt' column.
+
+    Returns:
+        dict: A dictionary containing comment counts grouped by month, trimester, and year.
+    """
     dates = data['publishedAt']
-    # Parse the datetimes into datetime objects
+    # Parse the datetimes into datetime objects ('%Y-%m-%dT%H:%M:%SZ')
     datetimes = sorted(
         [datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%SZ') for dt_str in dates],
     )
@@ -79,6 +103,7 @@ def get_comment_activity(data):
         trimester = f'{dt.year}-T{((dt.month-1) // 4) + 1}'
         year = str(dt.year)
 
+        # Initialize counts if not present in dictionaries
         if month not in month_counts:
             month_counts[month] = 0
         if trimester not in trimester_counts:
@@ -86,13 +111,13 @@ def get_comment_activity(data):
         if year not in year_counts:
             year_counts[year] = 0
 
+        # Increment counts for each time period
         month_counts[month] += 1
         trimester_counts[trimester] += 1
         year_counts[year] += 1
 
     # Step 2: Check for missing months, trimesters, and years and add them with a count of 0
     start_date = min(datetimes).replace(day=1)
-    # To make sure the last month is included
     end_date = max(datetimes).replace(day=28) + timedelta(days=4)
 
     current_date = start_date
@@ -130,17 +155,24 @@ def get_comment_activity(data):
 
     return {
         'month': month_counts,
-        'semester': trimester_counts,
+        'trimester': trimester_counts,
         'year': year_counts,
     }
 
-# Function that processes the retrieved dataframe in graph ready format
-
 
 def get_graph_data(data):
+    """
+    Processes a DataFrame containing comment data into a format suitable for graph plotting.
+
+    Args:
+        data (pd.DataFrame): A DataFrame containing comment data.
+
+    Returns:
+        dict: A dictionary containing data for various types of graphs.
+    """
     # Sentiment Percentages (for Pie Chart)
     sentiment_data = {}
-    percentages = data['sentiment'].value_counts()/len(data)*100
+    percentages = data['sentiment'].value_counts() / len(data) * 100
     sentiment_data['positive'] = percentages['positive']
     sentiment_data['neutral'] = percentages['neutral']
     sentiment_data['negative'] = percentages['negative']
@@ -156,6 +188,7 @@ def get_graph_data(data):
 
     # Number of most famous comments per month (for Scatter plot)
     month_count = get_comment_activity(data)
+
     graph_dict = {
         'length': comment_length,
         'frequency': most_frequent_words,
@@ -165,10 +198,17 @@ def get_graph_data(data):
     }
     return graph_dict
 
-# Function to get emoji names
-
 
 def get_emoji_names(emojis):
+    """
+    Retrieve the text name of each emoji.
+
+    Args:
+        data (list): A list of emojis.
+
+    Returns:
+        list: A list contianing the text name of each emoji.
+    """
     emoji_names = []
     for e in emojis:
         emoji_names.append(emoji.demojize(e).replace(':', ''))

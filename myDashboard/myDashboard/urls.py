@@ -32,6 +32,7 @@ urlpatterns = [
     path('', RedirectView.as_view(url='/dashboard/', permanent=True)),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
+# Create error views urls
 handler400 = error_400
 handler403 = error_403
 handler404 = error_404
