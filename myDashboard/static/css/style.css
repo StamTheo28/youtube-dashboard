@@ -376,6 +376,7 @@ header {
 	flex-direction: column;
 	top: 70px;
 	z-index: 1;
+	margin-bottom: 50px;
 }
 .dpicn {
 	height: 42px;
@@ -383,12 +384,12 @@ header {
 
 .main {
 	top: 30px;
-	height: calc(100vh - 70px);
+	height: calc(100vh - 80px);
 	position: relative;
 	width:100%;
 	overflow-y: scroll;
 	overflow-x: hidden;
-	padding: 40px 30px 30px 30px;
+	padding: 40px 30px 20px 20px;
 }
 
 .main::-webkit-scrollbar-thumb {
@@ -1243,6 +1244,7 @@ background-color: #9e9e9eb2;
 	flex-direction: column;
 	justify-content: center;
 	margin: 40px auto 0;
+	margin-bottom: 70px;
 	background-color: #ffffff;
 	border-radius: 20px;
 	box-shadow: 3px 3px 10px rgb(188, 188, 188);
@@ -1269,19 +1271,16 @@ background-color: #9e9e9eb2;
 	z-index: 2;
 	overflow-y: hidden;
 	bottom:0;
-	margin-top: auto; /* Push the footer to the bottom */
+	margin-top: auto;
 	}
 
 	.footer-content {
-	top: 5px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 	}
 
 /* Responsive CSS */
-/* Responsive CSS Here */
 @media (max-width: 1470px) {
 	.help-popup {
 	  left: -125px; /* Position it on the left side */
