@@ -2,14 +2,10 @@
 from __future__ import annotations
 
 import os
-import re
 import time
-from datetime import datetime
-from datetime import timedelta
 
 import pandas as pd
 import spacy
-from bs4 import BeautifulSoup
 from googleapiclient.discovery import build
 from nltk.probability import FreqDist
 from nltk.tokenize import word_tokenize
@@ -17,7 +13,9 @@ from tqdm.auto import tqdm
 
 from .sentiment import comment_analysis
 from .sentiment import get_clean_data
+from .utils import clean
 from .utils import clean_date
+from .utils import convert_duration
 
 
 # Youtube categories ids and their names
@@ -57,66 +55,55 @@ youtube_categories = {
 }
 
 
-def convert_duration(duration):
-    # Check if the duration is in the right format
-    if not duration.startswith('PT'):
-        raise ValueError('Invalid duration format')
-
-    # Remove the 'PT' prefix and 'S' suffix from the duration
-    duration = duration[2:-1]
-
-    # Split the duration into minutes and seconds if video is less than a minute
-    if 'M' not in duration:
-        hours = 0
-        minutes = 0
-        seconds = int(duration[:2].replace('S', ''))
-    else:
-        minutes, seconds = map(int, duration.split('M'))
-        # Convert minutes to hours if necessary
-        hours = minutes // 60
-        minutes %= 60
-
-    # Format the duration as a string
-    if hours > 0:
-        return f'{hours}h {minutes}m {seconds}s'
-    elif minutes > 0:
-        return f'{minutes}m {seconds}s'
-    else:
-        return f'{seconds}s'
-
-
-# Remove tags and hashhtags from comments
-def clean(text):
-    # Remove <a> HTML tags
-    soup = BeautifulSoup(text, 'html.parser')
-    for tag in soup.find_all('a'):
-        tag.unwrap()
-    text = str(soup)
-
-    # Remove hashtags
-    text = re.sub(r'#\w+', '', text)
-
-    return text
-
-
 def get_comment_threads(response, comments):
+    """
+    Extracts relevant information from a YouTube API response and populates the comments list.
+
+    Args:
+        response (dict): The response obtained from the YouTube API containing comment thread data.
+        comments (list): A list to store extracted comment data.
+
+    Returns:
+        list: The updated list of comments containing comment data from the API response.
+    """
     for item in response['items']:
-        comment_data = {}
-        comment_data['comment_id'] = item['id']
+        comment_data = {}  # Create a dictionary to store extracted comment data
+        comment_data['comment_id'] = item['id']  # Extract comment ID
+        # Extract comment text
         comment_data['comment'] = item['snippet']['topLevelComment']['snippet']['textDisplay']
+        # Extract comment's like count
         comment_data['like_count'] = item['snippet']['topLevelComment']['snippet']['likeCount']
+        # Extract total reply count
         comment_data['reply_count'] = item['snippet']['totalReplyCount']
+        # Extract comment's publish date
         comment_data['publishedAt'] = item['snippet']['topLevelComment']['snippet']['publishedAt']
+
+        # Check if 'like_count' key is missing and set it to 0 if missing
         if 'like_count' not in comment_data.keys():
             comment_data['like_count'] = 0
+
+        # Check if 'reply_count' key is missing and set it to 0 if missing
         if 'reply_count' not in comment_data.keys():
             comment_data['reply_count'] = 0
+
+        # Add extracted comment data to the comments list
         comments.append(comment_data)
-    return comments
+
+    return comments  # Return the updated list of comments
 
 
-# Retrieves the top k most famous comments of a youtube video
 def get_most_famous_comments(video_id, max_comments=100):
+    """
+    Retrieves relevant information about a YouTube video and its comments.
+
+    Args:
+        video_id (str): The YouTube video's unique identifier.
+        max_comments (int, optional): The maximum number of comments to retrieve. Defaults to 100.
+
+    Returns:
+        pandas.DataFrame: A DataFrame containing comments' data.
+        dict: A dictionary containing video metadata.
+    """
     youtube = build(
         'youtube', 'v3',
         developerKey=os.environ.get('YOUTUBE-API-KEY'),
@@ -128,12 +115,12 @@ def get_most_famous_comments(video_id, max_comments=100):
         id=video_id,
     ).execute()
 
-    # Returns null if video_id does not exist
+    # Return null if video_id does not exist
     if len(video['items']) == 0:
-        print('Video id does not exist in youtube')
+        print('Video id does not exist on YouTube')
         return None, None
     else:
-        # Extract the video metadata
+        # Extract video metadata
         meta = {}
         try:
             meta['category'] = youtube_categories[
@@ -145,6 +132,7 @@ def get_most_famous_comments(video_id, max_comments=100):
             print(f'An error occurred: {e}')
             meta['category'] = 'N/A'
 
+        # Extract other video metadata
         meta['video_id'] = video_id
         meta['title'] = video['items'][0]['snippet']['title']
         meta['description'] = video['items'][0]['snippet']['description']
@@ -175,7 +163,7 @@ def get_most_famous_comments(video_id, max_comments=100):
             video['items'][0]['contentDetails']['duration'],
         )
 
-        # Check the comment section is diabled
+        # Check if the comment section is disabled
         if commentSection:
             # Retrieve the comment threads for the video
             response = youtube.commentThreads().list(
@@ -188,23 +176,6 @@ def get_most_famous_comments(video_id, max_comments=100):
             comments = []
             comments = get_comment_threads(response, comments)
 
-            """
-            # Section used for scalability in amount of comments
-            if 'nextPageToken' in response:
-                response = youtube.commentThreads().list(
-                part="snippet",
-                videoId=video_id,
-                order="relevance",
-                pageToken=response['nextPageToken'],
-                maxResults=max_comments
-                ).execute()
-
-                # application code
-                comments = get_comment_threads(response, comments)
-            else:
-                pass
-            """
-
             comments_list = []
             # Retrieve the full comments using the comment IDs
             for comment in comments:
@@ -215,7 +186,7 @@ def get_most_famous_comments(video_id, max_comments=100):
                         id=comment_id,
                     ).execute()
 
-                    # Clean the text comment by removing html tags and hashtags
+                    # Clean the text comment by removing HTML tags and hashtags
                     try:
                         text = clean(
                             full_comment['items'][0]['snippet']['textDisplay'],
@@ -240,140 +211,120 @@ def get_most_famous_comments(video_id, max_comments=100):
         return comments_df, meta
 
 
-# Perform Comments classification
 def commentsAnalysis(video_id):
-    # Retrieve the most famous comments of the video, using YouTube API
+    """
+    Perform sentiment analysis on the most famous comments of a given YouTube video.
+
+    Args:
+        video_id (str): The unique identifier of the YouTube video.
+
+    Returns:
+        pd.DataFrame or None: A DataFrame containing sentiment analysis results for comments,
+        or None if no comments.
+        dict: Metadata about the video.
+    """
+    # Retrieve the most famous comments of the video, using the YouTube API
     start = time.time()
     comments, meta_data = get_most_famous_comments(video_id)
     end = time.time()
 
-    print('Retrieving the top k most famous comments took: ', end-start)
+    print('Retrieving the top k most famous comments took: ', end - start)
+
+    # If comments are not in DataFrame format and metadata is None
     if not isinstance(comments, pd.DataFrame) and meta_data is None:
-        print('Creating a sentemint analysis for the k comments took: ', end-start)
+        print('Creating a sentiment analysis for the k comments took: ', end - start)
         return comments, meta_data
+
+    # If there are no comments
     elif comments.empty:
-        print('Creating a sentemint analysis for the k comments took: ', end-start)
+        print('Creating a sentiment analysis for the k comments took: ', end - start)
         return None, meta_data
+
+    # If there are comments
     else:
         start = time.time()
+        # Perform sentiment analysis on comments
         df = comment_analysis(comments)
         end = time.time()
 
-        df['index'] = df.index
+        df['index'] = df.index  # Add an index column for reference
 
-        print('Creating a sentemint analysis for the k comments took: ', end-start)
+        print('Creating a sentiment analysis for the k comments took: ', end - start)
         return df, meta_data
 
 
 def get_most_frequent_words(data, word_number=10):
-    df = get_clean_data(data)
+    """
+    Get the most frequent words from cleaned comments.
+
+    Args:
+        data (pd.DataFrame): A DataFrame containing comment data.
+        word_number (int, optional): The number of most frequent words to retrieve. Defaults to 10.
+
+    Returns:
+        dict: A dictionary containing the most frequent words and their frequencies.
+    """
+    df = get_clean_data(
+        data,
+    )  # Get cleaned comment data using a function (get_clean_data)
+    # Create frequency distribution of words
     word_freq_dist = FreqDist(word_tokenize((' ').join(df['clean_comment'])))
-    frequent_words = word_freq_dist.most_common(word_number)
-    result_dict = {word: frequency for word, frequency in frequent_words}
+    frequent_words = word_freq_dist.most_common(
+        word_number,
+    )  # Retrieve the most common words
+    result_dict = {
+        word: frequency for word,
+        frequency in frequent_words
+    }  # Convert to a dictionary
+    # Return the dictionary containing most frequent words and their frequencies
     return result_dict
 
 
 # Emoji Extraction
 def get_emoji(data):
+    """
+    Extract and count emojis from comments using SpaCy.
+
+    Args:
+        data (pd.DataFrame): A DataFrame containing comment data.
+
+    Returns:
+        dict: A dictionary containing the top 10 emojis and their counts.
+    """
     nlp = spacy.load('en_core_web_sm')
     nlp.add_pipe('emoji', first=True)
     nlp.pipe_names
 
-    def extract_emojies(x):
-        doc = nlp(x['comment'])  # with emojis
+    def extract_emojis(x):
+        """
+        Helper function to extract emojis from a comment using SpaCy.
+
+        Args:
+            x (pd.Series): A Series containing comment data.
+
+        Returns:
+            list: A list of emojis detected in the comment.
+        """
+        doc = nlp(x['comment'])  # Process the comment with emojis
+        # Extract emojis
         emojis = [token.text for token in doc if token._.is_emoji]
         return emojis
 
     tqdm.pandas(desc='Detecting Emoji')
-    emojies_df = data.progress_apply(extract_emojies, axis=1)
+    # Apply emoji extraction to each comment
+    emojies_df = data.progress_apply(extract_emojis, axis=1)
     emoji_counts = (
         emojies_df
-        .apply(pd.Series)  # breaks up the list into separate columns
-        .stack()  # collapses each column into one column
-        .value_counts()  # counts the frequency of each item
+        .apply(pd.Series)  # Breaks up the list into separate columns
+        .stack()  # Collapses each column into one column
+        .value_counts()  # Counts the frequency of each emoji
         .rename('Count')
         .sort_values(ascending=False)
         .reset_index()
         .rename(columns={'index': 'Emoji'})
     )
 
-    emoji_counts_dict = emoji_counts.head(10).set_index('Emoji')[
-        'Count'
-    ].to_dict()
+    emoji_counts_dict = emoji_counts.head(10).set_index(
+        'Emoji',
+    )['Count'].to_dict()  # Convert top 10 emojis to a dictionary
     return emoji_counts_dict
-
-
-def get_comment_activity(data):
-    dates = data['publishedAt']
-    # Parse the datetimes into datetime objects
-    datetimes = sorted(
-        [datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%SZ') for dt_str in dates],
-    )
-
-    # Create dictionaries to store the count of each month, trimester, and year
-    month_counts = {}
-    trimester_counts = {}
-    year_counts = {}
-
-    # Group the datetimes by month, trimester, and year and count occurrences
-    for dt in datetimes:
-        # Extract the year-month part (e.g., '2009-01')
-        month = dt.strftime('%Y-%m')
-        # Calculate the trimester based on the month
-        trimester = f'{dt.year}-T{((dt.month-1) // 4) + 1}'
-        year = str(dt.year)
-
-        if month not in month_counts:
-            month_counts[month] = 0
-        if trimester not in trimester_counts:
-            trimester_counts[trimester] = 0
-        if year not in year_counts:
-            year_counts[year] = 0
-
-        month_counts[month] += 1
-        trimester_counts[trimester] += 1
-        year_counts[year] += 1
-
-    # Step 2: Check for missing months, trimesters, and years and add them with a count of 0
-    start_date = min(datetimes).replace(day=1)
-    # To make sure the last month is included
-    end_date = max(datetimes).replace(day=28) + timedelta(days=4)
-
-    current_date = start_date
-    while current_date <= end_date:
-        month = current_date.strftime('%Y-%m')
-        trimester = f'{current_date.year}-T{((current_date.month-1) // 4) + 1}'
-        year = str(current_date.year)
-
-        if month not in month_counts:
-            month_counts[month] = 0
-        if trimester not in trimester_counts:
-            trimester_counts[trimester] = 0
-        if year not in year_counts:
-            year_counts[year] = 0
-
-        current_date += timedelta(days=32)  # Move to the next month
-
-    # Check if there are only two dates in the month, semester, or year dictionaries
-    if len(month_counts) <= 2:
-        prev_date = min(datetimes) - timedelta(days=32)
-        month_counts[prev_date.strftime('%Y-%m')] = 0
-
-    if len(trimester_counts) <= 2:
-        prev_date = min(datetimes) - timedelta(days=140)
-        trimester_counts[prev_date.strftime('%Y-T1')] = 0
-
-    if len(year_counts) <= 2:
-        prev_date = min(datetimes) - timedelta(days=365)
-        year_counts[str(prev_date.year)] = 0
-
-    # Sort the dictionaries by keys to have the data in chronological order
-    month_counts = dict(sorted(month_counts.items()))
-    trimester_counts = dict(sorted(trimester_counts.items()))
-    year_counts = dict(sorted(year_counts.items()))
-
-    return {
-        'month': month_counts,
-        'semester': trimester_counts,
-        'year': year_counts,
-    }

@@ -72,7 +72,7 @@ def analysis(request, video_id):
 
         # Create emoji plot
 
-        emoji_graph = create_emoji_graph(section_data['emojis'], video_id)
+        emoji_graph = create_emoji_graph(section_data['emojis'])
 
         context = {
             'video_id': video_id,
