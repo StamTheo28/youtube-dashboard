@@ -1,17 +1,25 @@
+from __future__ import annotations
 
-from tqdm.auto import tqdm
-import nltk
-nltk.download('sentiwordnet')
-from nltk.corpus import sentiwordnet as swn
-from unidecode import unidecode
 import re
-from nltk.stem import WordNetLemmatizer
+
+import nltk
+from nltk.corpus import sentiwordnet as swn
 from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+from tqdm.auto import tqdm
+from unidecode import unidecode
+nltk.download('sentiwordnet')
 
 # Model used
-# en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0-py3-none-any.wh
+"""
+en-core-web-sm @
+https://github.com/explosion/spacy-models/releases/download/
+en_core_web_sm-3.0.0/en_core_web_sm-3.0.0-py3-none-any.wh
+"""
+
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
+
 
 def sentiwordnet(text):
     tokens = nltk.word_tokenize(text)
@@ -26,11 +34,11 @@ def sentiwordnet(text):
             neg_score += synsets[0].neg_score()
 
     if pos_score > neg_score:
-        return "positive"
+        return 'positive'
     elif pos_score < neg_score:
-        return "negative"
+        return 'negative'
     else:
-        return "neutral"
+        return 'neutral'
 
 
 def comment_analysis(data):
@@ -45,9 +53,10 @@ def replace_stylish_words(text):
 
     return normalized_text
 
+
 def preprocess_text(text):
     # remove links
-    text = re.sub(r"http\S+", "", str(text))
+    text = re.sub(r'http\S+', '', str(text))
     # Lowercase
     text = text.lower()
     # special characters
@@ -59,14 +68,22 @@ def preprocess_text(text):
     # only single space
     text = re.sub(r'\s+', ' ', text, flags=re.I)
     # remove special chars and numbers
-    text = re.sub("[^A-Za-z]+", " ", str(text))
+    text = re.sub('[^A-Za-z]+', ' ', str(text))
     # tokenization
     tokens = nltk.word_tokenize(text)
     # stopwords and lemmatization
-    tokens = [lemmatizer.lemmatize(word) for word in tokens if word not in stop_words if len(word) > 2]
+    tokens = [
+        lemmatizer.lemmatize(
+            word,
+        ) for word in tokens if word not in stop_words if len(word) > 2
+    ]
     return ' '.join(tokens)
 
+
 def get_clean_data(data):
-    clean_comment = [preprocess_text(resume) for resume in tqdm(data['comment'])]
+    clean_comment = [
+        preprocess_text(resume)
+        for resume in tqdm(data['comment'])
+    ]
     data['clean_comment'] = clean_comment
     return data

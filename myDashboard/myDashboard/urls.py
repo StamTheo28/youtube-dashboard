@@ -13,17 +13,22 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import include, path
-from django.views.generic import RedirectView
+from __future__ import annotations
+
+from commentsDash.views import error_400
+from commentsDash.views import error_403
+from commentsDash.views import error_404
+from commentsDash.views import error_500
 from django.conf import settings
-from django.conf.urls import handler404, handler400, handler403, handler500
 from django.conf.urls.static import static
-from commentsDash.views import error_400, error_403, error_404, error_500
+from django.contrib import admin
+from django.urls import include
+from django.urls import path
+from django.views.generic import RedirectView
 
 urlpatterns = [
-    path("dashboard/", include("commentsDash.urls")),
-    path("admin/", admin.site.urls),
+    path('dashboard/', include('commentsDash.urls')),
+    path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url='/dashboard/', permanent=True)),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
