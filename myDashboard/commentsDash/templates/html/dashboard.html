@@ -359,11 +359,32 @@
     </div>
 
     <div class="emoji-container">
+            <div class="report-header" style="top:0;">
+                <h1 class="recent-Articles">Emoji Activity</h1>
+                <div class="export-menu">
+                    <div class="graph-help-cell">
+                        <i class="fa fa-question-circle"></i>
+                        <div class="help-popup">
+                            <table>
+                              <caption><strong>Information</strong></caption>
+                              <tr>
+                                <td>- This section consists of bar chart of the top 10 most used emojis in the comments.</td>
+                              </tr>
+                              <tr>
+                                <td>- The Graph is N/A when there are no emojis from the retrieved comments.</td>
+                              </tr>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         {% if emoji_graph %}
             {% include "html/emoji_chart.html" %}
         {% else %}
             <div class="img-container" >
                 <img src="{% static 'img/icons/graph_unavailable.png' %}" thumbnail="Emoji Graph Unavailbale">
+                <h5>Emojis N/A</h5>
             </div>
 
         {% endif %}

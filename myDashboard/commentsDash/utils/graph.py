@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import emoji
+import pandas as pd
 import plotly.express as px
 import plotly.offline as pyo
 
@@ -36,22 +38,39 @@ def get_graph_data(data):
     }
     return graph_dict
 
+# Function to get emoji names
+
+
+def get_emoji_names(emojis):
+    emoji_names = []
+    for e in emojis:
+        emoji_names.append(emoji.demojize(e).replace(':', ''))
+    return emoji_names
+
+# Function to create an emoji count bar chart
+
 
 def create_emoji_graph(data, video_id):
     if len(data) == 0:
         return False
     else:
         # Extract emoji and count data
+
         emojis = list(data.keys())
         counts = list(data.values())
-
+        emojis_names = get_emoji_names(emojis)
+        emojis_dict = {
+            'emoji': emojis,
+            'count': counts,
+            'emoji name': emojis_names,
+        }
+        df = pd.DataFrame(emojis_dict)
         # Create a bar chart using plotly
         fig = px.bar(
-            x=emojis,
-            y=counts,
-            title='Emoji Counts',
-            labels={'x': 'Emoji', 'y': 'Count'},
-            text=counts,
+            df,
+            x='emoji',
+            y='count',
+            hover_data=['emoji name'],
         )
 
         # Customize the layout (optional)

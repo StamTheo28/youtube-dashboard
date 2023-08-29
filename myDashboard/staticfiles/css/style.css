@@ -1236,7 +1236,7 @@ background-color: #9e9e9eb2;
 
 /* Emoji Graph Container */
 .emoji-container {
-	min-height: 500px;
+	min-height: 300px;
 	max-width: 1200px;
 	display: flex;
 	flex-direction: column;
@@ -1248,18 +1248,16 @@ background-color: #9e9e9eb2;
 	padding: 5px;
   }
 
-
 	.img-container {
 		text-align: center;
 		margin: 20px auto;
 	}
 	.img-container img {
-		width: 50%;
+		width: 80%;
 		height: auto;
 		display: block;
 		margin: 0 auto;
 	}
-
 
 
 /* Responsive CSS */
