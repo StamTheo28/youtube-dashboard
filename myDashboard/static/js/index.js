@@ -23,11 +23,13 @@ if(form){
 
 // Function to validate the URL (replace this with your actual URL validation logic)
 function validateURL(url) {
-  
+
   const regex = new RegExp(
       "^.*((youtu.be\\/)|(v\\/)|(\\/u\\/\\w\\/)|(embed\\/)|(watch\\?))\\??v?=?" +
       "([^#&?]*).*"
   );
   const match = url.match(regex);
-  return  match && match[7] && match[7].length === 11 ? true : false;
+  const result = match && match[7] && match[7].length === 11 ? true : false;
+  console.log("The url provided is ", result)
+  return  result
 }

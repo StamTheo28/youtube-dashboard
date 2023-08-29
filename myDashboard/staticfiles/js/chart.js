@@ -34,7 +34,7 @@ function updateSelectedButton(section) {
     const buttons = document.querySelectorAll('.section-button');
     buttons.forEach((button) => {
         if (button.dataset.name === section) {
-            const color = button.dataset.color; 
+            const color = button.dataset.color;
             document.documentElement.style.setProperty('--selected-color', color);
             button.classList.add('selected');
         } else {
@@ -83,7 +83,7 @@ function renderTable(section) {
     table.id = 'dataTable';
     const data = datasets[section];
     const tableContainer = document.getElementById('tableContainer');
-    
+
     if (!tableContainer) {
         // If the table container does not exist, create it and append it to the parent container
         const parentContainer = document.querySelector('.chart-table-container');
@@ -98,7 +98,7 @@ function renderTable(section) {
         tableContainer.appendChild(getTableSettings(table, section, data)); // Append the new table
     }
     adjustContainerSize()
-    
+
 }
 
 
@@ -106,10 +106,10 @@ function renderTable(section) {
 function getTableSettings(table, section, data){
 
     if (section==='length'){
-        
+
         const minData = Math.min(...data);
         const maxData = Math.max(...data);
-        const binCount = Math.ceil(Math.sqrt(data.length)); 
+        const binCount = Math.ceil(Math.sqrt(data.length));
         const binWidth = Math.ceil((maxData - minData) / binCount); // Round up the bin width
 
         const bins = Array(binCount).fill(0);
@@ -199,6 +199,7 @@ function getTableSettings(table, section, data){
         }
         return table
     }
+
 }
 
 function getGraphSettings(section, data){
@@ -207,7 +208,7 @@ function getGraphSettings(section, data){
         const values = Object.values(data);
         const minData = Math.min(...values);
         const maxData = Math.max(...values);
-        const binCount = Math.ceil(Math.sqrt(values.length)); 
+        const binCount = Math.ceil(Math.sqrt(values.length));
         const binWidth = Math.ceil((maxData - minData) / binCount); // Round up the bin width
 
         const bins = Array(binCount).fill(0);
@@ -235,8 +236,8 @@ function getGraphSettings(section, data){
                     label: "Distribution of Comment lengths",
                     data: bins,
                     backgroundColor: "#87CEEB",
-                    barPercentage: 1.0, 
-                    categoryPercentage: 1.0, 
+                    barPercentage: 1.0,
+                    categoryPercentage: 1.0,
                 }],
             },
             options: {
@@ -250,7 +251,7 @@ function getGraphSettings(section, data){
                     }],
                     yAxes: [{
                         ticks: {
-                            beginAtZero: true, 
+                            beginAtZero: true,
                         },
                     }],
                 },
@@ -296,7 +297,7 @@ function getGraphSettings(section, data){
 // Convert the data to the required format
         data = datasets[section]
         const roundedData = Object.values(data).map(value => parseFloat(value.toFixed(1)));
-        
+
         const graphSettings = {
                 type: 'pie',
                 data: {
@@ -339,12 +340,12 @@ function getGraphSettings(section, data){
 function adjustContainerSize() {
     const container = document.getElementById('tableContainer');
     const table = document.getElementById('dataTable');
-    
+
     // Get the width and height of the table, including the borders and padding
     // Add 10 to the height to prevent y-axis overflow
     const tableWidth = table.offsetWidth;
     const tableHeight = table.offsetHeight + 15;
-    
+
     // Set the container width and height based on the table size
     container.style.width = tableWidth + 'px';
     container.style.height = tableHeight + 'px';
@@ -381,7 +382,7 @@ function updateScatterPlot() {
 
     // Clear the canvas and all event listeners
     canvas.width  = 400;
-    canvas.height = 400; 
+    canvas.height = 400;
     sac.clearRect(0, 0, canvas.width, canvas.height);
 
     // ScatterChart settings
@@ -390,17 +391,17 @@ function updateScatterPlot() {
     }
 
     scatterInstance = new Chart(sac, {
-        type: 'line', 
+        type: 'line',
         data: {
             datasets: [{
                 label: 'Comments Published per ' + dropdown.value,
                 data: activityData,
-                backgroundColor: "rgba(255, 165, 0, 0.2)", 
+                backgroundColor: "rgba(255, 165, 0, 0.2)",
                 borderColor: "#FFA509",
                 pointBackgroundColor: "#FFA509",
                 pointBorderColor: 'rgba(255, 255, 255, 1)',
                 pointRadius: 5,
-                fill: true, 
+                fill: true,
             }],
         },
         options: {
@@ -425,17 +426,4 @@ function updateScatterPlot() {
     });
 }
 
-
 updateScatterPlot();
-
-
-
-
-
-
-
-
-
-
-
-

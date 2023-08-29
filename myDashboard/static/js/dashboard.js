@@ -36,7 +36,6 @@ function initPaginator(data) {
         var button = document.createElement("button");
         button.textContent = i;
         button.addEventListener("click", function() {
-        console.log(this.textContent)
         var pageNum = parseInt(this.textContent);
         displayPage(pageNum, data);
         });
@@ -52,10 +51,10 @@ function initPaginator(data) {
         buttons[i].classList.remove("active");
         }
     }
+    console.log('Paginator created/Updated')
 }
 
-    // Function to navigate to a specific page
-
+// Function to navigate to a specific page
 function displayPage(pageNum, data) {
     currentPage = pageNum; // Update the current page number
 
@@ -142,7 +141,7 @@ function filterAndSortData() {
         return multiplier * (a.word_length - b.word_length);
         }
     });
-
+    console.log('Filter data based on: ', selectedSentiment,",", sortOrder,",", multiplier)
     return filteredData;
 }
 
@@ -153,7 +152,6 @@ function handleSortAndFilter() {
 
     var sortedAndFilteredData = filterAndSortData();
     displayPage(1, sortedAndFilteredData); // Re-display the first page after sorting and filtering
-    console.log(sortedAndFilteredData)
     initPaginator(sortedAndFilteredData);
     }
 
@@ -188,8 +186,7 @@ if (!paginatorInitialized) {
 // Create export to csv functionality
 // Function to convert JSON data to CSV format
 function convertToCSV(data) {
-    console.log(data[8]['comment'][6])
-    console.log(data[8]['comment'][7])
+    console.log('Converting data to csv format.')
     const separator = ',';
     const keys = Object.keys(data[0]);
     const csvRows = [keys.join(separator)];
@@ -229,4 +226,5 @@ function convertToCSV(data) {
     const csvData = convertToCSV(sortedAndFilteredData);
     const filename = 'comments.csv';
     downloadCSV(csvData, filename);
+    console.log('Downloading comments.')
   });
