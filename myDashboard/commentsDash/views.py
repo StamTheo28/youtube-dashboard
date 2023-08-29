@@ -2,14 +2,12 @@ from __future__ import annotations
 
 import pandas as pd
 from django.contrib import messages
-from django.core.cache import cache
 from django.shortcuts import redirect
 from django.shortcuts import render
 
 from .utils.graph import create_emoji_graph
 from .utils.graph import get_graph_data
 from .utils.graph import get_tag_cloud_data
-from .utils.utils import get_all_video_ids_in_cache
 from .utils.utils import url_to_videoId_parser
 from .utils.youCom import commentsAnalysis
 
@@ -26,13 +24,8 @@ def index(request):
                 request,
                 'Invalid URL. Please provide a valid YouTube video URL.',
             )
-            cached_results = cache.get(video_id)
-            if cached_results is None:
-                context = {}
-                return render(request, 'html/index.html', context)
-            else:
-                video_id = get_all_video_ids_in_cache()[0]
-                return redirect('analysis', video_id=video_id)
+            context = {}
+            return render(request, 'html/index.html', context)
 
         return redirect('analysis', video_id=video_id)
     else:
@@ -43,32 +36,14 @@ def index(request):
 # Comment analysis view
 def analysis(request, video_id):
 
-    cached_results = cache.get(video_id)
-
-    if cached_results is not None:
-        results, meta = cached_results
-    else:
-        existing_ids = get_all_video_ids_in_cache()
-        # Delete existing ids
-        if len(existing_ids) == 1:
-            cache.delete(existing_ids[0])
-
-        # If not cached, perform analysis and cache the results
-        results, meta = commentsAnalysis(video_id=video_id)
-        if not isinstance(results, pd.DataFrame) and meta is None:
-            messages.error(
-                request,
-                'Invalid URL. Please provide a valid YouTube video URL.',
-            )
-            cached_results = cache.get(video_id)
-            if cached_results is None:
-                context = {}
-                return render(request, 'html/index.html', context)
-            else:
-                video_id = get_all_video_ids_in_cache()[0]
-                return redirect('analysis', video_id=video_id)
-        else:
-            cache.set(video_id, (results, meta))
+    results, meta = commentsAnalysis(video_id=video_id)
+    if not isinstance(results, pd.DataFrame) and meta is None:
+        messages.error(
+            request,
+            'Invalid URL. Please provide a valid YouTube video URL.',
+        )
+        context = {}
+        return render(request, 'html/index.html', context)
 
     # Create paginator objects
     if meta['commentCount'] is None:
