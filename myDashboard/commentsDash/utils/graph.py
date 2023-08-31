@@ -155,7 +155,7 @@ def get_comment_activity(data):
 
     return {
         'month': month_counts,
-        'trimester': trimester_counts,
+        'semester': trimester_counts,
         'year': year_counts,
     }
 
