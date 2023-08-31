@@ -369,27 +369,18 @@ header {
   }
 
 /* Main Section Styles */
-.main-container {
-	display: flex;
-	width: 100vw;
-	position: relative;
-	flex-direction: column;
-	top: 70px;
-	z-index: 1;
-	margin-bottom: 50px;
-}
 .dpicn {
 	height: 42px;
 }
 
 .main {
-	top: 30px;
-	height: calc(100vh - 80px);
+	height: calc(100vh - 70px);
 	position: relative;
 	width:100%;
 	overflow-y: scroll;
 	overflow-x: hidden;
 	padding: 40px 30px 20px 20px;
+
 }
 
 .main::-webkit-scrollbar-thumb {
