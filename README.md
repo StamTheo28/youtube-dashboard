@@ -86,8 +86,13 @@ Insert some screenshots of your dashboard here.
 Document any APIs or usage guidelines here.
 
 ## Contributors <a name="contributors"></a>
-John Doe @johndoe
-Jane Smith @janesmith
+
+| Section | Role | Email  | LinkedIn |
+|---|---|---|---|
+| Stamatis Theocharous | Dashboard Developer | StamatisTheocharous@gmail.com | [Stamatis](https://www.linkedin.com/in/stamatistheocharous/) |
+| Andreas Argyrou | Semantic Analysis Developer | AndreasArgyrou999@gmail.com | [Andreas](https://www.linkedin.com/in/andreas-arghyrou-2260151b4/) |
+
+
 
 ## License
 This project is licensed under the XYZ License - see the LICENSE file for details.
