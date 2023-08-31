@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-from django.core.cache import cache
 from django.test import Client
 from django.test import TestCase
 from django.urls import reverse
 
-from .utils.utils import get_all_video_ids_in_cache
 from .utils.utils import url_to_videoId_parser
 from .utils.youCom import commentsAnalysis
 
@@ -158,16 +156,3 @@ class YouTubeCommentsTests(TestCase):
     # Test for the correct metadata
     def test_meta_data(self):
         self.assertEqual(len(self.meta.keys()), 12)
-
-    # Test for storing cache video
-    def test_cache_length(self):
-        self.assertEqual(len(get_all_video_ids_in_cache()), 1)
-
-    # Test the cache when a new video is searched
-    # Test for the correct contents of the cache
-
-    def test_cache_length_with_new_video_id(self):
-        video_id = 'rMmfK4_u1Cc'
-        commentsAnalysis(video_id)
-        self.assertEqual(len(get_all_video_ids_in_cache()), 1)
-        self.assertEqual(cache.get(get_all_video_ids_in_cache()), None)

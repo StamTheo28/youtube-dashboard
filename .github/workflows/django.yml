@@ -24,8 +24,7 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        python -m nltk.downloader stopwords punkt wordnet
+        python setup.py
 
     - name: Run Tests
       run: |
