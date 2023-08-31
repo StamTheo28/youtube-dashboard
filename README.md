@@ -14,10 +14,9 @@ Welcome to the YouTube Dashboard project! This dashboard provides comprehensive 
 
 | Section         | Description                   |
 | --------------- | ----------------------------- |
-| [Installation](#installation) | How to install and set up   |
-| [Usage](#usage) | How to use the dashboard     |
-| [Configuration](#configuration) | Configuration options      |
 | [Features](#features) | List of key features       |
+| [Installation](#installation) | How to install and set up   |
+| [Server Configurations](#server) | Server Configurations and features used   |
 | [Screenshots](#screenshots) | Visuals of the dashboard  |
 | [API Documentation](#api-documentation) | Details about APIs  |
 | [Contributors](#contributors) | Project contributors      |
@@ -36,6 +35,7 @@ Welcome to the YouTube Dashboard project! This dashboard provides comprehensive 
 - **Comment Data Table:** View sentiment analysis and metadata for comments in a sortable table.
 - **CSV Export:** Export the comment data table as a CSV file for further analysis.
 - **Visualizations:** Explore visual representations of video comment data to enhance your understanding.
+- **Error Catching:** Improve your experience through the implementation of extensive error catching.
 - **Helping Points:** Get guidance at each dashboard section to navigate effectively.
 
 ## Installation <a name="installation"></a>
@@ -73,6 +73,12 @@ python3 -m nltk.downloader stopwords, sentiwordnet,
 cd myDashboard
 python3 manage.py runserver
 ```
+
+## Server Configurations  <a name="server"></a>
+- The project was deployed on an AWS Ubuntu 22.04 server using the AWS free tier.
+- In order to run the current project on AWS you have to modify the default volume of the server as the default size is not enough to use all the required dependencies (8Gb+ Disk Space)
+
+
 ## Screenshots <a name="screenshots"></a>
 Insert some screenshots of your dashboard here.
 
