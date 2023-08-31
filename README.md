@@ -22,7 +22,8 @@ Welcome to the YouTube Dashboard project! This dashboard provides comprehensive 
 | [Contributors](#contributors) | Project contributors      |
 | [License](#license) | Licensing information      |
 
-![example event parameter]()
+![example event parameter](https://github.com/StamTheo28/youtube-dashboard/.github/workflows/django.yml/base.svg)
+![example workflow](https://github.com/github/docs/actions/workflows/django.yml/badge.svg)
 
 
 
@@ -60,15 +61,11 @@ vevn/Scripts/activate
 python3-m venv venv
 source venv/bin/activate
 ```
-4. Install the requirements.txt
+4. Run the setup.py file, that installs all necessery dependencies.
 ```
-pip install requirements.txt
+python3 setup.py
 ```
-5. Install nltk required packages
-```
-python3 -m nltk.downloader stopwords, sentiwordnet,
-```
-6. Run the dashboard:
+5. Run the dashboard:
 ```
 cd myDashboard
 python3 manage.py runserver
@@ -92,6 +89,11 @@ Document any APIs or usage guidelines here.
 | Stamatis Theocharous | Dashboard Developer | StamatisTheocharous@gmail.com | [Stamatis](https://www.linkedin.com/in/stamatistheocharous/) |
 | Andreas Argyrou | Semantic Analysis Developer | AndreasArgyrou999@gmail.com | [Andreas](https://www.linkedin.com/in/andreas-arghyrou-2260151b4/) |
 
+## Extras
+To ensure that the project is of high quality i have used:
+- Flake8 with a pre-commit yaml file to ensure that my code follows industry level Python Standards (Pep8).
+- Used a django.yml to build and test the django app in CI/CD pipeline using git.
+- Created a number of Django Tests to make sure that the app works as intended.
 
 
 ## License
