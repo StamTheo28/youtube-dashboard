@@ -15,12 +15,17 @@ jobs:
       matrix:
         python-version: [3.9]
 
+    env:
+      DJANGO-KEY: django-insecure-tx%-r7q1vzgsn75$sk67uu@m(^x0-so_eavv%0$!k#*h0gh=-j
+      YOUTUBE-API-KEY: AIzaSyCj_o0-0ej8EOa6tPYPKfhJyI3c-zPJ9Yc
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
