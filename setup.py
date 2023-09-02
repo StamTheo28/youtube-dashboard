@@ -13,10 +13,17 @@ def install_nltk_data_packages():
     )
 
 
+def install_spacy_data_packages():
+    subprocess.run(
+        'python -m spacy download en_core_web_sm', shell=True,
+    )
+
+
 if __name__ == '__main__':
     print('Initiating SetUp.')
     install_requirements()
     print(' Requirements installed.')
     install_nltk_data_packages()
-    print(' External nltk packages installed.')
+    install_spacy_data_packages()
+    print(' External nltk and spacy packages installed.')
     print('Setup completed successfully!')
