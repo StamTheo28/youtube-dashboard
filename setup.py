@@ -15,7 +15,7 @@ def install_nltk_data_packages():
 
 def install_spacy_data_packages():
     subprocess.run(
-        'python -m spacy download en_core_web_sm', shell=True,
+        'python -m spacy download --force en_core_web_sm', shell=True,
     )
 
 
