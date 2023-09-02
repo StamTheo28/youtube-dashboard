@@ -13,7 +13,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.9]
+        python-version: [3.9.9]
 
     env:
       DJANGO-KEY: django-insecure-tx%-r7q1vzgsn75$sk67uu@m(^x0-so_eavv%0$!k#*h0gh=-j
