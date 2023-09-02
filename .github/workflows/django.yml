@@ -18,6 +18,8 @@ jobs:
     env:
       DJANGO-KEY: django-insecure-tx%-r7q1vzgsn75$sk67uu@m(^x0-so_eavv%0$!k#*h0gh=-j
       YOUTUBE-API-KEY: AIzaSyCj_o0-0ej8EOa6tPYPKfhJyI3c-zPJ9Yc
+      NLTK_DATA: /nltk_data/
+
 
     steps:
     - uses: actions/checkout@v3
