@@ -1,7 +1,6 @@
 beautifulsoup4 == 4.12.2
 django >= 4.0.5
 emoji == 2.6.0
-en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0.tar.gz
 flake8
 google-api-python-client == 2.95.0
 gunicorn == 21.2.0
