@@ -2,6 +2,11 @@
 
 # YouTube Dashboard
 
+[![Django CI](https://github.com/StamTheo28/youtube-dashboard/actions/workflows/django.yml/badge.svg)](https://github.com/StamTheo28/youtube-dashboard/actions/workflows/django.yml)
+![GitHub all releases](https://img.shields.io/github/downloads/StamTheo28/youtube-dashboard/total)
+![GitHub issues](https://img.shields.io/github/issues/StamTheo28/youtube-dashboard)
+
+
 </div>
 
 ## Overview
@@ -22,7 +27,6 @@ Welcome to the YouTube Dashboard project! This dashboard provides comprehensive 
 | [Contributors](#contributors) | Project contributors      |
 | [License](#license) | Licensing information      |
 
-[![Django CI](https://github.com/StamTheo28/youtube-dashboard/actions/workflows/django.yml/badge.svg)](https://github.com/StamTheo28/youtube-dashboard/actions/workflows/django.yml)
 
 
 
