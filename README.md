@@ -22,8 +22,8 @@ Welcome to the YouTube Dashboard project! This dashboard provides comprehensive 
 | [Contributors](#contributors) | Project contributors      |
 | [License](#license) | Licensing information      |
 
-![example event parameter](https://github.com/StamTheo28/youtube-dashboard/.github/workflows/django.yml/base.svg)
-![example workflow](https://github.com/github/docs/actions/workflows/django.yml/badge.svg)
+[![Django CI](https://github.com/StamTheo28/youtube-dashboard/actions/workflows/django.yml/badge.svg)](https://github.com/StamTheo28/youtube-dashboard/actions/workflows/django.yml)
+
 
 
 
