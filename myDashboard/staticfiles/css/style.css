@@ -1255,20 +1255,25 @@ background-color: #9e9e9eb2;
 
 .footer {
 	background-color: var(--background-color2);
-	height: 60px;
 	color: var(--secondary-color);
-	padding: 20px;
+	position: absolute;
+    bottom:0;
+    left:0;
+    width: 100%;
+	padding: 10px;
 	text-align: center;
-	z-index: 2;
+	height: 50px;
+	/*
 	overflow-y: hidden;
-	bottom:0;
 	margin-top: auto;
+	*/
 	}
 
 	.footer-content {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		flex-wrap: wrap;
 	}
 
 /* Responsive CSS */
@@ -1301,6 +1306,7 @@ background-color: #9e9e9eb2;
 		justify-content: center;
     	align-items: center;
 	}
+
 }
 
 
@@ -1444,6 +1450,10 @@ background-color: #9e9e9eb2;
 	.header-title {
 		font-size: 18px;
 		margin-left: 5px;
+  }
+
+  .footer {
+	padding: 5px;
   }
 }
 
@@ -1608,6 +1618,11 @@ background-color: #9e9e9eb2;
 		padding: 3px 7px;
 	}
 
+	.footer{
+		font-size: 11px;
+		height: 40px;
+	}
+
 }
 
 @media (max-width: 415px) {
@@ -1721,6 +1736,10 @@ background-color: #9e9e9eb2;
 		margin-top: 5px;
 	}
 
+	.footer {
+		font-size: 10px;
+	}
+
 }
 
 @media(max-width:385px){
@@ -1768,6 +1787,10 @@ background-color: #9e9e9eb2;
 			font-size: 7px;
 			padding: 5px 5px;
 			margin-left: 1px;
+		}
+
+		.footer {
+			font-size: 9.5px;
 		}
 	}
 
