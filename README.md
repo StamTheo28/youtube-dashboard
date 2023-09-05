@@ -3,7 +3,7 @@
 # YouTube Dashboard
 
 [![Django CI](https://github.com/StamTheo28/youtube-dashboard/actions/workflows/django.yml/badge.svg)](https://github.com/StamTheo28/youtube-dashboard/actions/workflows/django.yml)
-![GitHub all releases](https://img.shields.io/github/downloads/StamTheo28/youtube-dashboard/total)
+![GitHub Release Date - Published_At](https://img.shields.io/github/release-date/StamTheo28/youtube-dashboard)
 ![GitHub issues](https://img.shields.io/github/issues/StamTheo28/youtube-dashboard)
 
 
@@ -21,9 +21,8 @@ Welcome to the YouTube Dashboard project! This dashboard provides comprehensive 
 | --------------- | ----------------------------- |
 | [Features](#features) | List of key features       |
 | [Installation](#installation) | How to install and set up   |
-| [Server Configurations](#server) | Server Configurations and features used   |
-| [Screenshots](#screenshots) | Visuals of the dashboard  |
-| [API Documentation](#api-documentation) | Details about APIs  |
+| [Production](#production) | Production and Server Configurations used   |
+| [Demo](#demo) | A demonstration and visuals of the dashboard  |
 | [Contributors](#contributors) | Project contributors      |
 | [License](#license) | Licensing information      |
 
@@ -65,6 +64,12 @@ vevn/Scripts/activate
 python3-m venv venv
 source venv/bin/activate
 ```
+4. In the project directory create a file for the environment variables and name it '.env'. Add the following code inside the file, and add your [youtube data v3 api key](https://console.cloud.google.com/apis)
+```
+DJANGO-KEY=django-insecure-tx%-r7q1vzgsn75$sk67uu@m(^x0-so_eavv%0$!k#*h0gh=-j
+YOUTUBE-API-KEY=ADD YOUR YOUTUBE DATA V3 KEY HERE
+```
+
 4. Run the setup.py file, that installs all necessery dependencies.
 ```
 python3 setup.py
@@ -75,16 +80,15 @@ cd myDashboard
 python3 manage.py runserver
 ```
 
-## Server Configurations  <a name="server"></a>
+## Production  <a name="server"></a>
+- The django production mode uses whitenoise API to create and use static files.
 - The project was deployed on an AWS Ubuntu 22.04 server using the AWS free tier.
 - In order to run the current project on AWS you have to modify the default volume of the server as the default size is not enough to use all the required dependencies (8Gb+ Disk Space)
 
 
-## Screenshots <a name="screenshots"></a>
+## Demo <a name="demo"></a>
 Insert some screenshots of your dashboard here.
 
-## API Documentation
-Document any APIs or usage guidelines here.
 
 ## Contributors <a name="contributors"></a>
 
@@ -101,4 +105,4 @@ To ensure that the project is of high quality i have used:
 
 
 ## License
-This project is licensed under the XYZ License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
