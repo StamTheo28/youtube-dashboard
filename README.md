@@ -98,7 +98,7 @@ Insert some screenshots of your dashboard here.
 | Andreas Argyrou | Semantic Analysis Developer | AndreasArgyrou999@gmail.com | [Andreas](https://www.linkedin.com/in/andreas-arghyrou-2260151b4/) |
 
 ## Extras
-To ensure that the project is of high quality i have used:
+To ensure that the project is of high quality we implemented:
 - Flake8 with a pre-commit yaml file to ensure that my code follows industry level Python Standards (Pep8).
 - Used a django.yml to build and test the django app in CI/CD pipeline using git.
 - Created a number of Django Tests to make sure that the app works as intended.
