@@ -103,6 +103,18 @@ To ensure that the project is of high quality we implemented:
 - Used a django.yml to build and test the django app in CI/CD pipeline using git.
 - Created a number of Django Tests to make sure that the app works as intended.
 
+#### Back-end
+ - YouTube comment and video metada are extracted through the use of YouTubes data v3 API.
+ -- The API comments extraction is a time consuming process, thus in our dashboard we use only the top most famous comments (according to YouTube) if they exist.
+ - We have added our semantic analysis model that during comment extraction we predict the semantic value of each comment (Positive, Negative & Neutral).
+ - Also, we created a number of functions to determine the most used words, emojis & other to create, clean and transform our data into a readable form.
+ - Heavy secutiry and data flows checks are done in the backend to ensure the correct operation and prevent any potential disruptions.
+
+ #### Front-end
+- All graphs, tables and paginators are created using js in order to not overload the server.
+- Visual effects such loading effect is created using js.
+- Input validations to ensure that tainted data do not negatively effect the web-app.
+
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
