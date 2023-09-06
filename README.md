@@ -11,7 +11,7 @@
 
 ## Overview
 
-Welcome to the YouTube Dashboard project! This dashboard provides comprehensive video analytics for YouTube comments, empowering users with valuable insights and statistics about specific videos. By simply inputting the video URL, users can access a wide range of analytics, including information about the top 100 comments associated with the video. The dashboard also features a trained machine learning model that incorporates a sentiment analysis for each comment.
+Welcome to the YouTube Dashboard project! This dashboard provides comprehensive video analytics for YouTube comments, empowering users with valuable insights and statistics about specific videos. By simply inputting the video URL, users can access a wide range of analytics, including information about the top 100 most famous comments associated with the video (according to YouTube). The dashboard also features a trained machine learning model that incorporates a sentiment analysis for each comment. This is not a commercialised dashboard, however if you want to try it for yourself message me on [Linkedin](https://www.linkedin.com/in/stamatistheocharous/) or [email](StamaitsTheocharous@gmail.com) me.
 
 ## Table of Contents
 
