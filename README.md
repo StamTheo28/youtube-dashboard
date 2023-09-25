@@ -87,7 +87,7 @@ python3 manage.py runserver
 
 
 ## Demo <a name="demo"></a>
-Insert some screenshots of your dashboard here.
+Follow the [link](https://drive.google.com/file/d/1pJBiDgdfRSIL_1iP_0Sd0WvA5JXTr-qg/view) to view a demo of the dashboard.
 
 
 ## Contributors <a name="contributors"></a>
